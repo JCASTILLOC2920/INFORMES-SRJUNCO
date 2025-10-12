@@ -5,6 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Informes de Anatomía Patológica</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.42.1/docxtemplater.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.1/pizzip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.1/pizzip-utils.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        /* Estilos adicionales para la previsualización */
+        .preview-section {
+            margin-top: 2rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            background-color: #f9f9f9;
+        }
+        
+        .preview-content {
+            background-color: white;
+            padding: 1.5rem;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .button-container button {
+            flex: 1;
+        }
+        
+        #previewBtn {
+            background-color: #4CAF50;
+        }
+        
+        #generateBtn {
+            background-color: #2196F3;
+        }
+        
+        .loading {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #2196F3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -79,9 +156,21 @@
             </div>
             
             <div class="button-container">
-                <button type="submit" id="generateBtn">Generar y Descargar Informe</button>
+                <button type="button" id="previewBtn">Previsualizar</button>
+                <button type="button" id="generateBtn">Generar Word</button>
             </div>
         </form>
+
+        <!-- Sección de previsualización -->
+        <div id="previewSection" class="preview-section hidden">
+            <div class="preview-header">
+                <h2>Vista Previa del Informe</h2>
+                <button type="button" id="closePreview">Cerrar</button>
+            </div>
+            <div id="previewContent" class="preview-content">
+                <!-- Aquí se mostrará la previsualización -->
+            </div>
+        </div>
 
         <div id="loading" class="loading hidden">
             <div class="spinner"></div>
@@ -92,63 +181,159 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('pathologyForm');
+            const previewBtn = document.getElementById('previewBtn');
             const generateBtn = document.getElementById('generateBtn');
+            const closePreviewBtn = document.getElementById('closePreview');
+            const previewSection = document.getElementById('previewSection');
+            const previewContent = document.getElementById('previewContent');
             const loading = document.getElementById('loading');
 
-            // Manejar el envío del formulario
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
+            // Función para formatear fechas de YYYY-MM-DD a DD/MM/AAAA
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            // Función para validar campos obligatorios
+            function validateForm() {
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
                 
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = 'red';
+                    } else {
+                        field.style.borderColor = '';
+                    }
+                });
+                
+                return isValid;
+            }
+
+            // Función para obtener los datos del formulario
+            function getFormData() {
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
+                
+                // Formatear fechas
+                data.fecha_recepcion = formatDate(data.receptionDate);
+                data.fecha_informe = formatDate(data.reportDate);
+                
+                return {
+                    nombre: data.name,
+                    codigo: data.code,
+                    edad: data.age,
+                    ind: data.ind,
+                    muestra: data.sample,
+                    fecha_recepcion: data.fecha_recepcion,
+                    fecha_informe: data.fecha_informe,
+                    examen_macroscopico: data.macroscopicExam,
+                    examen_microscopico: data.microscopicExam,
+                    diagnostico: data.diagnosis
+                };
+            }
+
+            // Función para generar la previsualización
+            function generatePreview() {
+                if (!validateForm()) {
+                    alert('Por favor, complete todos los campos obligatorios.');
+                    return;
+                }
+                
+                const data = getFormData();
+                
+                // Generar el contenido de la previsualización
+                let previewHTML = `
+                    <h1>INFORME DE ANATOMÍA PATOLÓGICA</h1>
+                    <p><strong>NOMBRE:</strong> ${data.nombre} . ${data.codigo}</p>
+                    <p><strong>EDAD:</strong> ${data.edad}</p>
+                    <p><strong>IND:</strong> ${data.ind}</p>
+                    <p><strong>MUESTRA:</strong> ${data.muestra}</p>
+                    <p><strong>FECHA RECEPCIÓN:</strong> ${data.fecha_recepcion} <strong>FECHA DE INFORME:</strong> ${data.fecha_informe}</p>
+                `;
+                
+                if (data.examen_macroscopico) {
+                    previewHTML += `
+                        <h2>EXAMEN MACROSCÓPICO</h2>
+                        <p>${data.examen_macroscopico}</p>
+                    `;
+                }
+                
+                if (data.examen_microscopico) {
+                    previewHTML += `
+                        <h2>EXAMEN MICROSCÓPICO</h2>
+                        <p>${data.examen_microscopico}</p>
+                    `;
+                }
+                
+                if (data.diagnostico) {
+                    previewHTML += `
+                        <h2>DIAGNÓSTICO</h2>
+                        <p>${data.diagnostico}</p>
+                    `;
+                }
+                
+                previewContent.innerHTML = previewHTML;
+                previewSection.classList.remove('hidden');
+            }
+
+            // Función para generar el documento Word
+            async function generateWord() {
+                if (!validateForm()) {
+                    alert('Por favor, complete todos los campos obligatorios.');
+                    return;
+                }
+                
+                const data = getFormData();
                 
                 // Mostrar loading
                 loading.classList.remove('hidden');
                 generateBtn.disabled = true;
                 
                 try {
-                    const response = await fetch('/generate', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
+                    // Cargar la plantilla
+                    const response = await fetch('FORMATO INFORME JUNCO.docx');
+                    const arrayBuffer = await response.arrayBuffer();
+                    
+                    // Inicializar PizZip con el contenido de la plantilla
+                    const zip = new PizZip(arrayBuffer);
+                    
+                    // Inicializar docxtemplater
+                    const doc = new docxtemplater(zip, {
+                        paragraphLoop: true,
+                        linebreaks: true,
                     });
                     
-                    if (response.ok) {
-                        // Descargar el archivo
-                        const blob = await response.blob();
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
-                        
-                        // Obtener el nombre del archivo del header o generarlo
-                        const contentDisposition = response.headers.get('content-disposition');
-                        let fileName = 'informe.docx';
-                        if (contentDisposition) {
-                            const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-                            if (fileNameMatch) {
-                                fileName = fileNameMatch[1];
-                            }
-                        }
-                        
-                        a.download = fileName;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                    } else {
-                        const error = await response.json();
-                        alert('Error: ' + error.error);
-                    }
+                    // Renderizar el documento con los datos
+                    doc.render(data);
+                    
+                    // Generar el documento como blob
+                    const out = doc.getZip().generate({
+                        type: 'blob',
+                        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    });
+                    
+                    // Descargar el documento
+                    saveAs(out, `Informe_${data.codigo}.docx`);
+                    
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Error al generar el documento:', error);
                     alert('Error al generar el documento: ' + error.message);
                 } finally {
                     loading.classList.add('hidden');
                     generateBtn.disabled = false;
                 }
+            }
+
+            // Event Listeners
+            previewBtn.addEventListener('click', generatePreview);
+            generateBtn.addEventListener('click', generateWord);
+            closePreviewBtn.addEventListener('click', function() {
+                previewSection.classList.add('hidden');
             });
             
             // Establecer fechas por defecto (hoy y dentro de 7 días)
