@@ -86,6 +86,7 @@
             <div class="button-container">
                 <button type="button" id="previewBtn"><i class="fas fa-eye"></i> Previsualizar</button>
                 <button type="button" id="generateBtn"><i class="fas fa-file-word"></i> Generar Word</button>
+                <button type="button" id="newDocBtn" class="btn-new"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
         </form>
 
@@ -185,48 +186,12 @@
                 }
                 
                 const data = getFormData();
-                
-                // Generar el contenido de la previsualización
-                let previewHTML = `
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <h1>INFORME DE ANATOMÍA PATOLÓGICA</h1>
-                    </div>
-                    <p><strong>NOMBRE:</strong> ${data.nombre} . ${data.codigo}</p>
-                    <p><strong>EDAD:</strong> ${data.edad}</p>
-                    <p><strong>IND:</strong> ${data.ind}</p>
-                    <p><strong>MUESTRA:</strong> ${data.muestra}</p>
-                    <p><strong>FECHA RECEPCIÓN:</strong> ${data.fecha_recepcion} &nbsp;&nbsp;&nbsp; <strong>FECHA DE INFORME:</strong> ${data.fecha_informe}</p>
-                    <br>
-                `;
-                
-                if (data.examen_macroscopico) {
-                    previewHTML += `
-                        <h2>EXAMEN MACROSCÓPICO</h2>
-                        <p>${data.examen_macroscopico}</p>
-                        <br>
-                    `;
-                }
-                
-                if (data.examen_microscopico) {
-                    previewHTML += `
-                        <h2>EXAMEN MICROSCÓPICO</h2>
-                        <p>${data.examen_microscopico}</p>
-                        <br>
-                    `;
-                }
-                
-                if (data.diagnostico) {
-                    previewHTML += `
-                        <h2>DIAGNÓSTICO</h2>
-                        <p>${data.diagnostico}</p>
-                    `;
-                }
-                
-                previewContent.innerHTML = previewHTML;
-                previewSection.classList.remove('hidden');
-                
-                // Desplazar hacia la sección de previsualización
-                previewSection.scrollIntoView({ behavior: 'smooth' });
+
+                // Guardar los datos en sessionStorage para que la otra página los lea
+                sessionStorage.setItem('reportData', JSON.stringify(data));
+
+                // Abrir la página de previsualización en una nueva pestaña
+                window.open('preview.html', '_blank');
             }
 
             // Función para generar el documento Word
@@ -273,14 +238,15 @@
                 `;
                 
                 try {
-                    // Crear una instancia de docxtemplater
-                    const doc = new window.docxtemplater(new window.PizZip(), {
+                    // 1. Cargar la plantilla XML en una instancia de PizZip
+                    const zip = new window.PizZip(templateContent, { base64: false });
+                    
+                    // 2. Crear la instancia de docxtemplater con el zip y las opciones
+                    const doc = new window.docxtemplater(zip, {
                         paragraphLoop: true,
                         linebreaks: true,
+                        nullGetter: () => "",
                     });
-                    
-                    // Cargar la plantilla XML directamente
-                    doc.loadZip(new window.PizZip(templateContent, { base64: false, checkCRC32: true }));
 
                     // Renderizar el documento con los datos
                     doc.render(data);
@@ -292,7 +258,7 @@
                     });
                     
                     // Descargar el documento
-                    saveAs(out, `Informe_${data.codigo}.docx`);
+                    saveAs(out, `${data.codigo} ${data.nombre}.docx`);
                     
                     // Mostrar mensaje de éxito
                     successMessage.style.display = 'block';
@@ -309,20 +275,40 @@
                 }
             }
 
+            // Función para limpiar el formulario
+            function clearForm() {
+                form.reset();
+                previewSection.classList.add('hidden');
+                const requiredFields = form.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    field.classList.remove('error');
+                });
+                // Restablecer fechas por defecto
+                setDefaultDates();
+                // Enfocar el primer campo
+                document.getElementById('code').focus();
+            }
+
             // Event Listeners
+            const newDocBtn = document.getElementById('newDocBtn');
             previewBtn.addEventListener('click', generatePreview);
             generateBtn.addEventListener('click', generateWord);
             closePreviewBtn.addEventListener('click', function() {
                 previewSection.classList.add('hidden');
             });
+            newDocBtn.addEventListener('click', clearForm);
             
             // Establecer fechas por defecto (hoy y dentro de 7 días)
             const today = new Date();
             const nextWeek = new Date();
             nextWeek.setDate(today.getDate() + 7);
             
-            document.getElementById('receptionDate').valueAsDate = today;
-            document.getElementById('reportDate').valueAsDate = nextWeek;
+            function setDefaultDates() {
+                document.getElementById('receptionDate').valueAsDate = today;
+                document.getElementById('reportDate').valueAsDate = nextWeek;
+            }
+            
+            setDefaultDates();
             
             // Validar campos en tiempo real
             const requiredFields = form.querySelectorAll('[required]');

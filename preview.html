@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Previa del Informe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #e9ecef;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .toolbar {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        .toolbar button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toolbar button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .toolbar button.close-btn {
+            background-color: #e74c3c;
+        }
+        .page {
+            background: white;
+            width: 21cm;
+            min-height: 29.7cm;
+            padding: 2cm;
+            margin-top: 80px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            box-sizing: border-box;
+            color: #333;
+            line-height: 1.5;
+        }
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        p {
+            font-size: 12pt;
+            margin-bottom: 5px;
+            text-align: justify;
+        }
+        .header-info p {
+            margin-bottom: 8px;
+        }
+        strong {
+            font-weight: bold;
+        }
+        .hidden { display: none; }
+        @media print {
+            body { background-color: white; padding: 0; }
+            .toolbar { display: none; }
+            .page { margin: 0; box-shadow: none; border: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button id="generateBtn"><i class="fas fa-file-word"></i> Generar y Cerrar</button>
+        <button onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
+        <button class="close-btn" onclick="window.close()"><i class="fas fa-times"></i> Cerrar</button>
+    </div>
+
+    <div class="page" id="reportContent">
+        <!-- El contenido del informe se insertará aquí -->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.1/pizzip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.42.1/docxtemplater.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportContent = document.getElementById('reportContent');
+            const generateBtn = document.getElementById('generateBtn');
+
+            const dataString = sessionStorage.getItem('reportData');
+            if (!dataString) {
+                reportContent.innerHTML = '<h1>Error: No se encontraron datos del informe.</h1><p>Por favor, vuelva a la página anterior y genere la previsualización de nuevo.</p>';
+                return;
+            }
+
+            const data = JSON.parse(dataString);
+
+            // Llenar la página con los datos
+            let contentHTML = `
+                <h1>Informe de Anatomía Patológica</h1>
+                <div class="header-info">
+                    <p><strong>NOMBRE:</strong> ${data.nombre} . ${data.codigo}</p>
+                    <p><strong>EDAD:</strong> ${data.edad}</p>
+                    <p><strong>IND:</strong> ${data.ind}</p>
+                    <p><strong>MUESTRA:</strong> ${data.muestra}</p>
+                    <p><strong>FECHA RECEPCIÓN:</strong> ${data.fecha_recepcion} &nbsp;&nbsp;&nbsp; <strong>FECHA DE INFORME:</strong> ${data.fecha_informe}</p>
+                </div>
+            `;
+
+            if (data.examen_macroscopico) {
+                contentHTML += `<h2>Examen Macroscópico</h2><p>${data.examen_macroscopico.replace(/\n/g, '<br>')}</p>`;
+            }
+            if (data.examen_microscopico) {
+                contentHTML += `<h2>Examen Microscópico</h2><p>${data.examen_microscopico.replace(/\n/g, '<br>')}</p>`;
+            }
+            if (data.diagnostico) {
+                contentHTML += `<h2>Diagnóstico</h2><p>${data.diagnostico.replace(/\n/g, '<br>')}</p>`;
+            }
+
+            reportContent.innerHTML = contentHTML;
+
+            // Función para generar el documento Word
+            function generateWord() {
+                const templateContent = `
+                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                    <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                        <w:body>
+                            <w:p><w:r><w:t>INFORME DE ANATOMÍA PATOLÓGICA</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>NOMBRE: {nombre} . {codigo}</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>EDAD: {edad}</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>IND: {ind}</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>MUESTRA: {muestra}</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>FECHA RECEPCIÓN: {fecha_recepcion}   FECHA DE INFORME: {fecha_informe}</w:t></w:r></w:p>
+                            <w:p><w:r><w:t></w:t></w:r></w:p>
+                            {#examen_macroscopico}
+                            <w:p><w:r><w:t>EXAMEN MACROSCÓPICO</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>{examen_macroscopico}</w:t></w:r></w:p>
+                            <w:p><w:r><w:t></w:t></w:r></w:p>
+                            {/examen_macroscopico}
+                            {#examen_microscopico}
+                            <w:p><w:r><w:t>EXAMEN MICROSCÓPICO</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>{examen_microscopico}</w:t></w:r></w:p>
+                            <w:p><w:r><w:t></w:t></w:r></w:p>
+                            {/examen_microscopico}
+                            {#diagnostico}
+                            <w:p><w:r><w:t>DIAGNÓSTICO</w:t></w:r></w:p>
+                            <w:p><w:r><w:t>{diagnostico}</w:t></w:r></w:p>
+                            {/diagnostico}
+                        </w:body>
+                    </w:document>
+                `;
+
+                try {
+                    const zip = new window.PizZip(templateContent, { base64: false });
+                    const doc = new window.docxtemplater(zip, {
+                        paragraphLoop: true,
+                        linebreaks: true,
+                        nullGetter: () => "",
+                    });
+
+                    doc.render(data);
+
+                    const out = doc.getZip().generate({
+                        type: "blob",
+                        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    });
+
+                    saveAs(out, `${data.codigo} ${data.nombre}.docx`);
+                    
+                    // Cerrar la pestaña después de un breve retraso
+                    setTimeout(() => window.close(), 500);
+
+                } catch (error) {
+                    console.error('Error al generar el documento:', error);
+                    alert('Error al generar el documento: ' + error.message);
+                }
+            }
+
+            generateBtn.addEventListener('click', generateWord);
+        });
+    </script>
+
+</body>
+</html>

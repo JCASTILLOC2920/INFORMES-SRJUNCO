@@ -105,6 +105,14 @@ button:disabled {
     cursor: not-allowed;
 }
 
+.btn-new {
+    background: #f39c12; /* Naranja */
+}
+
+.btn-new:hover {
+    background: #e67e22;
+}
+
 .error {
     color: #e74c3c;
     font-size: 14px;
@@ -113,6 +121,7 @@ button:disabled {
 
 .form-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
 }
 
