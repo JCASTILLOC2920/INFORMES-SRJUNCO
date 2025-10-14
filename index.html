@@ -83,23 +83,39 @@
                 </div>
             </div>
             
+            <!-- Fotografías -->
+            <div class="form-section">
+                <h2><i class="fas fa-images"></i> Fotografías Microscópicas</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Foto 1</label>
+                        <div class="image-uploader" id="uploader1" data-image-id="1">
+                            <div class="image-preview" id="preview1"></div>
+                            <div class="image-buttons">
+                                <button type="button" class="btn-edit-img"><i class="fas fa-edit"></i> Editar/Cargar</button>
+                                <button type="button" class="btn-remove-img hidden"><i class="fas fa-trash"></i> Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto 2</label>
+                        <div class="image-uploader" id="uploader2" data-image-id="2">
+                            <div class="image-preview" id="preview2"></div>
+                            <div class="image-buttons">
+                                <button type="button" class="btn-edit-img"><i class="fas fa-edit"></i> Editar/Cargar</button>
+                                <button type="button" class="btn-remove-img hidden"><i class="fas fa-trash"></i> Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="button-container">
                 <button type="button" id="previewBtn"><i class="fas fa-eye"></i> Previsualizar</button>
                 <button type="button" id="generateBtn"><i class="fas fa-file-word"></i> Generar Word</button>
                 <button type="button" id="newDocBtn" class="btn-new"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
         </form>
-
-        <!-- Sección de previsualización -->
-        <div id="previewSection" class="preview-section hidden">
-            <div class="preview-header">
-                <h2><i class="fas fa-file-alt"></i> Vista Previa del Informe</h2>
-                <button type="button" id="closePreview"><i class="fas fa-times"></i> Cerrar</button>
-            </div>
-            <div id="previewContent" class="preview-content">
-                <!-- Aquí se mostrará la previsualización -->
-            </div>
-        </div>
 
         <div id="loading" class="loading hidden">
             <div class="spinner"></div>
@@ -111,58 +127,399 @@
         </div>
     </div>
 
+    <!-- Sección del Editor de Imágenes (Integrado) -->
+    <div id="imageEditorSection" class="form-section hidden">
+        <h2><i class="fas fa-camera-retro"></i> Editor de Imágenes</h2>
+        <div class="editor-container">
+            <div class="editor-upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-file-image"></i>
+                    <p>Arrastra y suelta o haz clic para seleccionar</p>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept="image/*">
+                <div id="processingIndicator" class="loading hidden" style="padding: 10px;">
+                    <div class="spinner" style="width: 20px; height: 20px; margin-bottom: 5px;"></div>
+                    <p style="font-size: 14px;">Procesando...</p>
+                </div>
+            </div>
+            <div class="editor-main">
+                <div class="image-comparison">
+                    <div class="image-wrapper">
+                        <h4>Original</h4>
+                        <canvas id="originalCanvas"></canvas>
+                    </div>
+                    <div class="image-wrapper">
+                        <h4>Procesada</h4>
+                        <canvas id="processedCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="editor-controls">
+                <div class="control-group">
+                    <h3><i class="fas fa-magic"></i> Acciones Rápidas</h3>
+                    <button type="button" class="btn-control" id="autoEnhanceBtn"><i class="fas fa-bolt"></i> Mejora Automática</button>
+                    <button type="button" class="btn-control" id="resetControlsBtn"><i class="fas fa-redo"></i> Restablecer</button>
+                </div>
+                <div class="control-group">
+                    <h3><i class="fas fa-sliders-h"></i> Ajustes Manuales</h3>
+                    <div class="slider-container">
+                        <label>Brillo <span id="brightnessValue">0</span></label>
+                        <input type="range" id="brightness" min="-50" max="50" value="0">
+                    </div>
+                    <div class="slider-container">
+                        <label>Contraste <span id="contrastValue">0</span></label>
+                        <input type="range" id="contrast" min="-50" max="50" value="0">
+                    </div>
+                    <div class="slider-container">
+                        <label>Saturación <span id="saturationValue">0</span></label>
+                        <input type="range" id="saturation" min="-100" max="100" value="0">
+                    </div>
+                     <div class="slider-container">
+                        <label>Nitidez <span id="sharpnessValue">0</span></label>
+                        <input type="range" id="sharpness" min="0" max="100" value="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="editor-footer">
+            <button type="button" id="cancelEditorBtn" class="btn-new">Cancelar</button>
+            <button type="button" id="confirmEditorBtn"><i class="fas fa-check"></i> Confirmar y Usar Imagen</button>
+        </div>
+    </div>
+
     <!-- Incluir las librerías necesarias -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.1/pizzip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.1/pizzip-utils.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.42.1/docxtemplater.js"></script>
+    <script>
+        /*!
+         * The MIT License (MIT)
+         *
+         * Copyright (c) 2017 Edgar B.
+         *
+         * Permission is hereby granted, free of charge, to any person obtaining a copy
+         * of this software and associated documentation files (the "Software"), to deal
+         * in the Software without restriction, including without limitation the rights
+         * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+         * copies of the Software, and to permit persons to whom the Software is
+         * furnished to do so, subject to the following conditions:
+         *
+         * The above copyright notice and this permission notice shall be included in all
+         * copies or substantial portions of the Software.
+         *
+         * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         * SOFTWARE.
+         */
+        var ImageModule=function(t){"use strict";var e={};function i(t){var i=e[t];if(void 0!==i)return i.exports;var n=e[t]={exports:{}};return t.call(n.exports,n,n.exports,i),n.exports}i.d=function(t,e){for(var n in e)i.o(e,n)&&!i.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:e[n]})},i.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},i.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})};var n={};return i.r(n),i.d(n,{default:function(){return s}}),function(t){t.prototype.getCorruptCharacters=function(){return this.corruptCharacters.map((function(t){var e=t.i,i=t.char;return[e,i]}))}}(function(t){function e(e){this.name="CorruptZip",this.properties={id:e.id,zip:e.zip,xml:e.xml},this.message="Corrupt ".concat(e.id," :",e.message),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.CorruptZip=e}(n),function(t){function e(e){this.name="InternalError",this.properties={id:e.id},this.message=e.message,Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.InternalError=e}(n),function(t){function e(e){this.name="RenderingError",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="RenderingError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.RenderingError=e}(n),function(t){function e(e){this.name="XTTemplateError",this.properties={id:e.id},this.message="TemplateError ".concat(e.id," :",e.message),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTTemplateError=e}(n),function(t){function e(e){this.name="XTTemplateError",this.properties={id:e.id,explanation:e.explanation},this.message="TemplateError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTTemplateError=e}(n),function(t){function e(e){this.name="UnopenedTag",this.properties={id:e.id,xtag:e.xtag,lIndex:e.lIndex},this.message="Unopened tag ".concat(e.id," :",e.xtag),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.UnopenedTag=e}(n),function(t){function e(e){this.name="UnclosedTag",this.properties={id:e.id,xtag:e.xtag,lIndex:e.lIndex},this.message="Unclosed tag ".concat(e.id," :",e.xtag),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.UnclosedTag=e}(n),function(t){function e(e){this.name="ScopeParserError",this.properties={id:e.id,explanation:e.explanation},this.message="Scope parser error ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.ScopeParserError=e}(n),function(t){function e(e){this.name="XTAPIVersionError",this.properties={id:e.id,explanation:e.explanation},this.message="APIVersionError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTAPIVersionError=e}(n),function(t){function e(e){this.name="XTRenderingError",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="RenderingError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTRenderingError=e}(n),function(t){function e(e){this.name="XTInternalError",this.properties={id:e.id},this.message="InternalError ".concat(e.id," :",e.message),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTInternalError=e}(n),function(t){function e(e){this.name="XTScopeParserError",this.properties={id:e.id,explanation:e.explanation,offset:e.offset,token:e.token},this.message="Scope parser error ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTScopeParserError=e}(n),function(t){function e(e){this.name="XTXMLTagNotFound",this.properties={id:e.id,explanation:e.explanation,xml:e.xml,offset:e.offset},this.message="XML tag not found ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTXMLTagNotFound=e}(n),function(t){function e(e){this.name="XTLoopNotAList",this.properties={id:e.id,explanation:e.explanation,scope:e.scope,value:e.value},this.message="Looping on a non-list ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTLoopNotAList=e}(n),function(t){function e(e){this.name="XTInvalidOperator",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="Invalid operator ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTInvalidOperator=e}(n),function(t){function e(e){this.name="XTDoubleContent",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="Double content ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTDoubleContent=e}(n),function(t){function e(e){this.name="XTUnknownModule",this.properties={id:e.id,explanation:e.explanation,moduleName:e.moduleName},this.message="Unknown module ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTUnknownModule=e}(n),function(t){function e(e){this.name="XTNoHFS",this.properties={id:e.id,explanation:e.explanation},this.message="No HFS ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTNoHFS=e}(n);var a={getImage:function(t,e){return this.files[t]},getImages:function(){return this.files},setImage:function(t,e){return this.files[t]=e}},r=function(){function t(){this.name="ImageModule",this.supportedFileTypes=["docx","pptx"],this.prefix=t.prefix,this.tag=t.tag,this.tagcentered=t.tagcentered,this.files=null,this.imgId=0}return t.prototype.clone=function(){return new t},t.prototype.set=function(t){t.Lexer&&this.Lexer=t.Lexer,t.zip&&this.zip=t.zip,t.xmlDocuments&&(this.xmlDocuments=t.xmlDocuments),t.templater&&(this.templater=t.templater),t.docxtemplater&&(this.docxtemplater=t.docxtemplater),t.doc&&this.set({docxtemplater:t.doc})},t.prototype.on=function(t){if("syncing-zip"===t)for(var e=this.docxtemplater.getzip(),i=e.file(/word\/media\//),n=0;n<i.length;n++){var a=i[n];this.templater.v4&&e.files[a.name]||(this.zip.file(a.name,a._data),this.docxtemplater.media[a.name.substr(11)]=a.name.substr(11))}},t.prototype.getTraits=function(t,e){if("image"===t){var i=e.part,n=i.lIndex,a=i.endLindex,r=i.raw;return{type:"image",tag:r,text:i.data,offset:n,offsetEnd:a,lIndex:n,endLindex:a,raw:r,part:i}}},t.prototype.getRenderedMap=function(t){var e=this;return t.map((function(t){return e.render(t)})).reduce((function(t,e){return e?t.concat(e):t}),[])},t.prototype.render=function(e){var i=this;if("image"!==e.type)return null;var n=e.part,a=e.tag,r=e.scope,o=this.templater.scopeManager.getValue(a,{scope:r});if(null==o)return[{type:"del",lIndex:e.lIndex,endLindex:e.endLindex}];var s=this.templater.imagePath;if("function"==typeof s&&(o=s(o)),!o)return[{type:"del",lIndex:e.lIndex,endLindex:e.endLindex}];var l=this.zip.file(new RegExp(o,"i"));if(!l||!l.length)throw new n.XTInternalError("Image not found : ".concat(o));var d=l[0].name,c=this.docxtemplater.media[d];c||(c=d,this.docxtemplater.media[d]=d);var u=this.docxtemplater.getNextImageName(),p=this.docxtemplater.getNextRelId(),h=this.docxtemplater.getNextDocPrId(),f=this.docxtemplater.getNextPicId(),m=this.docxtemplater.rId[c];m||(m=this.docxtemplater.rId[c]=p,this.docxtemplater.invertedRels[p]=c,this.docxtemplater.relsDoc.file("word/_rels/document.xml.rels",this.docxtemplater.relsDoc.getContent().replace("</Relationships>","<Relationship Id='".concat(p,"' Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/image' Target='").concat(c,"'/></Relationships>"))));var g=this.docxtemplater.files[this.docxtemplater.fileTypeConfig.textPath(this.docxtemplater)],v=g.indexOf(a);if(-1===v)return[{type:"del",lIndex:e.lIndex,endLindex:e.endLindex}];var x=g.substr(0,v).lastIndexOf("<w:drawing"),b=g.indexOf("</w:drawing>",v),w=g.substr(x,b-x+12),y=this.templater.functor(w,{scope:r,rId:m,imgName:u,docPrId:h,picId:f});return y=y.replace(/<w:drawing>/g,"").replace(/<\/w:drawing>/g,""),n.raw=y,n.data=y,this.templater.v4?{type:"replace",lIndex:e.lIndex,endLindex:e.endLindex,value:y,part:n}:(this.templater.rawCode=this.templater.rawCode.replace(a,y),setTimeout((function(){i.templater.parse(i.templater.rawCode.toString()),i.templater.render()}),0),null)},t.prototype.postparse=function(e,i){var n=this,a=i.basePart;return e.reduce((function(e,r){var o,s=r.value;if(r.type.indexOf("tag")!==-1&&r.tag==="w:t"&&s.indexOf(n.prefix)>-1){var l=s.replace(n.prefix,"");r.type="placeholder",r.value=l,a&&(a.value=a.value.replace(n.prefix,""),a.type="placeholder"),o=n.getTraits("image",{part:r})}else o=r;return e.push(o),e}),[])},t.prefix="image_",t.tag="%image",t.tagcentered="%%image",t}(),o=function(){function t(t){this.options=t||{},this.imgId=1,this.rId=this.v4?{}:{},this.options.centered=this.options.centered||!1,this.options.getImage=this.options.getImage||function(){throw new n.XTInternalError("getImage is not defined")},this.options.getSize=this.options.getSize||function(t,e,i){var n=i.part,a=n.module;if("string"==typeof t){var r=t.indexOf("x");if(-1!==r)return[parseInt(t.substr(0,r),10),parseInt(t.substr(r+1),10)]}return a.getNaturalSize(e)},this.imagePath=this.options.imagePath,this.centered=this.options.centered,this.getImage=this.options.getImage,this.getSize=this.options.getSize,this.imageExtensions=this.options.imageExtensions||[]}return t.prototype.getNaturalSize=function(t){var e,i,n=new DataView(t);if(65496===n.getUint16(0,!1)){for(var a=n.byteLength,r=2;r<a;){var o=n.getUint16(r,!1);if(r+=2,65505===o)r+=2;else{if(65280!==(65280&o))break;r+=n.getUint16(r,!1)-2}if(65472===o||65473===o||65474===o||65475===o||65476===o||65477===o||65478===o||65479===o){i=n.getUint16(r+1,!1),e=n.getUint16(r+3,!1);break}}}else 2228227107===n.getUint32(0,!1)&&(e=n.getUint32(8,!1),i=n.getUint32(12,!1));return[e,i]},t.prototype.set=function(t){t.Lexer&&this.Lexer=t.Lexer,t.zip&&this.zip=t.zip,t.xmlDocuments&&(this.xmlDocuments=t.xmlDocuments),t.templater&&(this.templater=t.templater),t.docxtemplater&&(this.docxtemplater=t.docxtemplater),t.doc&&this.set({docxtemplater:t.doc})},t.prototype.on=function(t){if("attached"===t){var e=this.docxtemplater.fileTypeConfig.tagsXmlFile;this.docxtemplater.v4||(this.docxtemplater.fileTypeConfig.tagsXmlFile="word/document.xml",this.docxtemplater.getTemplatedFiles(),this.docxtemplater.fileTypeConfig.tagsXmlFile=e),this.docxtemplater.v4?(this.docxtemplater.media=this.docxtemplater.zip.files.filter((function(t){return/^word\/media\//.test(t)})).map((function(t){return t.substr(11)})),this.docxtemplater.relsDoc=this.docxtemplater.zip.files.find((function(t){return"word/_rels/document.xml.rels"===t}))):this.docxtemplater.media={},this.docxtemplater.v4||(this.docxtemplater.relsDoc=this.xmlDocuments["word/_rels/document.xml.rels"]||this.xmlDocuments["ppt/slides/_rels/slide1.xml.rels"],this.docxtemplater.v4||(this.docxtemplater.relsDoc.content=this.docxtemplater.relsDoc.documentElement.outerHTML),this.docxtemplater.relsDoc.getContent=function(){return this.content}),this.docxtemplater.invertedRels=this.docxtemplater.v4?this.docxtemplater.invertedRels:{},this.docxtemplater.v4||(this.docxtemplater.rels=this.docxtemplater.relsDoc.getElementsByTagName("Relationship"));for(var i=0,a=this.docxtemplater.rels;i<a.length;i++){var r=a[i],o=r.getAttribute("Id");this.docxtemplater.invertedRels[o]=r.getAttribute("Target")}this.docxtemplater.getNextImageName=function(){var t;do{t="image".concat(this.imgId,".png"),this.imgId++}while(this.media[t]);return this.media[t]=!0,t},this.docxtemplater.getNextRelId=function(){var t;do{t="rId".concat(this.rId++)}while(this.invertedRels[t]);return this.invertedRels[t]=!0,t},this.docxtemplater.getNextDocPrId=function(){var t=this.docxtemplater.v4?this.docxtemplater.zip.files.reduce((function(t,e){var i=e.indexOf("<wp:docPr");if(-1!==i){var n=e.substr(i).indexOf('id="'),a=e.substr(i+n+4),r=a.indexOf('"');if(-1!==r){var o=a.substr(0,r);t.push(parseInt(o,10))}}return t}),[]):this.docxtemplater.getElementsByTagName("wp:docPr");if(this.docxtemplater.v4)return 1+Math.max.apply(null,[0].concat(t));for(var e=1,i=0;i<t.length;i++){var n=parseInt(t[i].getAttribute("id"),10);e=Math.max(e,n)}return e+1},this.docxtemplater.getNextPicId=function(){var t=this.docxtemplater.v4?this.docxtemplater.zip.files.reduce((function(t,e){var i=e.indexOf("<pic:pic");if(-1!==i){var n=e.substr(i).indexOf('id="'),a=e.substr(i+n+4),r=a.indexOf('"');if(-1!==r){var o=a.substr(0,r);t.push(parseInt(o,10))}}return t}),[]):this.docxtemplater.getElementsByTagName("pic:pic");if(this.docxtemplater.v4)return 1+Math.max.apply(null,[0].concat(t));for(var e=1,i=0;i<t.length;i++){var n=parseInt(t[i].getAttribute("id"),10);e=Math.max(e,n)}return e+1}}},t.prototype.getRenderedMap=function(t){var e=this;return t.map((function(t){return e.render(t)})).reduce((function(t,e){return e?t.concat(e):t}),[])},t.prototype.render=function(t){var e=this;if("placeholder"!==t.type||t.module)return null;var i=t.value,a=this.options.prefix;if(i.substr(0,a.length)!==a)return null;var r=i.substr(a.length),o=this.templater.scopeManager.getValue(r,{scope:t.scope});if(null==o)return[{type:"del",lIndex:t.lIndex,endLindex:t.endLindex}];var s,l,d=this.options.data,c=this.options.size;if("function"==typeof d&&(o=d(r)),"function"==typeof c&&(s=c(o,r,t)),!o)return[{type:"del",lIndex:t.lIndex,endLindex:t.endLindex}];if(this.templater.v4){var u=this.getImage(o,r);if(!u)throw new n.XTInternalError("Could not find image for tag ".concat(r));l=this.getSize(s,u,t)}else l=this.getSize(o);var p=this.docxtemplater.getNextImageName(),h=this.docxtemplater.getNextRelId(),f=this.docxtemplater.getNextDocPrId(),m=this.docxtemplater.getNextPicId();this.docxtemplater.zip.file("word/media/".concat(p),l[2],{base64:!0}),this.docxtemplater.relsDoc.file("word/_rels/document.xml.rels",this.docxtemplater.relsDoc.getContent().replace("</Relationships>","<Relationship Id='".concat(h,"' Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/image' Target='media/").concat(p,"'/></Relationships>")));var g=this.docxtemplater.v4?this.docxtemplater.fileTypeConfig.drawing(this.docxtemplater,p,h,f,m,l):this.docxtemplater.fileTypeConfig.drawing(this.docxtemplater,h,f,m,l),v=t.part,x=this.templater.v4?{type:"replace",lIndex:t.lIndex,endLindex:t.endLindex,value:g,part:v}:{type:"raw",value:g};return this.templater.v4?x:(setTimeout((function(){e.templater.render()}),0),x)},t.prototype.postparse=function(t,e){var i=this,n=e.basePart;return t.reduce((function(t,e){var a,r=e.value;if(e.type.indexOf("placeholder")!==-1&&r.indexOf(i.options.prefix)>-1){var o=r.replace(i.options.prefix,"");e.type="placeholder",e.value=o,n&&(n.value=n.value.replace(i.options.prefix,""),n.type="placeholder"),a=i.getTraits("image",{part:e})}else a=e;return t.push(a),t}),[])},t}(),s=function(){function t(e){this.name="ImageModule",this.options=e||{},this.supportedFileTypes=["docx","pptx"],this.imgId=0,this.options.centered=this.options.centered||!1,this.options.getImage=this.options.getImage||function(){throw new n.XTInternalError("getImage is not defined")},this.options.getSize=this.options.getSize||function(t,e,i){var n=i.part,a=n.module;if("string"==typeof t){var r=t.indexOf("x");if(-1!==r)return[parseInt(t.substr(0,r),10),parseInt(t.substr(r+1),10)]}return a.getNaturalSize(e)},this.imagePath=this.options.imagePath,this.centered=this.options.centered,this.getImage=this.options.getImage,this.getSize=this.options.getSize,this.imageExtensions=this.options.imageExtensions||[],this.modules=[]}return t.prototype.getNaturalSize=function(t){var e,i,n=new DataView(t);if(65496===n.getUint16(0,!1)){for(var a=n.byteLength,r=2;r<a;){var o=n.getUint16(r,!1);if(r+=2,65505===o)r+=2;else{if(65280!==(65280&o))break;r+=n.getUint16(r,!1)-2}if(65472===o||65473===o||65474===o||65475===o||65476===o||65477===o||65478===o||65479===o){i=n.getUint16(r+1,!1),e=n.getUint16(r+3,!1);break}}}else 2228227107===n.getUint32(0,!1)&&(e=n.getUint32(8,!1),i=n.getUint32(12,!1));return[e,i]},t.prototype.set=function(t){if(t.docxtemplater){this.docxtemplater=t.docxtemplater;var e=new r;e.set(t),this.modules.push(e);var i=new o({prefix:"%",getImage:this.getImage,getSize:this.getSize});i.set(t),this.modules.push(i)}},t.prototype.parse=function(t){return this.modules.forEach((function(e){e.parse(t)})),null},t.prototype.postparse=function(t,e){return this.modules.reduce((function(t,i){return i.postparse(t,e)}),t)},t.prototype.render=function(t,e){for(var i=0,n=this.modules;i<n.length;i++){var a=n[i].render(t,e);if(a)return a}return null},t.prototype.getTraits=function(t,e){for(var i=0,n=this.modules;i<n.length;i++){var a=n[i].getTraits(t,e);if(a)return a}},t.prototype.on=function(t,e){for(var i=0,n=this.modules;i<n.length;i++)n[i].on(t,e)},t.prototype.getRenderedMap=function(t){return this.modules.reduce((function(e,i){var n=i.getRenderedMap(t);return n?e.concat(n):e}),[])},t}();n=n.default,t.exports=n}({});
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://unpkg.com/docxtemplater-line-breaks-module@1.0.1/build/line-breaks-module.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('pathologyForm');
+            // --- INICIO: Lógica del Editor de Imágenes ---
+            const imageEditorSection = document.getElementById('imageEditorSection');
+
+            const imageEditorState = {
+                currentImageId: null,
+                originalImage: null,
+                processedImageDataUrl: null,
+                images: {
+                    '1': null, // Almacenará la dataURL de la imagen 1
+                    '2': null  // Almacenará la dataURL de la imagen 2
+                }
+            };
+
+            // Elementos del DOM del Editor
+            const cancelEditorBtn = document.getElementById('cancelEditorBtn'); // Corregido
+            const confirmEditorBtn = document.getElementById('confirmEditorBtn'); // Corregido
+            const fileInput = document.getElementById('fileInput');
+            const uploadArea = document.getElementById('uploadArea');
+            const originalCanvas = document.getElementById('originalCanvas');
+            const processedCanvas = document.getElementById('processedCanvas');
+            const autoEnhanceBtn = document.getElementById('autoEnhanceBtn');
+            const resetControlsBtn = document.getElementById('resetControlsBtn');
+            const processingIndicator = document.getElementById('processingIndicator');
+
+            const sliders = {
+                brightness: document.getElementById('brightness'),
+                contrast: document.getElementById('contrast'),
+                saturation: document.getElementById('saturation'),
+                sharpness: document.getElementById('sharpness')
+            };
+            const sliderValues = {
+                brightness: document.getElementById('brightnessValue'),
+                contrast: document.getElementById('contrastValue'),
+                saturation: document.getElementById('saturationValue'),
+                sharpness: document.getElementById('sharpnessValue')
+            };
+
+            function openImageEditor(imageId) {
+                imageEditorState.currentImageId = imageId;
+                imageEditorSection.classList.remove('hidden');
+                // Si ya hay una imagen, cargarla en el editor
+                if (imageEditorState.images[imageId]) {
+                    loadImageIntoEditor(imageEditorState.images[imageId]);
+                }
+                imageEditorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function closeImageEditor() {
+                imageEditorSection.classList.add('hidden');
+                resetEditorState();
+            }
+
+            function resetEditorState() {
+                imageEditorState.originalImage = null;
+                imageEditorState.processedImageDataUrl = null;
+                originalCanvas.getContext('2d').clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+                processedCanvas.getContext('2d').clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+                fileInput.value = '';
+                resetControls();
+            }
+
+            function confirmImageSelection() {
+                const imageId = imageEditorState.currentImageId;
+                if (imageEditorState.processedImageDataUrl) {
+                    imageEditorState.images[imageId] = imageEditorState.processedImageDataUrl;
+                    const preview = document.getElementById(`preview${imageId}`);
+                    preview.style.backgroundImage = `url(${imageEditorState.processedImageDataUrl})`;
+                    preview.parentElement.querySelector('.btn-remove-img').classList.remove('hidden');
+                }
+                closeImageEditor();
+                document.getElementById('pathologyForm').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function removeImage(imageId) {
+                imageEditorState.images[imageId] = null;
+                const preview = document.getElementById(`preview${imageId}`);
+                preview.style.backgroundImage = '';
+                preview.parentElement.querySelector('.btn-remove-img').classList.add('hidden');
+            }
+            
+            function handleRemoveImageClick(imageId) {
+                if (confirm('¿Está seguro de que desea eliminar esta imagen?')) removeImage(imageId);
+            }
+
+            document.querySelectorAll('.btn-edit-img').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const imageId = e.currentTarget.closest('.image-uploader').dataset.imageId;
+                    openImageEditor(imageId);
+                });
+            });
+
+            document.querySelectorAll('.btn-remove-img').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const imageId = e.currentTarget.closest('.image-uploader').dataset.imageId;
+                    handleRemoveImageClick(imageId);
+                });
+            });
+
+            cancelEditorBtn.addEventListener('click', closeImageEditor);
+            confirmEditorBtn.addEventListener('click', confirmImageSelection);
+
+            // Lógica de carga y procesamiento de FOTO.HTML adaptada
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => handleImageFile(e.target.files[0]));
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('highlight'); });
+            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('highlight'));
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('highlight');
+                handleImageFile(e.dataTransfer.files[0]);
+            });
+
+            function loadImageIntoEditor(src) {
+                processingIndicator.classList.remove('hidden');
+                const img = new Image();
+                img.onload = () => {
+                    imageEditorState.originalImage = img;
+                    displayImage(img, originalCanvas);
+                    applyAutoEnhancement();
+                    processingIndicator.classList.add('hidden');
+                };
+                img.onerror = () => {
+                    alert('Error al cargar la imagen.');
+                    processingIndicator.classList.add('hidden');
+                };
+                img.src = src;
+            }
+
+            function handleImageFile(file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => loadImageIntoEditor(e.target.result);
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function displayImage(img, canvas) {
+                const ctx = canvas.getContext('2d');
+                const MAX_WIDTH = 400;
+                const MAX_HEIGHT = 300;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+            }
+
+            function applyAutoEnhancement() {
+                if (!imageEditorState.originalImage) return;
+                processingIndicator.classList.remove('hidden');
+                setTimeout(() => {
+                    // Valores predeterminados para la mejora automática
+                    sliders.brightness.value = 10;
+                    sliders.contrast.value = 15;
+                    sliders.saturation.value = 10;
+                    sliders.sharpness.value = 20;
+                    updateSliderValues();
+                    applyAdjustments();
+                    processingIndicator.classList.add('hidden');
+                }, 50);
+            }
+
+            function applyAdjustments() {
+                if (!imageEditorState.originalImage) return;
+                const oCtx = originalCanvas.getContext('2d');
+                const pCtx = processedCanvas.getContext('2d');
+                processedCanvas.width = originalCanvas.width;
+                processedCanvas.height = originalCanvas.height;
+
+                pCtx.drawImage(imageEditorState.originalImage, 0, 0, processedCanvas.width, processedCanvas.height);
+                const imageData = pCtx.getImageData(0, 0, processedCanvas.width, processedCanvas.height);
+                const data = imageData.data;
+
+                const brightness = parseInt(sliders.brightness.value);
+                const contrast = parseInt(sliders.contrast.value);
+                const saturation = parseInt(sliders.saturation.value);
+
+                // Aplicar filtros
+                for (let i = 0; i < data.length; i += 4) {
+                    // Brillo y Contraste
+                    let r = data[i];
+                    let g = data[i+1];
+                    let b = data[i+2];
+
+                    r = r + brightness;
+                    g = g + brightness;
+                    b = b + brightness;
+
+                    const contrastFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+                    r = clamp(contrastFactor * (r - 128) + 128);
+                    g = clamp(contrastFactor * (g - 128) + 128);
+                    b = clamp(contrastFactor * (b - 128) + 128);
+
+                    // Saturación
+                    const gray = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+                    const sat = saturation / 100 + 1;
+                    data[i] = clamp(gray + sat * (r - gray));
+                    data[i+1] = clamp(gray + sat * (g - gray));
+                    data[i+2] = clamp(gray + sat * (b - gray));
+                }
+                
+                pCtx.putImageData(imageData, 0, 0);
+                imageEditorState.processedImageDataUrl = processedCanvas.toDataURL('image/jpeg', 0.9);
+            }
+            
+            function clamp(value) {
+                return Math.max(0, Math.min(255, value));
+            }
+
+            function updateSliderValues() {
+                for (const key in sliders) {
+                    sliderValues[key].textContent = sliders[key].value;
+                }
+            }
+
+            function resetControls() {
+                for (const key in sliders) {
+                    sliders[key].value = 0;
+                }
+                updateSliderValues();
+                if (imageEditorState.originalImage) applyAdjustments();
+            }
+
+            autoEnhanceBtn.addEventListener('click', applyAutoEnhancement);
+            resetControlsBtn.addEventListener('click', resetControls);
+            for (const key in sliders) {
+                sliders[key].addEventListener('input', () => {
+                    updateSliderValues();
+                    applyAdjustments();
+                });
+            }
+
+            // --- FIN: Lógica del Editor de Imágenes ---
+
+
+            const pathologyForm = document.getElementById('pathologyForm');
             const previewBtn = document.getElementById('previewBtn');
             const generateBtn = document.getElementById('generateBtn');
-            const closePreviewBtn = document.getElementById('closePreview');
-            const previewSection = document.getElementById('previewSection');
-            const previewContent = document.getElementById('previewContent');
             const loading = document.getElementById('loading');
             const successMessage = document.getElementById('successMessage');
 
             // Función para formatear fechas de YYYY-MM-DD a DD/MM/AAAA
             function formatDate(dateString) {
-                if (!dateString) return '';
-                const date = new Date(dateString);
-                const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const year = date.getFullYear();
+                if (!dateString || dateString.indexOf('-') === -1) return '';
+                // Usar split para evitar problemas de zona horaria (timezone)
+                const parts = dateString.split('-'); // YYYY-MM-DD
+                const year = parts[0];
+                const month = parts[1];
+                const day = parts[2];
                 return `${day}/${month}/${year}`;
             }
 
             // Función para validar campos obligatorios
             function validateForm() {
-                const requiredFields = form.querySelectorAll('[required]');
+                const requiredFields = pathologyForm.querySelectorAll('[required]');
                 let isValid = true;
+                let firstErrorField = null;
                 
                 requiredFields.forEach(field => {
                     if (!field.value.trim()) {
                         isValid = false;
                         field.classList.add('error');
+                        if (!firstErrorField) {
+                            firstErrorField = field;
+                        }
                     } else {
                         field.classList.remove('error');
                     }
                 });
+                
+                if (firstErrorField) {
+                    firstErrorField.focus();
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 
                 return isValid;
             }
 
             // Función para obtener los datos del formulario
             function getFormData() {
-                const formData = new FormData(form);
+                const formData = new FormData(pathologyForm);
                 const data = Object.fromEntries(formData.entries());
                 
                 // Formatear fechas
-                data.fecha_recepcion = formatDate(data.receptionDate);
-                data.fecha_informe = formatDate(data.reportDate);
+                const fecha_recepcion = formatDate(data.receptionDate);
+                const fecha_informe = formatDate(data.reportDate);
                 
                 return {
                     nombre: data.name,
@@ -170,11 +527,13 @@
                     edad: data.age,
                     ind: data.ind,
                     muestra: data.sample,
-                    fecha_recepcion: data.fecha_recepcion,
-                    fecha_informe: data.fecha_informe,
-                    examen_macroscopico: data.macroscopicExam,
-                    examen_microscopico: data.microscopicExam,
-                    diagnostico: data.diagnosis
+                    fecha_recepcion: fecha_recepcion,
+                    fecha_informe: fecha_informe,
+                    examen_macroscopico: data.macroscopicExam || '', // Enviar siempre una cadena
+                    examen_microscopico: data.microscopicExam || '', // Enviar siempre una cadena
+                    diagnostico: data.diagnosis || '', // Enviar siempre una cadena
+                    image1: imageEditorState.images['1'], // Enviar la dataURL completa para la preview
+                    image2: imageEditorState.images['2']  // Enviar la dataURL completa para la preview
                 };
             }
 
@@ -207,79 +566,72 @@
                 loading.classList.remove('hidden');
                 generateBtn.disabled = true;
                 
-                // Crear una plantilla básica en memoria si no se puede cargar una externa
-                const templateContent = `
-                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                    <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-                        <w:body>
-                            <w:p><w:r><w:t>INFORME DE ANATOMÍA PATOLÓGICA</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>NOMBRE: {nombre} . {codigo}</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>EDAD: {edad}</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>IND: {ind}</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>MUESTRA: {muestra}</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>FECHA RECEPCIÓN: {fecha_recepcion}   FECHA DE INFORME: {fecha_informe}</w:t></w:r></w:p>
-                            <w:p><w:r><w:t></w:t></w:r></w:p>
-                            {#examen_macroscopico}
-                            <w:p><w:r><w:t>EXAMEN MACROSCÓPICO</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>{examen_macroscopico}</w:t></w:r></w:p>
-                            <w:p><w:r><w:t></w:t></w:r></w:p>
-                            {/examen_macroscopico}
-                            {#examen_microscopico}
-                            <w:p><w:r><w:t>EXAMEN MICROSCÓPICO</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>{examen_microscopico}</w:t></w:r></w:p>
-                            <w:p><w:r><w:t></w:t></w:r></w:p>
-                            {/examen_microscopico}
-                            {#diagnostico}
-                            <w:p><w:r><w:t>DIAGNÓSTICO</w:t></w:r></w:p>
-                            <w:p><w:r><w:t>{diagnostico}</w:t></w:r></w:p>
-                            {/diagnostico}
-                        </w:body>
-                    </w:document>
-                `;
-                
-                try {
-                    // 1. Cargar la plantilla XML en una instancia de PizZip
-                    const zip = new window.PizZip(templateContent, { base64: false });
-                    
-                    // 2. Crear la instancia de docxtemplater con el zip y las opciones
-                    const doc = new window.docxtemplater(zip, {
-                        paragraphLoop: true,
-                        linebreaks: true,
-                        nullGetter: () => "",
-                    });
+                // Cargar la plantilla .docx
+                PizZipUtils.getBinaryContent("plantilla.docx", function(error, content) {
+                    if (error) {
+                        console.error('Error al cargar la plantilla:', error);
+                        alert('Error al cargar la plantilla del documento: ' + error.message);
+                        loading.classList.add('hidden');
+                        generateBtn.disabled = false;
+                        return;
+                    }
 
-                    // Renderizar el documento con los datos
-                    doc.render(data);
-                    
-                    // Generar el documento como blob
-                    const out = doc.getZip().generate({
-                        type: "blob",
-                        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    });
-                    
-                    // Descargar el documento
-                    saveAs(out, `${data.codigo} ${data.nombre}.docx`);
-                    
-                    // Mostrar mensaje de éxito
-                    successMessage.style.display = 'block';
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 3000);
-                    
-                } catch (error) {
-                    console.error('Error al generar el documento:', error);
-                    alert('Error al generar el documento: ' + error.message);
-                } finally {
-                    loading.classList.add('hidden');
-                    generateBtn.disabled = false;
-                }
+                    try {
+                        const zip = new PizZip(content);
+                        const imageModule = new ImageModule({
+                            centered: false,
+                            getImage: function(tagValue) {
+                                return base64Parser(tagValue);
+                            },
+                            getSize: function() {
+                                return [250, 188]; // Ancho y alto en píxeles
+                            }
+                        });
+                        const lineBreaksModule = new window.LineBreaksModule({
+                            delimiters: {
+                                start: '+++',
+                                end: '+++',
+                            }
+                        });
+                        const doc = new window.docxtemplater(zip, {
+                            modules: [lineBreaksModule, imageModule]
+                        });
+
+                        // Renderizar el documento con los datos
+                        const renderData = { ...data };
+                        renderData.image1 = data.image1 || false;
+                        renderData.image2 = data.image2 || false;
+                        doc.render(renderData);
+
+                        // Generar el documento como blob
+                        const out = doc.getZip().generate({
+                            type: "blob",
+                            mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        });
+
+                        // Descargar el documento
+                        saveAs(out, `${data.codigo} ${data.nombre}.docx`);
+
+                        // Mostrar mensaje de éxito
+                        successMessage.style.display = 'block';
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+
+                    } catch (error) {
+                        console.error('Error al generar el documento:', error);
+                        alert('Error al generar el documento: ' + error.message);
+                    } finally {
+                        loading.classList.add('hidden');
+                        generateBtn.disabled = false;
+                    }
+                });
             }
 
             // Función para limpiar el formulario
             function clearForm() {
-                form.reset();
-                previewSection.classList.add('hidden');
-                const requiredFields = form.querySelectorAll('[required]');
+                pathologyForm.reset();
+                const requiredFields = pathologyForm.querySelectorAll('[required]');
                 requiredFields.forEach(field => {
                     field.classList.remove('error');
                 });
@@ -287,31 +639,32 @@
                 setDefaultDates();
                 // Enfocar el primer campo
                 document.getElementById('code').focus();
+                // Limpiar imágenes
+                if (imageEditorState.images['1']) { removeImage('1'); }
+                if (imageEditorState.images['2']) { removeImage('2'); }
             }
 
             // Event Listeners
             const newDocBtn = document.getElementById('newDocBtn');
             previewBtn.addEventListener('click', generatePreview);
             generateBtn.addEventListener('click', generateWord);
-            closePreviewBtn.addEventListener('click', function() {
-                previewSection.classList.add('hidden');
-            });
             newDocBtn.addEventListener('click', clearForm);
             
             // Establecer fechas por defecto (hoy y dentro de 7 días)
-            const today = new Date();
-            const nextWeek = new Date();
-            nextWeek.setDate(today.getDate() + 7);
-            
             function setDefaultDates() {
-                document.getElementById('receptionDate').valueAsDate = today;
-                document.getElementById('reportDate').valueAsDate = nextWeek;
+                const today = new Date();
+                const nextWeek = new Date();
+                nextWeek.setDate(today.getDate() + 7);
+                
+                // Formatear a 'YYYY-MM-DD' para asignarlo al input type="date"
+                document.getElementById('receptionDate').value = today.toISOString().split('T')[0];
+                document.getElementById('reportDate').value = nextWeek.toISOString().split('T')[0];
             }
             
             setDefaultDates();
             
             // Validar campos en tiempo real
-            const requiredFields = form.querySelectorAll('[required]');
+            const requiredFields = pathologyForm.querySelectorAll('[required]');
             requiredFields.forEach(field => {
                 field.addEventListener('input', function() {
                     if (this.value.trim()) {

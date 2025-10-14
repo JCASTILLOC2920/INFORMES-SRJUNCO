@@ -66,6 +66,12 @@ textarea {
     resize: vertical;
 }
 
+input.error, textarea.error {
+    border-color: #e74c3c;
+    background-color: #fbeaea;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
 .required::after {
     content: " *";
     color: #e74c3c;
@@ -113,12 +119,6 @@ button:disabled {
     background: #e67e22;
 }
 
-.error {
-    color: #e74c3c;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
 .form-row {
     display: flex;
     flex-wrap: wrap;
@@ -135,7 +135,15 @@ button:disabled {
     }
 }
 
-
+/* Estilos para el cuadro de información */
+.info-box {
+    background-color: #eaf5ff;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 4px;
+    color: #2c3e50;
+}
 
 .loading {
     text-align: center;
@@ -159,4 +167,161 @@ button:disabled {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Estilos para el mensaje de éxito */
+.success-message {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #27ae60;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* --- Estilos para el cargador de imágenes --- */
+.image-uploader {
+    border: 2px dashed #bdc3c7;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.image-preview {
+    width: 160px;
+    height: 120px;
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #ddd;
+}
+
+.image-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-edit-img, .btn-remove-img {
+    background-color: #34495e;
+    padding: 8px 12px;
+    font-size: 14px;
+    width: 150px;
+    text-align: left;
+}
+
+.btn-remove-img {
+    background-color: #c0392b;
+}
+
+.btn-edit-img i, .btn-remove-img i {
+    margin-right: 8px;
+}
+
+.file-input { display: none; }
+
+.image-comparison {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.image-wrapper {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.image-wrapper h4 {
+    margin-bottom: 10px;
+    color: #34495e;
+}
+
+.image-wrapper canvas {
+    max-width: 100%;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* --- Estilos para la Sección del Editor de Imágenes --- */
+.editor-container {
+    display: grid;
+    grid-template-columns: 250px 1fr 250px;
+    gap: 20px;
+}
+
+.editor-controls .control-group {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.editor-controls h3 {
+    font-size: 1rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.slider-container {
+    margin-bottom: 10px;
+}
+.slider-container label {
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+}
+.slider-container input[type="range"] {
+    width: 100%;
+}
+
+.btn-control {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.editor-upload-section .upload-area {
+    border: 2px dashed #3498db;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f8fafc;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.editor-upload-section .upload-area:hover {
+    background-color: #eaf5ff;
+}
+
+.editor-upload-section .upload-area i {
+    font-size: 2.5rem;
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.editor-footer {
+    padding: 15px 25px;
+    margin-top: 20px;
+    text-align: right;
+    border-top: 1px solid #eee;
 }
