@@ -174,10 +174,6 @@
                         <label>Saturación <span id="saturationValue">0</span></label>
                         <input type="range" id="saturation" min="-100" max="100" value="0">
                     </div>
-                     <div class="slider-container">
-                        <label>Nitidez <span id="sharpnessValue">0</span></label>
-                        <input type="range" id="sharpness" min="0" max="100" value="0">
-                    </div>
                 </div>
             </div>
         </div>
@@ -218,9 +214,16 @@
         var ImageModule=function(t){"use strict";var e={};function i(t){var i=e[t];if(void 0!==i)return i.exports;var n=e[t]={exports:{}};return t.call(n.exports,n,n.exports,i),n.exports}i.d=function(t,e){for(var n in e)i.o(e,n)&&!i.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:e[n]})},i.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},i.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})};var n={};return i.r(n),i.d(n,{default:function(){return s}}),function(t){t.prototype.getCorruptCharacters=function(){return this.corruptCharacters.map((function(t){var e=t.i,i=t.char;return[e,i]}))}}(function(t){function e(e){this.name="CorruptZip",this.properties={id:e.id,zip:e.zip,xml:e.xml},this.message="Corrupt ".concat(e.id," :",e.message),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.CorruptZip=e}(n),function(t){function e(e){this.name="InternalError",this.properties={id:e.id},this.message=e.message,Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.InternalError=e}(n),function(t){function e(e){this.name="RenderingError",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="RenderingError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.RenderingError=e}(n),function(t){function e(e){this.name="XTTemplateError",this.properties={id:e.id},this.message="TemplateError ".concat(e.id," :",e.message),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTTemplateError=e}(n),function(t){function e(e){this.name="XTTemplateError",this.properties={id:e.id,explanation:e.explanation},this.message="TemplateError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTTemplateError=e}(n),function(t){function e(e){this.name="UnopenedTag",this.properties={id:e.id,xtag:e.xtag,lIndex:e.lIndex},this.message="Unopened tag ".concat(e.id," :",e.xtag),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.UnopenedTag=e}(n),function(t){function e(e){this.name="UnclosedTag",this.properties={id:e.id,xtag:e.xtag,lIndex:e.lIndex},this.message="Unclosed tag ".concat(e.id," :",e.xtag),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.UnclosedTag=e}(n),function(t){function e(e){this.name="ScopeParserError",this.properties={id:e.id,explanation:e.explanation},this.message="Scope parser error ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.ScopeParserError=e}(n),function(t){function e(e){this.name="XTAPIVersionError",this.properties={id:e.id,explanation:e.explanation},this.message="APIVersionError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTAPIVersionError=e}(n),function(t){function e(e){this.name="XTRenderingError",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="RenderingError ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTRenderingError=e}(n),function(t){function e(e){this.name="XTInternalError",this.properties={id:e.id},this.message="InternalError ".concat(e.id," :",e.message),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTInternalError=e}(n),function(t){function e(e){this.name="XTScopeParserError",this.properties={id:e.id,explanation:e.explanation,offset:e.offset,token:e.token},this.message="Scope parser error ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTScopeParserError=e}(n),function(t){function e(e){this.name="XTXMLTagNotFound",this.properties={id:e.id,explanation:e.explanation,xml:e.xml,offset:e.offset},this.message="XML tag not found ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTXMLTagNotFound=e}(n),function(t){function e(e){this.name="XTLoopNotAList",this.properties={id:e.id,explanation:e.explanation,scope:e.scope,value:e.value},this.message="Looping on a non-list ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTLoopNotAList=e}(n),function(t){function e(e){this.name="XTInvalidOperator",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="Invalid operator ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTInvalidOperator=e}(n),function(t){function e(e){this.name="XTDoubleContent",this.properties={id:e.id,explanation:e.explanation,scope:e.scope},this.message="Double content ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTDoubleContent=e}(n),function(t){function e(e){this.name="XTUnknownModule",this.properties={id:e.id,explanation:e.explanation,moduleName:e.moduleName},this.message="Unknown module ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTUnknownModule=e}(n),function(t){function e(e){this.name="XTNoHFS",this.properties={id:e.id,explanation:e.explanation},this.message="No HFS ".concat(e.id," :",e.explanation),Object.defineProperty(this,"stack",{get:function(){return e.stack}})}e.prototype=new Error,t.XTNoHFS=e}(n);var a={getImage:function(t,e){return this.files[t]},getImages:function(){return this.files},setImage:function(t,e){return this.files[t]=e}},r=function(){function t(){this.name="ImageModule",this.supportedFileTypes=["docx","pptx"],this.prefix=t.prefix,this.tag=t.tag,this.tagcentered=t.tagcentered,this.files=null,this.imgId=0}return t.prototype.clone=function(){return new t},t.prototype.set=function(t){t.Lexer&&this.Lexer=t.Lexer,t.zip&&this.zip=t.zip,t.xmlDocuments&&(this.xmlDocuments=t.xmlDocuments),t.templater&&(this.templater=t.templater),t.docxtemplater&&(this.docxtemplater=t.docxtemplater),t.doc&&this.set({docxtemplater:t.doc})},t.prototype.on=function(t){if("syncing-zip"===t)for(var e=this.docxtemplater.getzip(),i=e.file(/word\/media\//),n=0;n<i.length;n++){var a=i[n];this.templater.v4&&e.files[a.name]||(this.zip.file(a.name,a._data),this.docxtemplater.media[a.name.substr(11)]=a.name.substr(11))}},t.prototype.getTraits=function(t,e){if("image"===t){var i=e.part,n=i.lIndex,a=i.endLindex,r=i.raw;return{type:"image",tag:r,text:i.data,offset:n,offsetEnd:a,lIndex:n,endLindex:a,raw:r,part:i}}},t.prototype.getRenderedMap=function(t){var e=this;return t.map((function(t){return e.render(t)})).reduce((function(t,e){return e?t.concat(e):t}),[])},t.prototype.render=function(e){var i=this;if("image"!==e.type)return null;var n=e.part,a=e.tag,r=e.scope,o=this.templater.scopeManager.getValue(a,{scope:r});if(null==o)return[{type:"del",lIndex:e.lIndex,endLindex:e.endLindex}];var s=this.templater.imagePath;if("function"==typeof s&&(o=s(o)),!o)return[{type:"del",lIndex:e.lIndex,endLindex:e.endLindex}];var l=this.zip.file(new RegExp(o,"i"));if(!l||!l.length)throw new n.XTInternalError("Image not found : ".concat(o));var d=l[0].name,c=this.docxtemplater.media[d];c||(c=d,this.docxtemplater.media[d]=d);var u=this.docxtemplater.getNextImageName(),p=this.docxtemplater.getNextRelId(),h=this.docxtemplater.getNextDocPrId(),f=this.docxtemplater.getNextPicId(),m=this.docxtemplater.rId[c];m||(m=this.docxtemplater.rId[c]=p,this.docxtemplater.invertedRels[p]=c,this.docxtemplater.relsDoc.file("word/_rels/document.xml.rels",this.docxtemplater.relsDoc.getContent().replace("</Relationships>","<Relationship Id='".concat(p,"' Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/image' Target='").concat(c,"'/></Relationships>"))));var g=this.docxtemplater.files[this.docxtemplater.fileTypeConfig.textPath(this.docxtemplater)],v=g.indexOf(a);if(-1===v)return[{type:"del",lIndex:e.lIndex,endLindex:e.endLindex}];var x=g.substr(0,v).lastIndexOf("<w:drawing"),b=g.indexOf("</w:drawing>",v),w=g.substr(x,b-x+12),y=this.templater.functor(w,{scope:r,rId:m,imgName:u,docPrId:h,picId:f});return y=y.replace(/<w:drawing>/g,"").replace(/<\/w:drawing>/g,""),n.raw=y,n.data=y,this.templater.v4?{type:"replace",lIndex:e.lIndex,endLindex:e.endLindex,value:y,part:n}:(this.templater.rawCode=this.templater.rawCode.replace(a,y),setTimeout((function(){i.templater.parse(i.templater.rawCode.toString()),i.templater.render()}),0),null)},t.prototype.postparse=function(e,i){var n=this,a=i.basePart;return e.reduce((function(e,r){var o,s=r.value;if(r.type.indexOf("tag")!==-1&&r.tag==="w:t"&&s.indexOf(n.prefix)>-1){var l=s.replace(n.prefix,"");r.type="placeholder",r.value=l,a&&(a.value=a.value.replace(n.prefix,""),a.type="placeholder"),o=n.getTraits("image",{part:r})}else o=r;return e.push(o),e}),[])},t.prefix="image_",t.tag="%image",t.tagcentered="%%image",t}(),o=function(){function t(t){this.options=t||{},this.imgId=1,this.rId=this.v4?{}:{},this.options.centered=this.options.centered||!1,this.options.getImage=this.options.getImage||function(){throw new n.XTInternalError("getImage is not defined")},this.options.getSize=this.options.getSize||function(t,e,i){var n=i.part,a=n.module;if("string"==typeof t){var r=t.indexOf("x");if(-1!==r)return[parseInt(t.substr(0,r),10),parseInt(t.substr(r+1),10)]}return a.getNaturalSize(e)},this.imagePath=this.options.imagePath,this.centered=this.options.centered,this.getImage=this.options.getImage,this.getSize=this.options.getSize,this.imageExtensions=this.options.imageExtensions||[]}return t.prototype.getNaturalSize=function(t){var e,i,n=new DataView(t);if(65496===n.getUint16(0,!1)){for(var a=n.byteLength,r=2;r<a;){var o=n.getUint16(r,!1);if(r+=2,65505===o)r+=2;else{if(65280!==(65280&o))break;r+=n.getUint16(r,!1)-2}if(65472===o||65473===o||65474===o||65475===o||65476===o||65477===o||65478===o||65479===o){i=n.getUint16(r+1,!1),e=n.getUint16(r+3,!1);break}}}else 2228227107===n.getUint32(0,!1)&&(e=n.getUint32(8,!1),i=n.getUint32(12,!1));return[e,i]},t.prototype.set=function(t){t.Lexer&&this.Lexer=t.Lexer,t.zip&&this.zip=t.zip,t.xmlDocuments&&(this.xmlDocuments=t.xmlDocuments),t.templater&&(this.templater=t.templater),t.docxtemplater&&(this.docxtemplater=t.docxtemplater),t.doc&&this.set({docxtemplater:t.doc})},t.prototype.on=function(t){if("attached"===t){var e=this.docxtemplater.fileTypeConfig.tagsXmlFile;this.docxtemplater.v4||(this.docxtemplater.fileTypeConfig.tagsXmlFile="word/document.xml",this.docxtemplater.getTemplatedFiles(),this.docxtemplater.fileTypeConfig.tagsXmlFile=e),this.docxtemplater.v4?(this.docxtemplater.media=this.docxtemplater.zip.files.filter((function(t){return/^word\/media\//.test(t)})).map((function(t){return t.substr(11)})),this.docxtemplater.relsDoc=this.docxtemplater.zip.files.find((function(t){return"word/_rels/document.xml.rels"===t}))):this.docxtemplater.media={},this.docxtemplater.v4||(this.docxtemplater.relsDoc=this.xmlDocuments["word/_rels/document.xml.rels"]||this.xmlDocuments["ppt/slides/_rels/slide1.xml.rels"],this.docxtemplater.v4||(this.docxtemplater.relsDoc.content=this.docxtemplater.relsDoc.documentElement.outerHTML),this.docxtemplater.relsDoc.getContent=function(){return this.content}),this.docxtemplater.invertedRels=this.docxtemplater.v4?this.docxtemplater.invertedRels:{},this.docxtemplater.v4||(this.docxtemplater.rels=this.docxtemplater.relsDoc.getElementsByTagName("Relationship"));for(var i=0,a=this.docxtemplater.rels;i<a.length;i++){var r=a[i],o=r.getAttribute("Id");this.docxtemplater.invertedRels[o]=r.getAttribute("Target")}this.docxtemplater.getNextImageName=function(){var t;do{t="image".concat(this.imgId,".png"),this.imgId++}while(this.media[t]);return this.media[t]=!0,t},this.docxtemplater.getNextRelId=function(){var t;do{t="rId".concat(this.rId++)}while(this.invertedRels[t]);return this.invertedRels[t]=!0,t},this.docxtemplater.getNextDocPrId=function(){var t=this.docxtemplater.v4?this.docxtemplater.zip.files.reduce((function(t,e){var i=e.indexOf("<wp:docPr");if(-1!==i){var n=e.substr(i).indexOf('id="'),a=e.substr(i+n+4),r=a.indexOf('"');if(-1!==r){var o=a.substr(0,r);t.push(parseInt(o,10))}}return t}),[]):this.docxtemplater.getElementsByTagName("wp:docPr");if(this.docxtemplater.v4)return 1+Math.max.apply(null,[0].concat(t));for(var e=1,i=0;i<t.length;i++){var n=parseInt(t[i].getAttribute("id"),10);e=Math.max(e,n)}return e+1},this.docxtemplater.getNextPicId=function(){var t=this.docxtemplater.v4?this.docxtemplater.zip.files.reduce((function(t,e){var i=e.indexOf("<pic:pic");if(-1!==i){var n=e.substr(i).indexOf('id="'),a=e.substr(i+n+4),r=a.indexOf('"');if(-1!==r){var o=a.substr(0,r);t.push(parseInt(o,10))}}return t}),[]):this.docxtemplater.getElementsByTagName("pic:pic");if(this.docxtemplater.v4)return 1+Math.max.apply(null,[0].concat(t));for(var e=1,i=0;i<t.length;i++){var n=parseInt(t[i].getAttribute("id"),10);e=Math.max(e,n)}return e+1}}},t.prototype.getRenderedMap=function(t){var e=this;return t.map((function(t){return e.render(t)})).reduce((function(t,e){return e?t.concat(e):t}),[])},t.prototype.render=function(t){var e=this;if("placeholder"!==t.type||t.module)return null;var i=t.value,a=this.options.prefix;if(i.substr(0,a.length)!==a)return null;var r=i.substr(a.length),o=this.templater.scopeManager.getValue(r,{scope:t.scope});if(null==o)return[{type:"del",lIndex:t.lIndex,endLindex:t.endLindex}];var s,l,d=this.options.data,c=this.options.size;if("function"==typeof d&&(o=d(r)),"function"==typeof c&&(s=c(o,r,t)),!o)return[{type:"del",lIndex:t.lIndex,endLindex:t.endLindex}];if(this.templater.v4){var u=this.getImage(o,r);if(!u)throw new n.XTInternalError("Could not find image for tag ".concat(r));l=this.getSize(s,u,t)}else l=this.getSize(o);var p=this.docxtemplater.getNextImageName(),h=this.docxtemplater.getNextRelId(),f=this.docxtemplater.getNextDocPrId(),m=this.docxtemplater.getNextPicId();this.docxtemplater.zip.file("word/media/".concat(p),l[2],{base64:!0}),this.docxtemplater.relsDoc.file("word/_rels/document.xml.rels",this.docxtemplater.relsDoc.getContent().replace("</Relationships>","<Relationship Id='".concat(h,"' Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/image' Target='media/").concat(p,"'/></Relationships>")));var g=this.docxtemplater.v4?this.docxtemplater.fileTypeConfig.drawing(this.docxtemplater,p,h,f,m,l):this.docxtemplater.fileTypeConfig.drawing(this.docxtemplater,h,f,m,l),v=t.part,x=this.templater.v4?{type:"replace",lIndex:t.lIndex,endLindex:t.endLindex,value:g,part:v}:{type:"raw",value:g};return this.templater.v4?x:(setTimeout((function(){e.templater.render()}),0),x)},t.prototype.postparse=function(t,e){var i=this,n=e.basePart;return t.reduce((function(t,e){var a,r=e.value;if(e.type.indexOf("placeholder")!==-1&&r.indexOf(i.options.prefix)>-1){var o=r.replace(i.options.prefix,"");e.type="placeholder",e.value=o,n&&(n.value=n.value.replace(i.options.prefix,""),n.type="placeholder"),a=i.getTraits("image",{part:e})}else a=e;return t.push(a),t}),[])},t}(),s=function(){function t(e){this.name="ImageModule",this.options=e||{},this.supportedFileTypes=["docx","pptx"],this.imgId=0,this.options.centered=this.options.centered||!1,this.options.getImage=this.options.getImage||function(){throw new n.XTInternalError("getImage is not defined")},this.options.getSize=this.options.getSize||function(t,e,i){var n=i.part,a=n.module;if("string"==typeof t){var r=t.indexOf("x");if(-1!==r)return[parseInt(t.substr(0,r),10),parseInt(t.substr(r+1),10)]}return a.getNaturalSize(e)},this.imagePath=this.options.imagePath,this.centered=this.options.centered,this.getImage=this.options.getImage,this.getSize=this.options.getSize,this.imageExtensions=this.options.imageExtensions||[],this.modules=[]}return t.prototype.getNaturalSize=function(t){var e,i,n=new DataView(t);if(65496===n.getUint16(0,!1)){for(var a=n.byteLength,r=2;r<a;){var o=n.getUint16(r,!1);if(r+=2,65505===o)r+=2;else{if(65280!==(65280&o))break;r+=n.getUint16(r,!1)-2}if(65472===o||65473===o||65474===o||65475===o||65476===o||65477===o||65478===o||65479===o){i=n.getUint16(r+1,!1),e=n.getUint16(r+3,!1);break}}}else 2228227107===n.getUint32(0,!1)&&(e=n.getUint32(8,!1),i=n.getUint32(12,!1));return[e,i]},t.prototype.set=function(t){if(t.docxtemplater){this.docxtemplater=t.docxtemplater;var e=new r;e.set(t),this.modules.push(e);var i=new o({prefix:"%",getImage:this.getImage,getSize:this.getSize});i.set(t),this.modules.push(i)}},t.prototype.parse=function(t){return this.modules.forEach((function(e){e.parse(t)})),null},t.prototype.postparse=function(t,e){return this.modules.reduce((function(t,i){return i.postparse(t,e)}),t)},t.prototype.render=function(t,e){for(var i=0,n=this.modules;i<n.length;i++){var a=n[i].render(t,e);if(a)return a}return null},t.prototype.getTraits=function(t,e){for(var i=0,n=this.modules;i<n.length;i++){var a=n[i].getTraits(t,e);if(a)return a}},t.prototype.on=function(t,e){for(var i=0,n=this.modules;i<n.length;i++)n[i].on(t,e)},t.prototype.getRenderedMap=function(t){return this.modules.reduce((function(e,i){var n=i.getRenderedMap(t);return n?e.concat(n):e}),[])},t}();n=n.default,t.exports=n}({});
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://unpkg.com/docxtemplater-line-breaks-module@1.0.1/build/line-breaks-module.js"></script>
 
     <script>
+        const base64Parser = (dataURL) => {
+            const base64Regex = /^data:image\/(png|jpg|svg|svg\+xml);base64,/;
+            if (!base64Regex.test(dataURL)) {
+                return false;
+            }
+            return dataURL.replace(base64Regex, "");
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // --- INICIO: Lógica del Editor de Imágenes ---
             const imageEditorSection = document.getElementById('imageEditorSection');
@@ -249,14 +252,12 @@
             const sliders = {
                 brightness: document.getElementById('brightness'),
                 contrast: document.getElementById('contrast'),
-                saturation: document.getElementById('saturation'),
-                sharpness: document.getElementById('sharpness')
+                saturation: document.getElementById('saturation')
             };
             const sliderValues = {
                 brightness: document.getElementById('brightnessValue'),
                 contrast: document.getElementById('contrastValue'),
                 saturation: document.getElementById('saturationValue'),
-                sharpness: document.getElementById('sharpnessValue')
             };
 
             function openImageEditor(imageId) {
@@ -389,7 +390,6 @@
                     sliders.brightness.value = 10;
                     sliders.contrast.value = 15;
                     sliders.saturation.value = 10;
-                    sliders.sharpness.value = 20;
                     updateSliderValues();
                     applyAdjustments();
                     processingIndicator.classList.add('hidden');
@@ -567,65 +567,71 @@
                 generateBtn.disabled = true;
                 
                 // Cargar la plantilla .docx
-                PizZipUtils.getBinaryContent("plantilla.docx", function(error, content) {
-                    if (error) {
-                        console.error('Error al cargar la plantilla:', error);
-                        alert('Error al cargar la plantilla del documento: ' + error.message);
-                        loading.classList.add('hidden');
-                        generateBtn.disabled = false;
-                        return;
-                    }
+                try {
+                    PizZipUtils.getBinaryContent("plantilla.docx", function(error, content) {
+                        if (error) {
+                            console.error('Error al cargar la plantilla:', error);
+                            alert('Error al cargar la plantilla del documento: ' + error.message);
+                            loading.classList.add('hidden');
+                            generateBtn.disabled = false;
+                            return;
+                        }
 
-                    try {
-                        const zip = new PizZip(content);
-                        const imageModule = new ImageModule({
-                            centered: false,
-                            getImage: function(tagValue) {
-                                return base64Parser(tagValue);
-                            },
-                            getSize: function() {
-                                return [250, 188]; // Ancho y alto en píxeles
-                            }
-                        });
-                        const lineBreaksModule = new window.LineBreaksModule({
-                            delimiters: {
-                                start: '+++',
-                                end: '+++',
-                            }
-                        });
-                        const doc = new window.docxtemplater(zip, {
-                            modules: [lineBreaksModule, imageModule]
-                        });
+                        try {
+                            const zip = new PizZip(content);
+                            const imageModule = new window.ImageModule({
+                                centered: false,
+                                getImage: function(tagValue) {
+                                    // Tu sugerencia implementada: Manejo seguro del valor de la imagen.
+                                    // Si tagValue no es una dataURL válida, no se procesa.
+                                    if (tagValue && typeof tagValue === 'string' && tagValue.startsWith('data:image')) {
+                                        return base64Parser(tagValue);
+                                    }
+                                    return null; // Devolver null si no hay imagen válida
+                                },
+                                getSize: function() {
+                                    return [250, 188]; // Ancho y alto en píxeles
+                                }
+                            });
 
-                        // Renderizar el documento con los datos
-                        const renderData = { ...data };
-                        renderData.image1 = data.image1 || false;
-                        renderData.image2 = data.image2 || false;
-                        doc.render(renderData);
+                            const doc = new docxtemplater(zip, {
+                                paragraphLoop: true,
+                                linebreaks: true,
+                                modules: [imageModule] // Se integra el módulo de forma segura
+                            });
 
-                        // Generar el documento como blob
-                        const out = doc.getZip().generate({
-                            type: "blob",
-                            mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        });
+                            // Renderizar el documento con los datos
+                            doc.render(data);
 
-                        // Descargar el documento
-                        saveAs(out, `${data.codigo} ${data.nombre}.docx`);
+                            // Generar el documento como blob
+                            const out = doc.getZip().generate({
+                                type: "blob",
+                                mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            });
 
-                        // Mostrar mensaje de éxito
-                        successMessage.style.display = 'block';
-                        setTimeout(() => {
-                            successMessage.style.display = 'none';
-                        }, 3000);
+                            // Descargar el documento
+                            saveAs(out, `${data.codigo}_${data.nombre}.docx`);
 
-                    } catch (error) {
-                        console.error('Error al generar el documento:', error);
-                        alert('Error al generar el documento: ' + error.message);
-                    } finally {
-                        loading.classList.add('hidden');
-                        generateBtn.disabled = false;
-                    }
-                });
+                            // Mostrar mensaje de éxito
+                            successMessage.style.display = 'block';
+                            setTimeout(() => {
+                                successMessage.style.display = 'none';
+                            }, 3000);
+
+                        } catch (renderError) {
+                            console.error('Error al renderizar el documento:', renderError);
+                            alert('Error al generar el documento: ' + renderError.message);
+                        } finally {
+                            loading.classList.add('hidden');
+                            generateBtn.disabled = false;
+                        }
+                    });
+                } catch (globalError) {
+                    console.error('Error global en generateWord:', globalError);
+                    alert('Ha ocurrido un error inesperado: ' + globalError.message);
+                    loading.classList.add('hidden');
+                    generateBtn.disabled = false;
+                }
             }
 
             // Función para limpiar el formulario
