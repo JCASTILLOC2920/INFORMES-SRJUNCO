@@ -3,542 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Informes de Anatomía Patológica</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
+    <title>JC PATH LAB - Generador de Informes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Dependencies for Word Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.7/pizzip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.49.1/docxtemplater.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        .medical-blue {
+            background-color: #0c4a6e;
         }
-        
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 25px;
-            text-align: center;
+        .medical-text {
+            color: #0c4a6e;
         }
-        
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        header p {
-            opacity: 0.9;
-        }
-        
-        .form-container {
-            padding: 30px;
-        }
-        
-        .form-section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .form-section h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 22px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border 0.3s;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        
         textarea {
-            min-height: 120px;
             resize: vertical;
-        }
-        
-        .btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-weight: 600;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-clear {
-            background-color: #e74c3c;
-        }
-        
-        .btn-clear:hover {
-            background-color: #c0392b;
-        }
-        
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px;
-        }
-        
-        .col {
-            flex: 1;
-            padding: 0 10px;
-            min-width: 250px;
-        }
-        
-        .preview-section {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-            margin-top: 30px;
-            display: none;
-        }
-        
-        .preview-section h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-        
-        .image-upload {
-            border: 2px dashed #ddd;
-            padding: 20px;
-            text-align: center;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-        
-        .image-upload:hover {
-            border-color: #3498db;
-        }
-        
-        .image-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .image-preview-item {
-            width: 150px;
-            height: 100px;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .image-preview-item .remove {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .image-upload-text {
-            color: #7f8c8d;
-            margin-bottom: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .row {
-                flex-direction: column;
-            }
-            
-            .col {
-                width: 100%;
-            }
-            
-            .btn {
-                width: 100%;
-                margin-right: 0;
-            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Generador de Informes de Anatomía Patológica</h1>
-            <p>Complete el formulario para generar un informe en formato Word</p>
-        </header>
-        
-        <div class="form-container">
-            <form id="informeForm">
-                <div class="form-section">
-                    <h2>Datos del Paciente</h2>
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="nombre">Nombre del Paciente</label>
-                                <input type="text" id="nombre" name="nombre" required>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="codigo">Código</label>
-                                <input type="text" id="codigo" name="codigo" required>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="edad">Edad</label>
-                                <input type="text" id="edad" name="edad" required>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="ind">IND</label>
-                                <input type="text" id="ind" name="ind" required>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="muestra">Muestra</label>
-                                <input type="text" id="muestra" name="muestra" required>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="fecha_recepcion">Fecha de Recepción</label>
-                                <input type="date" id="fecha_recepcion" name="fecha_recepcion" required>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="fecha_informe">Fecha de Informe</label>
-                        <input type="date" id="fecha_informe" name="fecha_informe" required>
-                    </div>
+<body class="min-h-screen pb-12">
+
+    <!-- Header -->
+    <header class="medical-blue text-white py-6 shadow-lg mb-8">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
                 </div>
-                
-                <div class="form-section">
-                    <h2>Examen Macroscópico</h2>
-                    <div class="form-group">
-                        <label for="examen_macroscopico">Descripción del Examen Macroscópico</label>
-                        <textarea id="examen_macroscopico" name="examen_macroscopico" required></textarea>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h2>Examen Microscópico</h2>
-                    <div class="form-group">
-                        <label for="examen_microscopico">Descripción del Examen Microscópico</label>
-                        <textarea id="examen_microscopico" name="examen_microscopico" required></textarea>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h2>Diagnóstico</h2>
-                    <div class="form-group">
-                        <label for="diagnostico">Diagnóstico</label>
-                        <textarea id="diagnostico" name="diagnostico" required></textarea>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h2>Imágenes del Informe</h2>
-                    <p class="image-upload-text">Puede agregar imágenes que se incluirán en el informe (opcional)</p>
-                    
-                    <div class="image-upload" id="imageUpload">
-                        <p>Haga clic aquí o arrastre imágenes para agregarlas</p>
-                        <input type="file" id="imageInput" accept="image/*" multiple style="display: none;">
-                    </div>
-                    
-                    <div class="image-preview" id="imagePreview"></div>
-                </div>
-                
-                <div class="button-group">
-                    <button type="button" id="generarBtn" class="btn">Generar Informe en Word</button>
-                    <button type="button" id="limpiarBtn" class="btn btn-clear">Limpiar Formulario</button>
-                </div>
-            </form>
-            
-            <div class="preview-section" id="previewSection">
-                <h3>Vista Previa del Nombre del Archivo</h3>
-                <p id="fileNamePreview"></p>
+                <h1 class="text-3xl font-bold tracking-tight">JC PATH LAB</h1>
+            </div>
+            <p class="text-blue-100 font-medium mt-2 md:mt-0 italic">Sistema de Gestión de Informes Anatomopatológicos</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 max-w-5xl">
+        <!-- Notification Area -->
+        <div id="alert-container" class="hidden mb-6">
+            <div id="alert-box" class="flex items-center p-4 rounded-lg border">
+                <div id="alert-icon" class="flex-shrink-0 mr-3"></div>
+                <div id="alert-message" class="text-sm font-medium"></div>
+                <button onclick="hideAlert()" class="ml-auto bg-transparent text-gray-400 hover:text-gray-900 rounded-lg p-1.5 inline-flex items-center">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
             </div>
         </div>
-    </div>
+
+        <form id="report-form" class="bg-white rounded-xl shadow-md overflow-hidden animate-fade-in transition-all duration-300">
+            <div class="p-6 md:p-8 space-y-8">
+                
+                <!-- Patient Data Section -->
+                <section>
+                    <div class="flex items-center space-x-2 border-b-2 border-blue-50 pb-2 mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 medical-text" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                        <h2 class="text-xl font-semibold text-gray-800 uppercase tracking-wide">Datos del Paciente</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2">
+                            <label for="patientName" class="block text-sm font-bold text-gray-700 mb-1">Nombre del Paciente <span class="text-red-500">*</span></label>
+                            <input type="text" id="patientName" name="patientName" placeholder="Ej. Juan Pérez" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label for="age" class="block text-sm font-bold text-gray-700 mb-1">Edad</label>
+                            <input type="number" id="age" name="age" placeholder="0" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label for="patientId" class="block text-sm font-bold text-gray-700 mb-1">ID / Código <span class="text-red-500">*</span></label>
+                            <input type="text" id="patientId" name="patientId" placeholder="Ej. B-2024-001" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label for="receptionDate" class="block text-sm font-bold text-gray-700 mb-1">Fecha de Recepción</label>
+                            <input type="date" id="receptionDate" name="receptionDate" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label for="reportDate" class="block text-sm font-bold text-gray-700 mb-1">Fecha de Informe</label>
+                            <input type="date" id="reportDate" name="reportDate" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Medical Examination Details -->
+                <section>
+                    <div class="flex items-center space-x-2 border-b-2 border-blue-50 pb-2 mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 medical-text" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                        </svg>
+                        <h2 class="text-xl font-semibold text-gray-800 uppercase tracking-wide">Hallazgos Médicos</h2>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="macroscopy" class="block text-sm font-bold text-gray-700 mb-2">Examen Macroscópico</label>
+                            <textarea id="macroscopy" name="macroscopy" rows="5" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none min-h-[120px] w-full" placeholder="Describa el aspecto macroscópico de la muestra..."></textarea>
+                        </div>
+                        <div>
+                            <label for="microscopy" class="block text-sm font-bold text-gray-700 mb-2">Examen Microscópico</label>
+                            <textarea id="microscopy" name="microscopy" rows="7" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none min-h-[150px] w-full" placeholder="Describa los hallazgos microscópicos..."></textarea>
+                        </div>
+                        <div>
+                            <label for="diagnosis" class="block text-sm font-bold text-gray-700 mb-2">Diagnóstico</label>
+                            <textarea id="diagnosis" name="diagnosis" rows="4" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none min-h-[100px] w-full" placeholder="Conclusión diagnóstica definitiva..."></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Template Upload -->
+                <section class="bg-blue-50 p-6 rounded-xl border-2 border-dashed border-blue-200">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <h2 class="text-lg font-bold text-blue-800">Cargar Plantilla (.docx) <span class="text-red-600">*</span></h2>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="file" id="templateFile" accept=".docx" class="hidden">
+                        <label for="templateFile" class="cursor-pointer bg-white px-6 py-3 border-2 border-blue-400 text-blue-600 rounded-lg font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            <span>Seleccionar Archivo .docx</span>
+                        </label>
+                        <p id="fileName" class="mt-3 text-sm text-gray-600 font-medium italic">No se ha seleccionado ningún archivo.</p>
+                        <p class="text-xs text-blue-400 mt-2">La plantilla debe contener variables como {patientName}, {age}, {patientId}, {macroscopy}, etc.</p>
+                    </div>
+                </section>
+
+                <!-- Actions -->
+                <div class="pt-4 flex flex-col md:flex-row gap-4">
+                    <button type="submit" id="generateBtn" class="flex-grow medical-blue hover:bg-blue-900 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex justify-center items-center space-x-2">
+                        <span id="btnText">Generar Informe Word</span>
+                        <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </button>
+                    <button type="button" id="clearBtn" class="md:w-1/4 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-8 rounded-xl transition-all flex justify-center items-center space-x-2">
+                        <span>Limpiar</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-8 py-4 border-t border-gray-100 italic text-xs text-gray-400 text-center">
+                JC PATH LAB &copy; 2024 - Herramienta de automatización interna para patólogos.
+            </div>
+        </form>
+    </main>
 
     <script>
-        // Variables para almacenar las imágenes
-        let uploadedImages = [];
-        
-        // Configurar el área de carga de imágenes
-        const imageUpload = document.getElementById('imageUpload');
-        const imageInput = document.getElementById('imageInput');
-        const imagePreview = document.getElementById('imagePreview');
-        
-        imageUpload.addEventListener('click', () => {
-            imageInput.click();
-        });
-        
-        imageUpload.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            imageUpload.style.borderColor = '#3498db';
-        });
-        
-        imageUpload.addEventListener('dragleave', () => {
-            imageUpload.style.borderColor = '#ddd';
-        });
-        
-        imageUpload.addEventListener('drop', (e) => {
-            e.preventDefault();
-            imageUpload.style.borderColor = '#ddd';
-            
-            const files = e.dataTransfer.files;
-            handleImageFiles(files);
-        });
-        
-        imageInput.addEventListener('change', (e) => {
-            const files = e.target.files;
-            handleImageFiles(files);
-        });
-        
-        function handleImageFiles(files) {
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = (e) => {
-                        const imageData = {
-                            name: file.name,
-                            data: e.target.result
-                        };
-                        
-                        uploadedImages.push(imageData);
-                        updateImagePreview();
-                    };
-                    
-                    reader.readAsDataURL(file);
-                }
+        const form = document.getElementById('report-form');
+        const templateInput = document.getElementById('templateFile');
+        const fileNameDisplay = document.getElementById('fileName');
+        const generateBtn = document.getElementById('generateBtn');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const clearBtn = document.getElementById('clearBtn');
+        const alertContainer = document.getElementById('alert-container');
+        const alertBox = document.getElementById('alert-box');
+        const alertMessage = document.getElementById('alert-message');
+        const alertIcon = document.getElementById('alert-icon');
+
+        // Handle file select aesthetics
+        templateInput.addEventListener('change', function(e) {
+            if (this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = `Seleccionado: ${this.files[0].name}`;
+                fileNameDisplay.classList.remove('text-gray-600');
+                fileNameDisplay.classList.add('text-green-600', 'font-bold');
+            } else {
+                fileNameDisplay.textContent = 'No se ha seleccionado ningún archivo.';
+                fileNameDisplay.classList.remove('text-green-600', 'font-bold');
+                fileNameDisplay.classList.add('text-gray-600');
             }
-        }
-        
-        function updateImagePreview() {
-            imagePreview.innerHTML = '';
+        });
+
+        function showAlert(message, type = 'error') {
+            alertContainer.classList.remove('hidden');
+            alertMessage.textContent = message;
             
-            uploadedImages.forEach((image, index) => {
-                const previewItem = document.createElement('div');
-                previewItem.className = 'image-preview-item';
-                
-                const img = document.createElement('img');
-                img.src = image.data;
-                
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'remove';
-                removeBtn.innerHTML = '×';
-                removeBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    uploadedImages.splice(index, 1);
-                    updateImagePreview();
-                });
-                
-                previewItem.appendChild(img);
-                previewItem.appendChild(removeBtn);
-                imagePreview.appendChild(previewItem);
-            });
+            if (type === 'error') {
+                alertBox.className = 'flex items-center p-4 rounded-lg border bg-red-50 border-red-200 text-red-800 animate-bounce-short';
+                alertIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>`;
+            } else {
+                alertBox.className = 'flex items-center p-4 rounded-lg border bg-blue-50 border-blue-200 text-blue-800';
+                alertIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>`;
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
-        // Función para generar el documento Word
-        document.getElementById('generarBtn').addEventListener('click', async function() {
+
+        function hideAlert() {
+            alertContainer.classList.add('hidden');
+        }
+
+        // Clear Form Logic
+        clearBtn.addEventListener('click', () => {
+            const inputs = form.querySelectorAll('input:not([type="file"]), textarea');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+            hideAlert();
+            // We keep the templateLoaded to avoid uploading it again as requested
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const patientName = document.getElementById('patientName').value.trim();
+            const patientId = document.getElementById('patientId').value.trim();
+
+            // Validations
+            if (!patientName) return showAlert('El Nombre del Paciente es obligatorio.');
+            if (!patientId) return showAlert('El ID / Código es obligatorio.');
+
+            // Start Loading State
+            generateBtn.disabled = true;
+            btnText.textContent = 'Generando...';
+            generateBtn.classList.add('opacity-75', 'cursor-wait');
+
             try {
-            // Obtener los valores del formulario
-            const nombre = document.getElementById('nombre').value;
-            const codigo = document.getElementById('codigo').value.trim();
-            const edad = document.getElementById('edad').value;
-            const ind = document.getElementById('ind').value;
-            const muestra = document.getElementById('muestra').value;
-            const fechaRecepcion = document.getElementById('fecha_recepcion').value;
-            const fechaInforme = document.getElementById('fecha_informe').value;
-            const examenMacroscopico = document.getElementById('examen_macroscopico').value;
-            const examenMicroscopico = document.getElementById('examen_microscopico').value;
-            const diagnostico = document.getElementById('diagnostico').value;
-            
-            // Validar que todos los campos estén completos
-            if (!nombre || !codigo || !edad || !ind || !muestra || !fechaRecepcion || !fechaInforme || 
-                !examenMacroscopico || !examenMicroscopico || !diagnostico) { // Corregido para usar las variables correctas
-                alert('Por favor, complete todos los campos del formulario.');
-                return;
-            }
-            
-            // Formatear fechas (corregido para evitar problemas de zona horaria)
-            const fechaRecepcionObj = new Date(fechaRecepcion + 'T00:00:00');
-            const fechaInformeObj = new Date(fechaInforme + 'T00:00:00');
-            const fechaRecepcionFormateada = fechaRecepcionObj.toLocaleDateString('es-ES');
-            const fechaInformeFormateada = fechaInformeObj.toLocaleDateString('es-ES');
+                // Aquí definimos el nombre exacto de tu archivo Word que está junto al index.html
+                const templateName = 'plantilla.docx'; 
+                
+                // Usamos fetch para obtener el archivo automáticamente
+                const response = await fetch(templateName);
+                if (!response.ok) {
+                    throw new Error(`No se pudo encontrar el archivo ${templateName}`);
+                }
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const zip = new PizZip(arrayBuffer);
+                
+                // Inicializar docxtemplater
+                const doc = new window.docxtemplater(zip, {
+                    linebreaks: true,
+                    paragraphLoop: true,
+                });
 
-            const { Paragraph, TextRun, Document, Packer, ImageRun } = docx;
-            const { Paragraph, TextRun, Document, Packer, ImageRun, AlignmentType, HeadingLevel, UnderlineType } = docx;
+                // Obtener datos del formulario
+                const data = {
+                    patientName: patientName,
+                    age: document.getElementById('age').value || '--',
+                    patientId: patientId,
+                    receptionDate: document.getElementById('receptionDate').value || '--',
+                    reportDate: document.getElementById('reportDate').value || '--',
+                    macroscopy: document.getElementById('macroscopy').value || 'No se registraron hallazgos.',
+                    microscopy: document.getElementById('microscopy').value || 'No se registraron hallazgos.',
+                    diagnosis: document.getElementById('diagnosis').value || 'Pendiente.'
+                };
 
-            const imageParagraphs = [];
-            for (const image of uploadedImages) {
-                // La librería necesita el buffer de la imagen, no el data URL completo
-                const response = await fetch(image.data);
-                const blob = await response.blob();
-                const buffer = await blob.arrayBuffer();
+                // Renderizar el documento con las variables
+                doc.render(data);
 
-                imageParagraphs.push(
-                    new Paragraph({
-                        children: [
-                            new ImageRun({
-                                data: buffer,
-                                transformation: {
-                                    width: 500, // Ancho en píxeles
-                                    height: 350, // Alto en píxeles
-                                },
-                            }),
-                        ],
-                    })
-                );
-            }
+                // Generar el archivo final
+                const out = doc.getZip().generate({
+                    type: "blob",
+                    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                });
 
-            const doc = new Document({
-                sections: [{
-                    children: [
-                        new Paragraph({ text: "INFORME DE ANATOMÍA PATOLÓGICA", heading: "Heading1", alignment: "center" }),
-                        new Paragraph({ 
-                            text: "INFORME DE ANATOMÍA PATOLÓGICA", 
-                            heading: HeadingLevel.HEADING_1, 
-                            alignment: AlignmentType.CENTER 
-                        }),
-                        new Paragraph({ text: "" }), // Espacio
-                        new Paragraph({
-                            children: [
-                                new TextRun({ text: "NOMBRE: ", bold: true }),
-                                new TextRun({ text: `${nombre} . ${codigo}`, bold: true }),
-                            ],
-                        }),
-                        new Paragraph({
-                            children: [ new TextRun({ text: "EDAD: ", bold: true }), new TextRun({ text: edad, bold: true }) ],
-                        }),
-                        new Paragraph({
-                            children: [ new TextRun({ text: "IND: ", bold: true }), new TextRun({ text: ind, bold: true }) ],
-                        }),
-                        new Paragraph({
-                            children: [ new TextRun({ text: "MUESTRA: ", bold: true }), new TextRun({ text: muestra, bold: true }) ],
-                        }),
-                        new Paragraph({
-                            children: [
-                                new TextRun({ text: "FECHA RECEPCIÓN: ", bold: true }),
-                                new TextRun({ text: `${fechaRecepcionFormateada}   `, bold: true }),
-                                new TextRun({ text: "FECHA DE INFORME: ", bold: true }),
-                                new TextRun({ text: fechaInformeFormateada, bold: true }),
-                            ],
-                        }),
-                        new Paragraph({ text: "" }), // Espacio
-                        new Paragraph({ text: "EXAMEN MACROSCÓPICO", bold: true, underline: true }),
-                        new Paragraph({ text: "EXAMEN MACROSCÓPICO", bold: true, underline: { type: UnderlineType.SINGLE } }),
-                        new Paragraph({ text: examenMacroscopico }),
-                        new Paragraph({ text: "" }), // Espacio
-                        new Paragraph({ text: "EXAMEN MICROSCÓPICO", bold: true, underline: true }),
-                        new Paragraph({ text: "EXAMEN MICROSCÓPICO", bold: true, underline: { type: UnderlineType.SINGLE } }),
-                        new Paragraph({ text: examenMicroscopico }),
-                        new Paragraph({ text: "" }), // Espacio
-                        new Paragraph({ text: "DIAGNÓSTICO", bold: true, underline: true }),
-                        new Paragraph({ text: "DIAGNÓSTICO", bold: true, underline: { type: UnderlineType.SINGLE } }),
-                        new Paragraph({ text: diagnostico }),
-                        ...imageParagraphs // Añadir las imágenes al final
-                    ],
-                }],
-            });
+                // Guardar el archivo en la computadora
+                const fileName = `Informe_${patientName.replace(/\s+/g, '_')}.docx`;
+                saveAs(out, fileName);
 
-            // Generar el archivo .docx y descargarlo
-            Packer.toBlob(doc).then(blob => {
-                const fileName = `${codigo}${nombre.replace(/ /g, '_')}.docx`;
-                saveAs(blob, fileName);
-            });
-            
-            // Mostrar vista previa del nombre del archivo
-            document.getElementById('fileNamePreview').textContent = `${codigo}${nombre}.docx`;
-            document.getElementById('previewSection').style.display = 'block';
-            } catch (error) {
-                console.error("Error al generar el documento:", error);
-                alert("Ocurrió un error inesperado al generar el documento. Por favor, revise la consola para más detalles.");
+                resetBtn();
+
+            } catch (err) {
+                console.error(err);
+                showAlert('Error: Asegúrate de que "plantilla.docx" esté en la misma carpeta y estés usando un servidor web.');
+                resetBtn();
             }
         });
-        
-        // Función para limpiar el formulario
-        document.getElementById('limpiarBtn').addEventListener('click', function() {
-            document.getElementById('informeForm').reset();
-            uploadedImages = [];
-            updateImagePreview();
-            document.getElementById('previewSection').style.display = 'none';
-        });
-        
-        // Inicializar la fecha de recepción y fecha de informe con la fecha actual
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('fecha_recepcion').value = today;
-        document.getElementById('fecha_informe').value = today;
+
+        function resetBtn() {
+            setTimeout(() => {
+                generateBtn.disabled = false;
+                btnText.textContent = 'Generar Informe Word';
+                generateBtn.classList.remove('opacity-75', 'cursor-wait');
+            }, 1000);
+        }
     </script>
+    
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-bounce-short {
+            animation: bounceShort 0.5s ease-in-out;
+        }
+        @keyframes bounceShort {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
 </body>
 </html>
