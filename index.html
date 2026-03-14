@@ -248,7 +248,7 @@
 
             } catch (error) {
                 console.error(error);
-                showAlert('Error: Asegúrate de que "plantilla.docx" esté subida al repositorio y estés usando la ruta correcta.');
+                showAlert('Error del sistema: ' + (error.message || error));
             } finally {
                 resetBtn();
             }
