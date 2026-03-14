@@ -90,6 +90,14 @@
                             <label for="reportDate" class="block text-sm font-bold text-gray-700 mb-1">Fecha de Informe</label>
                             <input type="date" id="reportDate" name="reportDate" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
                         </div>
+                        <div>
+                            <label for="indName" class="block text-sm font-bold text-gray-700 mb-1">Médico que indica (IND)</label>
+                            <input type="text" id="indName" name="indName" placeholder="Ej. Dr. Smith" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label for="sampleType" class="block text-sm font-bold text-gray-700 mb-1">Muestra</label>
+                            <input type="text" id="sampleType" name="sampleType" placeholder="Ej. Biopsia gástrica" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
                     </div>
                 </section>
 
@@ -118,26 +126,6 @@
                     </div>
                 </section>
 
-                <!-- Template Upload -->
-                <section class="bg-blue-50 p-6 rounded-xl border-2 border-dashed border-blue-200">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        <h2 class="text-lg font-bold text-blue-800">Cargar Plantilla (.docx) <span class="text-red-600">*</span></h2>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <input type="file" id="templateFile" accept=".docx" class="hidden">
-                        <label for="templateFile" class="cursor-pointer bg-white px-6 py-3 border-2 border-blue-400 text-blue-600 rounded-lg font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            <span>Seleccionar Archivo .docx</span>
-                        </label>
-                        <p id="fileName" class="mt-3 text-sm text-gray-600 font-medium italic">No se ha seleccionado ningún archivo.</p>
-                        <p class="text-xs text-blue-400 mt-2">La plantilla debe contener variables como {patientName}, {age}, {patientId}, {macroscopy}, etc.</p>
-                    </div>
-                </section>
 
                 <!-- Actions -->
                 <div class="pt-4 flex flex-col md:flex-row gap-4">
@@ -163,8 +151,6 @@
 
     <script>
         const form = document.getElementById('report-form');
-        const templateInput = document.getElementById('templateFile');
-        const fileNameDisplay = document.getElementById('fileName');
         const generateBtn = document.getElementById('generateBtn');
         const btnText = document.getElementById('btnText');
         const btnIcon = document.getElementById('btnIcon');
@@ -173,19 +159,6 @@
         const alertBox = document.getElementById('alert-box');
         const alertMessage = document.getElementById('alert-message');
         const alertIcon = document.getElementById('alert-icon');
-
-        // Handle file select aesthetics
-        templateInput.addEventListener('change', function(e) {
-            if (this.files && this.files.length > 0) {
-                fileNameDisplay.textContent = `Seleccionado: ${this.files[0].name}`;
-                fileNameDisplay.classList.remove('text-gray-600');
-                fileNameDisplay.classList.add('text-green-600', 'font-bold');
-            } else {
-                fileNameDisplay.textContent = 'No se ha seleccionado ningún archivo.';
-                fileNameDisplay.classList.remove('text-green-600', 'font-bold');
-                fileNameDisplay.classList.add('text-gray-600');
-            }
-        });
 
         function showAlert(message, type = 'error') {
             alertContainer.classList.remove('hidden');
@@ -233,15 +206,11 @@
             generateBtn.classList.add('opacity-75', 'cursor-wait');
 
             try {
-                // Aquí definimos el nombre exacto de tu archivo Word que está junto al index.html
-                const templateName = 'plantilla.docx'; 
-                
-                // Usamos fetch para obtener el archivo automáticamente
-                const response = await fetch(templateName);
+                // Obtener la plantilla localmente usando fetch
+                const response = await fetch('./plantilla.docx');
                 if (!response.ok) {
-                    throw new Error(`No se pudo encontrar el archivo ${templateName}`);
+                    throw new Error('No se pudo cargar la plantilla local.');
                 }
-                
                 const arrayBuffer = await response.arrayBuffer();
                 const zip = new PizZip(arrayBuffer);
                 
@@ -258,29 +227,29 @@
                     patientId: patientId,
                     receptionDate: document.getElementById('receptionDate').value || '--',
                     reportDate: document.getElementById('reportDate').value || '--',
+                    ind: document.getElementById('indName').value || '--',
+                    muestra: document.getElementById('sampleType').value || '--',
                     macroscopy: document.getElementById('macroscopy').value || 'No se registraron hallazgos.',
                     microscopy: document.getElementById('microscopy').value || 'No se registraron hallazgos.',
                     diagnosis: document.getElementById('diagnosis').value || 'Pendiente.'
                 };
 
-                // Renderizar el documento con las variables
+                // Renderizar documento
                 doc.render(data);
 
-                // Generar el archivo final
                 const out = doc.getZip().generate({
                     type: "blob",
                     mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 });
 
-                // Guardar el archivo en la computadora
+                // Guardar archivo
                 const fileName = `Informe_${patientName.replace(/\s+/g, '_')}.docx`;
                 saveAs(out, fileName);
 
-                resetBtn();
-
-            } catch (err) {
-                console.error(err);
-                showAlert('Error: Asegúrate de que "plantilla.docx" esté en la misma carpeta y estés usando un servidor web.');
+            } catch (error) {
+                console.error(error);
+                showAlert('Error: Asegúrate de que "plantilla.docx" esté subida al repositorio y estés usando la ruta correcta.');
+            } finally {
                 resetBtn();
             }
         });
