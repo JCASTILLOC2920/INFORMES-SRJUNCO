@@ -6,10 +6,6 @@
     <title>JC PATH LAB - Generador de Informes</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Dependencies for Word Generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.7/pizzip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.49.1/docxtemplater.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -149,8 +145,14 @@
         </form>
     </main>
 
+    <!-- Dependencies for Word Generation -->
+    <script src="https://cdn.jsdelivr.net/npm/pizzip@3.1.7/dist/pizzip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.49.1/build/docxtemplater.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
     <script>
-        const form = document.getElementById('report-form');
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('report-form');
         const generateBtn = document.getElementById('generateBtn');
         const btnText = document.getElementById('btnText');
         const btnIcon = document.getElementById('btnIcon');
@@ -191,6 +193,11 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (typeof window.PizZip === 'undefined') {
+                return showAlert('Error crítico: La librería PizZip no se cargó correctamente. Por favor, recarga la página con Ctrl+F5.');
+            }
+
             hideAlert();
 
             const patientName = document.getElementById('patientName').value.trim();
@@ -207,7 +214,7 @@
 
             try {
                 // Obtener la plantilla localmente usando fetch
-                const response = await fetch('./plantilla.docx');
+                const response = await fetch('plantilla.docx', { cache: 'no-store' });
                 if (!response.ok) {
                     throw new Error('No se pudo cargar la plantilla local.');
                 }
@@ -215,7 +222,7 @@
                 const zip = new PizZip(arrayBuffer);
                 
                 // Inicializar docxtemplater
-                const doc = new window.docxtemplater(zip, {
+                const doc = new docxtemplater(zip, {
                     linebreaks: true,
                     paragraphLoop: true,
                 });
@@ -261,6 +268,7 @@
                 generateBtn.classList.remove('opacity-75', 'cursor-wait');
             }, 1000);
         }
+        });
     </script>
     
     <style>
