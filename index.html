@@ -212,7 +212,7 @@
                     throw new Error('No se pudo cargar la plantilla local.');
                 }
                 const arrayBuffer = await response.arrayBuffer();
-                const zip = new window.PizZip(arrayBuffer);
+                const zip = new PizZip(arrayBuffer);
                 
                 // Inicializar docxtemplater
                 const doc = new window.docxtemplater(zip, {
