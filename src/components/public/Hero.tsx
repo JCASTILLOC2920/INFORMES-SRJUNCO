@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Hero() {
   return (
@@ -26,8 +27,8 @@ export default function Hero() {
             <Link href="/login" className="bg-clinical-blue-deep text-white px-8 py-4 rounded-xl font-bold text-base shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 text-center">
               ENTREGA DE RESULTADOS
             </Link>
-            <Link href="#servicios" className="bg-white text-clinical-blue-deep border-2 border-clinical-blue-deep px-8 py-4 rounded-xl font-bold text-base hover:bg-clinical-blue-light transition-all text-center">
-              Ver Servicios
+            <Link href="/admin" className="bg-white text-clinical-blue-deep border-2 border-clinical-blue-deep px-8 py-4 rounded-xl font-bold text-base hover:bg-clinical-blue-light transition-all text-center">
+              CREAR INFORMES
             </Link>
           </div>
         </div>

@@ -33,7 +33,7 @@ export default function Header() {
           <Link href="/" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Inicio</Link>
           <Link href="#servicios" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Servicios</Link>
           <Link href="/login" className="bg-clinical-blue-light text-clinical-blue px-4 py-2 rounded-xl border border-clinical-blue/10 hover:bg-clinical-blue hover:text-white transition-all font-black uppercase tracking-tighter">Resultados en Línea</Link>
-          <Link href="/login" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Portal Médico</Link>
+          <Link href="/admin" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Crear Informes</Link>
           <Link href="#contacto" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Contacto</Link>
         </nav>
 
