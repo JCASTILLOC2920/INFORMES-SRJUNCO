@@ -19,11 +19,11 @@ export default function Footer() {
 
           <div>
             <h4 className="text-white font-bold mb-6">Enlaces Rápidos</h4>
-            <ul className="space-y-4 text-sm">
-              <li><Link href="#" className="hover:text-clinical-blue transition-colors">Inicio</Link></li>
-              <li><Link href="#" className="hover:text-clinical-blue transition-colors">Servicios</Link></li>
-              <li><Link href="#" className="hover:text-clinical-blue transition-colors">Preguntas Frecuentes</Link></li>
-              <li><Link href="#" className="hover:text-clinical-blue transition-colors">Portal de Pacientes</Link></li>
+            <ul className="space-y-4 text-sm font-medium">
+              <li><Link href="/" className="hover:text-clinical-blue transition-colors">Inicio</Link></li>
+              <li><Link href="#servicios" className="hover:text-clinical-blue transition-colors">Servicios</Link></li>
+              <li><Link href="/login" className="hover:text-clinical-blue transition-colors font-black text-clinical-blue-light uppercase tracking-tighter">Resultados en Línea</Link></li>
+              <li><Link href="/login" className="hover:text-clinical-blue transition-colors font-black text-clinical-blue-light uppercase tracking-tighter">Portal Médico</Link></li>
             </ul>
           </div>
 
