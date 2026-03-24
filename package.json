@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/JCASTILLOC2920/INFORMES-SRJUNCO#readme",
   "dependencies": {
-    "@prisma/client": "^7.5.0",
+    "@prisma/client": "^6.2.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
@@ -34,7 +34,7 @@
     "next": "15.1.0",
     "pizzip": "^3.2.0",
     "postcss": "^8.5.8",
-    "prisma": "^7.5.0",
+    "prisma": "^6.2.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.2.2",
