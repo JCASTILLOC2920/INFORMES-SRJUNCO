@@ -1,0 +1,23 @@
+
+> informes-srjunco@1.0.0 build
+> next build
+
+▲ Next.js 16.2.1 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 9.8s
+  Running TypeScript ...
+Failed to type check.
+
+./src/utils/wordGenerator.ts:3:25
+Type error: Could not find a declaration file for module 'docxtemplater-image-module-free'. 'E:/ARCHIVOS JOSEHP/paginas web/repositorio/INFORMES-SRJUNCO/node_modules/docxtemplater-image-module-free/js/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/docxtemplater-image-module-free` if it exists or add a new declaration (.d.ts) file containing `declare module 'docxtemplater-image-module-free';`
+
+  1 | import PizZip from 'pizzip';
+  2 | import Docxtemplater from 'docxtemplater';
+> 3 | import ImageModule from 'docxtemplater-image-module-free';
+    |                         ^
+  4 | import { saveAs } from 'file-saver';
+  5 |
+  6 | export interface ReportData {
+Next.js build worker exited with code: 1 and signal: null

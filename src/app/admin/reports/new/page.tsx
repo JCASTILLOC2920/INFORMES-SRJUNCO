@@ -180,8 +180,8 @@ export default function NewReport() {
                 active={dragActive === 'macro'} 
                 preview={previews.macro}
                 handleDrag={handleDrag} 
-                handleDrop={(e) => handleDrop(e, 'macro')}
-                onFileSelect={(file) => handleImageUpload(file, 'macro')}
+                handleDrop={(e: React.DragEvent) => handleDrop(e, 'macro')}
+                onFileSelect={(file: File) => handleImageUpload(file, 'macro')}
             />
             <DropZone 
                 id="micro" 
@@ -189,8 +189,8 @@ export default function NewReport() {
                 active={dragActive === 'micro'} 
                 preview={previews.micro}
                 handleDrag={handleDrag} 
-                handleDrop={(e) => handleDrop(e, 'micro')}
-                onFileSelect={(file) => handleImageUpload(file, 'micro')}
+                handleDrop={(e: React.DragEvent) => handleDrop(e, 'micro')}
+                onFileSelect={(file: File) => handleImageUpload(file, 'micro')}
             />
           </div>
         </section>
