@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -31,7 +31,7 @@
     "docxtemplater": "^3.68.3",
     "docxtemplater-image-module-free": "^1.1.1",
     "file-saver": "^2.0.5",
-    "next": "^16.2.1",
+    "next": "15.1.0",
     "pizzip": "^3.2.0",
     "postcss": "^8.5.8",
     "prisma": "^7.5.0",
