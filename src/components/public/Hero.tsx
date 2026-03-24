@@ -13,14 +13,14 @@ export default function Hero() {
       <div className="container mx-auto px-4 z-10 grid md:grid-cols-2 gap-12 items-center">
         <div className="max-w-2xl">
           <div className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-clinical-blue uppercase bg-clinical-blue-light rounded-full">
-            Excelencia en Diagnóstico
+            Dr. Josehp Castillo Cuenca • CMP 56435 • RNE 29091
           </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-            <span className="text-clinical-blue-deep">Laboratorio de Anatomía</span> <br /> 
-            <span className="text-clinical-blue">Patológica Especializada</span>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tighter">
+            <span className="text-clinical-blue-deep block">JC PATH LAB</span>
+            <span className="text-clinical-blue">Patología de Precisión</span>
           </h1>
-          <p className="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
-            Ofrecemos diagnósticos de alta precisión con tecnología de vanguardia y un equipo de expertos comprometidos con la salud y la rapidez en los resultados.
+          <p className="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed font-medium">
+            Diagnóstico especializado en Biopsias, Citología e Inmunohistoquímica con tecnología de punta en Puente Piedra, Lima Norte. Resultados rápidos en 3-4 días.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button className="bg-clinical-blue-deep text-white px-8 py-4 rounded-xl font-bold text-base shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95">
@@ -33,12 +33,13 @@ export default function Hero() {
         </div>
         <div className="relative group perspective">
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transition-transform duration-500 transform group-hover:rotate-y-3 group-hover:scale-105 border-8 border-white">
-                {/* Image Placeholder - In real use, an image would be here */}
-                <div className="w-full aspect-[4/3] bg-gradient-to-br from-clinical-blue-light to-clinical-blue flex items-center justify-center p-8">
-                     <svg className="w-32 h-32 text-white opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                     </svg>
-                </div>
+                <Image 
+                    src="/doctor.png" 
+                    alt="Dr. Josehp Castillo Cuenca" 
+                    width={800} 
+                    height={600} 
+                    className="w-full aspect-[4/3] object-cover"
+                />
             </div>
             {/* Artistic accents */}
             <div className="absolute -top-6 -left-6 w-24 h-24 bg-clinical-blue-light rounded-full -z-10 mix-blend-multiply filter blur-xl animate-pulse"></div>

@@ -1,8 +1,8 @@
 export default function WhyUs() {
   const features = [
     {
-      title: "Precisión Diagnóstica",
-      description: "Resultados validados por expertos con años de trayectoria clínica.",
+      title: "Trayectoria Comprobada",
+      description: "+15 años de experiencia liderando diagnósticos oncológicos de alta complejidad.",
       icon: (
         <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -10,8 +10,8 @@ export default function WhyUs() {
       )
     },
     {
-      title: "Entrega Rápida",
-      description: "Flujos de trabajo optimizados para reducir el tiempo de espera del paciente.",
+      title: "Volumen Diagnóstico",
+      description: "+50,000 estudios realizados con 100% de confianza médica en todo el Perú.",
       icon: (
         <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -19,8 +19,8 @@ export default function WhyUs() {
       )
     },
     {
-      title: "Tecnología de Punta",
-      description: "Equipamiento automatizado para máxima precisión en cada estudio.",
+      title: "Rapidez y Eficiencia",
+      description: "Resultados en 3-4 días hábiles, guía fundamental para el inicio de tratamiento.",
       icon: (
         <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />

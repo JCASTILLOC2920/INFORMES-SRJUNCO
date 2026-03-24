@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,13 +17,16 @@ export default function Header() {
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <div className="bg-clinical-blue-deep p-1.5 rounded-lg shadow-inner">
-             <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-             </svg>
-          </div>
-          <span className={`text-xl font-bold tracking-tight ${isScrolled ? 'text-gray-900' : 'text-gray-900 md:text-gray-900'}`}>JC PATH LAB</span>
+        <div className="flex items-center space-x-3">
+          <Link href="/">
+            <Image 
+                src="/logo.png" 
+                alt="JC PATH LAB Logo" 
+                width={150} 
+                height={50} 
+                className="h-10 w-auto object-contain"
+            />
+          </Link>
         </div>
         
         <nav className="hidden md:flex space-x-8 items-center text-sm font-medium">

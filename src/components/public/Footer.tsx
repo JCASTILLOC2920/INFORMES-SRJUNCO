@@ -32,11 +32,11 @@ export default function Footer() {
             <ul className="space-y-4 text-sm">
               <li className="flex items-start">
                 <span className="mr-3 text-clinical-blue">🕒</span>
-                <span>Lun - Vie: 8:00 AM - 6:00 PM<br />Sáb: 8:00 AM - 1:00 PM</span>
+                <span>Lun - Vie: 9:00 AM - 6:00 PM<br />Sáb: 9:00 AM - 1:00 PM</span>
               </li>
               <li className="flex items-start">
                 <span className="mr-3 text-clinical-blue">📍</span>
-                <span>Av. Principal 123, San Isidro<br />Lima, Perú</span>
+                <span>Mz M2 lote 13 Jardines de Chillón<br />Puente Piedra, Lima</span>
               </li>
             </ul>
           </div>
@@ -46,11 +46,11 @@ export default function Footer() {
             <ul className="space-y-4 text-sm">
               <li className="flex items-center">
                 <span className="mr-3 text-clinical-blue">📞</span>
-                <span>(01) 123-4567</span>
+                <span>986396733</span>
               </li>
               <li className="flex items-center">
                 <span className="mr-3 text-clinical-blue">✉️</span>
-                <span>contacto@jcpathlab.com</span>
+                <span>jclab59@gmail.com</span>
               </li>
             </ul>
           </div>
