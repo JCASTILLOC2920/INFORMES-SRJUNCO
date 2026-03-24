@@ -30,11 +30,11 @@ export default function Header() {
         </div>
         
         <nav className="hidden md:flex space-x-8 items-center text-sm font-medium">
-          <Link href="#inicio" className="text-gray-600 hover:text-clinical-blue transition-colors">Inicio</Link>
-          <Link href="#servicios" className="text-gray-600 hover:text-clinical-blue transition-colors">Servicios</Link>
-          <Link href="#resultados" className="text-gray-600 hover:text-clinical-blue transition-colors">Resultados en Línea</Link>
-          <Link href="#portal-medico" className="text-gray-600 hover:text-clinical-blue transition-colors">Portal Médico</Link>
-          <Link href="#contacto" className="text-gray-600 hover:text-clinical-blue transition-colors">Contacto</Link>
+          <Link href="/" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Inicio</Link>
+          <Link href="#servicios" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Servicios</Link>
+          <Link href="/login" className="bg-clinical-blue-light text-clinical-blue px-4 py-2 rounded-xl border border-clinical-blue/10 hover:bg-clinical-blue hover:text-white transition-all font-black uppercase tracking-tighter">Resultados en Línea</Link>
+          <Link href="/login" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Portal Médico</Link>
+          <Link href="#contacto" className="text-gray-600 hover:text-clinical-blue transition-colors font-bold">Contacto</Link>
         </nav>
 
         <button className="bg-clinical-blue hover:bg-clinical-blue-deep text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:scale-95">
