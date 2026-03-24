@@ -23,12 +23,12 @@ export default function Hero() {
             Diagnóstico especializado en Biopsias, Citología e Inmunohistoquímica con tecnología de punta en Puente Piedra, Lima Norte. Resultados rápidos en 3-4 días.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="bg-clinical-blue-deep text-white px-8 py-4 rounded-xl font-bold text-base shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95">
-              Solicitar Estudio
-            </button>
-            <button className="bg-white text-clinical-blue-deep border-2 border-clinical-blue-deep px-8 py-4 rounded-xl font-bold text-base hover:bg-clinical-blue-light transition-all">
+            <Link href="/login" className="bg-clinical-blue-deep text-white px-8 py-4 rounded-xl font-bold text-base shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 text-center">
+              ENTREGA DE RESULTADOS
+            </Link>
+            <Link href="#servicios" className="bg-white text-clinical-blue-deep border-2 border-clinical-blue-deep px-8 py-4 rounded-xl font-bold text-base hover:bg-clinical-blue-light transition-all text-center">
               Ver Servicios
-            </button>
+            </Link>
           </div>
         </div>
         <div className="relative group perspective">
