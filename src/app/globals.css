@@ -1,15 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-clinical-blue-deep: #0c4a6e;
+  --color-clinical-blue: #0284c7;
+  --color-clinical-blue-light: #e0f2fe;
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  
-  --clinical-blue-deep: #0c4a6e;
-  --clinical-blue: #0284c7;
-  --clinical-blue-light: #e0f2fe;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,11 +23,9 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: white;
-  font-family: 'Inter', sans-serif;
+  @apply font-sans;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+@utility text-balance {
+  text-wrap: balance;
 }
