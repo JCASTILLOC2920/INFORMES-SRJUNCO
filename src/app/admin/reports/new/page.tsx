@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { generateWordReport, ReportData } from '@/utils/wordGenerator';
+import { REPORT_TEMPLATES, ReportTemplate } from '@/data/reportTemplates';
 
 export default function NewReport() {
   const router = useRouter();
@@ -21,14 +22,28 @@ export default function NewReport() {
     fecha_ext: new Date().toISOString().split('T')[0],
   });
 
-  const [images, setImages] = useState<{ macro: ArrayBuffer | null, micro: ArrayBuffer | null }>({
-    macro: null,
-    micro: null
+  const [images, setImages] = useState<{ 
+    img1: ArrayBuffer | null, 
+    img2: ArrayBuffer | null,
+    img3: ArrayBuffer | null,
+    img4: ArrayBuffer | null 
+  }>({
+    img1: null,
+    img2: null,
+    img3: null,
+    img4: null
   });
 
-  const [previews, setPreviews] = useState<{ macro: string | null, micro: string | null }>({
-    macro: null,
-    micro: null
+  const [previews, setPreviews] = useState<{ 
+    img1: string | null, 
+    img2: string | null,
+    img3: string | null,
+    img4: string | null 
+  }>({
+    img1: null,
+    img2: null,
+    img3: null,
+    img4: null
   });
 
   const [loading, setLoading] = useState(false);
@@ -41,12 +56,22 @@ export default function NewReport() {
     setFormData(prev => ({ ...prev, resta: (cost - prepay).toFixed(2) }));
   }, [formData.paga, formData.adelanta]);
 
+  const applyTemplate = (template: ReportTemplate) => {
+    setFormData(prev => ({
+      ...prev,
+      material: template.material,
+      macroscopia: template.macroscopia,
+      microscopia: template.microscopia,
+      diagnostico: template.diagnostico
+    }));
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleImageUpload = (file: File, type: 'macro' | 'micro') => {
+  const handleImageUpload = (file: File, type: 'img1' | 'img2' | 'img3' | 'img4') => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const arrayBuffer = e.target?.result as ArrayBuffer;
@@ -65,7 +90,7 @@ export default function NewReport() {
     else if (e.type === "dragleave") setDragActive(null);
   };
 
-  const handleDrop = (e: React.DragEvent, type: 'macro' | 'micro') => {
+  const handleDrop = (e: React.DragEvent, type: 'img1' | 'img2' | 'img3' | 'img4') => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(null);
@@ -83,8 +108,10 @@ export default function NewReport() {
       // 1. Generate Word Document locally
       await generateWordReport({
         ...formData,
-        img1: images.macro,
-        img2: images.micro
+        img1: images.img1,
+        img2: images.img2,
+        img3: images.img3,
+        img4: images.img4
       });
 
       // 2. Save to Database via API
@@ -103,7 +130,7 @@ export default function NewReport() {
         diagnosis: formData.diagnostico,
         cost: formData.paga,
         prepayment: formData.adelanta,
-        hasImages: !!(images.macro || images.micro)
+        hasImages: !!(images.img1 || images.img2 || images.img3 || images.img4)
       };
 
       const res = await fetch('/api/reports', {
@@ -127,7 +154,7 @@ export default function NewReport() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-32 px-4">
+    <div className="max-w-7xl mx-auto space-y-8 pb-32 px-4 text-gray-900">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-4xl font-black text-gray-900 tracking-tight">Nuevo Informe Patológico</h1>
@@ -149,9 +176,30 @@ export default function NewReport() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Patient & Financial Card */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Templates Sidebar */}
         <div className="lg:col-span-1 space-y-8">
+            <section className="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-blue-900/5 border border-gray-100">
+                <div className="flex items-center space-x-4 mb-8 border-b border-gray-50 pb-6">
+                    <div className="w-10 h-10 bg-clinical-blue-light text-clinical-blue rounded-xl flex items-center justify-center">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                    </div>
+                    <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Plantillas</h2>
+                </div>
+                <div className="space-y-3 max-h-[1000px] overflow-y-auto pr-2 custom-scrollbar">
+                    {REPORT_TEMPLATES.map((template, idx) => (
+                        <button 
+                            key={idx}
+                            onClick={() => applyTemplate(template)}
+                            className="w-full text-left p-4 rounded-2xl text-[11px] font-bold text-gray-600 bg-gray-50 hover:bg-clinical-blue-light hover:text-clinical-blue transition-all border border-transparent hover:border-clinical-blue/20 flex items-center justify-between group"
+                        >
+                            <span className="truncate pr-2">{template.name}</span>
+                            <i className="fas fa-chevron-right opacity-0 group-hover:opacity-100 transform translate-x-1 transition-all"></i>
+                        </button>
+                    ))}
+                </div>
+            </section>
+
             <section className="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-blue-900/5 border border-gray-100">
                 <div className="flex items-center space-x-4 mb-8 border-b border-gray-50 pb-6">
                     <div className="w-10 h-10 bg-clinical-blue-light text-clinical-blue rounded-xl flex items-center justify-center">
@@ -166,30 +214,22 @@ export default function NewReport() {
                         <InputField label="DNI / ID" name="dni" value={formData.dni} onChange={handleInputChange} placeholder="12345678" />
                         <InputField label="Edad" name="edad" value={formData.edad} onChange={handleInputChange} placeholder="45" />
                     </div>
-                </div>
-            </section>
-
-            <section className="bg-clinical-blue-deep p-8 rounded-[2.5rem] shadow-2xl text-white">
-                <div className="flex items-center space-x-4 mb-8 border-b border-white/10 pb-6">
-                    <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zM17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /></svg>
-                    </div>
-                    <h2 className="text-sm font-black uppercase tracking-widest">Finanzas & Entrega</h2>
-                </div>
-                <div className="space-y-5">
-                    <InputField dark label="Costo del Servicio" name="paga" value={formData.paga} onChange={handleInputChange} type="number" />
-                    <InputField dark label="Adelanto / Pago" name="adelanta" value={formData.adelanta} onChange={handleInputChange} type="number" />
-                    <div className="p-4 bg-white/5 rounded-2xl flex justify-between items-center border border-white/10">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Resta pendiente</span>
-                        <span className="text-xl font-black text-clinical-blue-light">S/ {formData.resta}</span>
-                    </div>
-                    <InputField dark label="Fecha de Entrega" name="fecha_ext" value={formData.fecha_ext} onChange={handleInputChange} type="date" />
+                    <section className="bg-clinical-blue-deep p-6 rounded-3xl shadow-xl text-white mt-4">
+                        <div className="space-y-4">
+                            <InputField dark label="Costo Total" name="paga" value={formData.paga} onChange={handleInputChange} type="number" />
+                            <InputField dark label="Adelanto" name="adelanta" value={formData.adelanta} onChange={handleInputChange} type="number" />
+                            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest opacity-60">
+                                <span>Resta Pendiente</span>
+                                <span className="text-clinical-blue-light">S/ {formData.resta}</span>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </section>
         </div>
 
-        {/* Clinical Tabs / Areas */}
-        <div className="lg:col-span-2 space-y-8">
+        {/* Clinical Data & Photos */}
+        <div className="lg:col-span-3 space-y-8">
             <section className="bg-white p-10 rounded-[2.5rem] shadow-2xl shadow-blue-900/5 border border-gray-100">
                 <div className="flex items-center space-x-4 mb-10 border-b border-gray-50 pb-6">
                     <div className="w-10 h-10 bg-blue-50 text-clinical-blue rounded-xl flex items-center justify-center">
@@ -209,25 +249,49 @@ export default function NewReport() {
                 </div>
             </section>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <DropZone 
-                    id="macro" 
-                    label="EVIDENCIA MACRO" 
-                    active={dragActive === 'macro'} 
-                    preview={previews.macro}
-                    handleDrag={handleDrag} 
-                    handleDrop={(e: any) => handleDrop(e, 'macro')}
-                    onFileSelect={(file: any) => handleImageUpload(file, 'macro')}
-                />
-                <DropZone 
-                    id="micro" 
-                    label="EVIDENCIA MICRO" 
-                    active={dragActive === 'micro'} 
-                    preview={previews.micro}
-                    handleDrag={handleDrag} 
-                    handleDrop={(e: any) => handleDrop(e, 'micro')}
-                    onFileSelect={(file: any) => handleImageUpload(file, 'micro')}
-                />
+            <section className="space-y-6">
+                <div className="flex items-center justify-between px-4">
+                    <h2 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em]">Evidencia Fotográfica (Max 4)</h2>
+                    <span className="text-[10px] text-clinical-blue font-bold px-3 py-1 bg-clinical-blue-light rounded-full italic">Protocolo de Alta Fidelidad</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <DropZone 
+                        id="img1" 
+                        label="MACRO A" 
+                        active={dragActive === 'img1'} 
+                        preview={previews.img1}
+                        handleDrag={handleDrag} 
+                        handleDrop={(e: React.DragEvent) => handleDrop(e, 'img1')}
+                        onFileSelect={(file: File) => handleImageUpload(file, 'img1')}
+                    />
+                    <DropZone 
+                        id="img2" 
+                        label="MACRO B" 
+                        active={dragActive === 'img2'} 
+                        preview={previews.img2}
+                        handleDrag={handleDrag} 
+                        handleDrop={(e: React.DragEvent) => handleDrop(e, 'img2')}
+                        onFileSelect={(file: File) => handleImageUpload(file, 'img2')}
+                    />
+                    <DropZone 
+                        id="img3" 
+                        label="MICRO A" 
+                        active={dragActive === 'img3'} 
+                        preview={previews.img3}
+                        handleDrag={handleDrag} 
+                        handleDrop={(e: React.DragEvent) => handleDrop(e, 'img3')}
+                        onFileSelect={(file: File) => handleImageUpload(file, 'img3')}
+                    />
+                    <DropZone 
+                        id="img4" 
+                        label="MICRO B" 
+                        active={dragActive === 'img4'} 
+                        preview={previews.img4}
+                        handleDrag={handleDrag} 
+                        handleDrop={(e: React.DragEvent) => handleDrop(e, 'img4')}
+                        onFileSelect={(file: File) => handleImageUpload(file, 'img4')}
+                    />
+                </div>
             </section>
         </div>
       </div>

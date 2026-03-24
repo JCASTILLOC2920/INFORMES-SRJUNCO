@@ -19,6 +19,8 @@ export interface ReportData {
   fecha_ext: string;
   img1?: ArrayBuffer | null;
   img2?: ArrayBuffer | null;
+  img3?: ArrayBuffer | null;
+  img4?: ArrayBuffer | null;
 }
 
 export const generateWordReport = async (data: ReportData) => {
@@ -47,7 +49,7 @@ export const generateWordReport = async (data: ReportData) => {
         });
       },
       getSize() {
-        return [400, 300]; 
+        return [300, 225]; // slightly smaller to fit multiple on a page
       }
     };
 
@@ -75,7 +77,9 @@ export const generateWordReport = async (data: ReportData) => {
       resta: data.resta || '0',
       fecha_ext: data.fecha_ext || '--',
       img1: data.img1,
-      img2: data.img2
+      img2: data.img2,
+      img3: data.img3,
+      img4: data.img4
     };
 
     await doc.renderAsync(templateData);
