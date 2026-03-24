@@ -4,32 +4,31 @@ import ImageModule from 'docxtemplater-image-module-free';
 import { saveAs } from 'file-saver';
 
 export interface ReportData {
-  patientFirstName: string;
-  patientLastName: string;
-  age: string;
-  patientId: string;
-  receptionDate: string;
-  reportDate: string;
-  ind: string;
-  muestra: string;
-  macroscopy: string;
-  microscopy: string;
-  diagnosis: string;
-  fotoMacro?: ArrayBuffer | null;
-  fotoMicro?: ArrayBuffer | null;
+  atendido: string;
+  nombre: string;
+  dni: string;
+  edad: string;
+  procede: string;
+  material: string;
+  macroscopia: string;
+  microscopia: string;
+  diagnostico: string;
+  paga: string;
+  adelanta: string;
+  resta: string;
+  fecha_ext: string;
+  img1?: ArrayBuffer | null;
+  img2?: ArrayBuffer | null;
 }
 
 export const generateWordReport = async (data: ReportData) => {
   try {
-    // Fetch the template from the public folder or absolute path
-    // In Next.js, files in /public are served at /
     const response = await fetch('/plantilla.docx');
     if (!response.ok) throw new Error('No se pudo cargar la plantilla (.docx)');
     
     const arrayBuffer = await response.arrayBuffer();
     const zip = new PizZip(arrayBuffer);
 
-    // Image module configuration
     const imageOptions = {
       centered: false,
       getImage(tagValue: any) {
@@ -48,7 +47,7 @@ export const generateWordReport = async (data: ReportData) => {
         });
       },
       getSize() {
-        return [400, 300]; // Fixed size [width, height]
+        return [400, 300]; 
       }
     };
 
@@ -60,18 +59,23 @@ export const generateWordReport = async (data: ReportData) => {
       modules: [imageModule]
     });
 
-    // Prepare data for template
+    // Mirroring legacy data structure exactly
     const templateData = {
-      ...data,
-      patientName: `${data.patientFirstName} ${data.patientLastName}`,
-      age: data.age || '--',
-      receptionDate: data.receptionDate || '--',
-      reportDate: data.reportDate || '--',
-      ind: data.ind || '--',
-      muestra: data.muestra || '--',
-      macroscopy: data.macroscopy || 'No se registraron hallazgos.',
-      microscopy: data.microscopy || 'No se registraron hallazgos.',
-      diagnosis: data.diagnosis || 'Pendiente.',
+      atendido: data.atendido || '--',
+      nombre: data.nombre || '--',
+      dni: data.dni || '--',
+      edad: data.edad || '--',
+      procede: data.procede || '--',
+      material: data.material || '--',
+      macroscopia: data.macroscopia || 'No se registraron hallazgos.',
+      microscopia: data.microscopia || 'No se registraron hallazgos.',
+      diagnostico: data.diagnostico || 'Pendiente.',
+      paga: data.paga || '0',
+      adelanta: data.adelanta || '0',
+      resta: data.resta || '0',
+      fecha_ext: data.fecha_ext || '--',
+      img1: data.img1,
+      img2: data.img2
     };
 
     await doc.renderAsync(templateData);
@@ -81,12 +85,12 @@ export const generateWordReport = async (data: ReportData) => {
       mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
 
-    const fileName = `Informe_${data.patientFirstName}_${data.patientLastName}.docx`.replace(/\s+/g, '_');
+    const fileName = `Informe_${data.atendido}_${data.nombre.replace(/\s+/g, '_')}.docx`;
     saveAs(out, fileName);
     
     return true;
   } catch (error) {
-    console.error('Error generating report:', error);
+    console.error('Error in Word generation:', error);
     throw error;
   }
 };
