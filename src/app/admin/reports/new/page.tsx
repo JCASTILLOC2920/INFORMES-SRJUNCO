@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { generateWordReport, ReportData } from '@/utils/wordGenerator';
 import { REPORT_TEMPLATES, ReportTemplate } from '@/data/reportTemplates';
+import { generateClinicalDescription } from '@/utils/ollamaClient';
 
 export default function NewReport() {
   const router = useRouter();
@@ -21,6 +22,27 @@ export default function NewReport() {
     resta: '0',
     fecha_ext: new Date().toISOString().split('T')[0],
   });
+
+  const [aiLoading, setAiLoading] = useState<string | null>(null);
+
+  const handleAiAssist = async (field: 'macroscopia' | 'microscopia' | 'diagnostico') => {
+    if (!formData.material) {
+      alert('Por favor, indique primero el "Material Enviado" para que la IA tenga contexto.');
+      return;
+    }
+    setAiLoading(field);
+    try {
+      const result = await generateClinicalDescription(field, formData.material, formData[field]);
+      if (result) {
+        setFormData(prev => ({ ...prev, [field]: result }));
+      }
+    } catch (error) {
+      console.error('AI Error:', error);
+      alert('Error al conectar con la IA de Ollama.');
+    } finally {
+      setAiLoading(null);
+    }
+  };
 
   const [images, setImages] = useState<{ 
     img1: ArrayBuffer | null, 
@@ -243,9 +265,34 @@ export default function NewReport() {
                         <InputField label="Médico Solicitante" name="procede" value={formData.procede} onChange={handleInputChange} placeholder="DR. JUAN PEREZ" />
                         <InputField label="Material Enviado" name="material" value={formData.material} onChange={handleInputChange} placeholder="BIOPSIA GÁSTRICA" />
                     </div>
-                    <TextAreaField label="Examen Macroscópico" name="macroscopia" value={formData.macroscopia} onChange={handleInputChange} rows={3} />
-                    <TextAreaField label="Examen Microscópico" name="microscopia" value={formData.microscopia} onChange={handleInputChange} rows={6} />
-                    <TextAreaField label="Diagnóstico Final" name="diagnostico" value={formData.diagnostico} onChange={handleInputChange} rows={3} highlight />
+                    <TextAreaField 
+                        label="Examen Macroscópico" 
+                        name="macroscopia" 
+                        value={formData.macroscopia} 
+                        onChange={handleInputChange} 
+                        rows={3} 
+                        onAiAssist={() => handleAiAssist('macroscopia')}
+                        isAiLoading={aiLoading === 'macroscopia'}
+                    />
+                    <TextAreaField 
+                        label="Examen Microscópico" 
+                        name="microscopia" 
+                        value={formData.microscopia} 
+                        onChange={handleInputChange} 
+                        rows={6} 
+                        onAiAssist={() => handleAiAssist('microscopia')}
+                        isAiLoading={aiLoading === 'microscopia'}
+                    />
+                    <TextAreaField 
+                        label="Diagnóstico Final" 
+                        name="diagnostico" 
+                        value={formData.diagnostico} 
+                        onChange={handleInputChange} 
+                        rows={3} 
+                        highlight 
+                        onAiAssist={() => handleAiAssist('diagnostico')}
+                        isAiLoading={aiLoading === 'diagnostico'}
+                    />
                 </div>
             </section>
 
@@ -315,10 +362,25 @@ function InputField({ label, name, value, onChange, placeholder, type = "text", 
   );
 }
 
-function TextAreaField({ label, name, value, onChange, placeholder, rows, highlight = false }: any) {
+function TextAreaField({ label, name, value, onChange, placeholder, rows, highlight = false, onAiAssist, isAiLoading }: any) {
   return (
-    <div>
-      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 ml-1">{label}</label>
+    <div className="relative group">
+      <div className="flex justify-between items-center mb-3 ml-1">
+        <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{label}</label>
+        {onAiAssist && (
+            <button 
+                onClick={(e) => { e.preventDefault(); onAiAssist(); }}
+                disabled={isAiLoading}
+                className="text-[9px] font-black text-clinical-blue uppercase tracking-widest flex items-center gap-2 hover:text-clinical-blue-deep transition-colors bg-blue-50 px-3 py-1 rounded-full border border-clinical-blue/10 disabled:opacity-50"
+            >
+                {isAiLoading ? (
+                    <><i className="fas fa-spinner fa-spin"></i> Procesando...</>
+                ) : (
+                    <><i className="fas fa-sparkles text-clinical-blue"></i> ✨ IA</>
+                )}
+            </button>
+        )}
+      </div>
       <textarea 
         name={name}
         value={value}
