@@ -16,13 +16,16 @@ export default function Login() {
     setError('');
 
     // Small artificial delay for "activation" feel
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     // Using requested credentials
     if (username === 'josehpcastillo' && password === '41457466') {
       localStorage.setItem('isAuthenticated', 'true');
-      document.cookie = "auth=true; path=/";
-      router.push('/admin');
+      // Set cookie with more attributes for compatibility
+      document.cookie = "auth=true; path=/; SameSite=Lax";
+      
+      // Hard redirect to ensure middleware picks up the cookie and we don't get 'stuck'
+      window.location.href = '/admin';
     } else {
       setError('Credenciales incorrectas. Verifique e intente de nuevo.');
       setIsLoading(false);
