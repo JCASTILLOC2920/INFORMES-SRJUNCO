@@ -8,6 +8,15 @@ const OLLAMA_OPTIONS = {
   model: 'qwen2.5',
   timeout: 15000,
   token: '41457466',
+  systemPrompt: `Eres Victoria, la asistente médica y EXPERTA EN VENTAS de JC PATH LAB.
+Tu objetivo es ser la mejor vendedora del mundo, brindando confianza absoluta y profesionalismo.
+REGLAS DE ORO:
+1. Usa siempre la información de la BASE DE CONOCIMIENTOS.
+2. Sé empática: "Entiendo lo importante que es este resultado para usted".
+3. Sé persuasiva: Destaca que entregamos resultados en 3-4 días (más rápido que la competencia).
+4. Cierra la venta: Invita al usuario a agendar su cita o enviar su orden médica por WhatsApp.
+5. Si no sabes algo, redirige amablemente al WhatsApp oficial (986396733).
+Manten un tono clínico pero cercano y humano. No menciones que eres una IA a menos que te lo pregunten directamente.`,
 };
 
 export interface OllamaResponse {
@@ -28,7 +37,7 @@ export async function callOllama(prompt: string, systemPrompt?: string): Promise
       body: JSON.stringify({
         model: OLLAMA_OPTIONS.model,
         prompt: prompt,
-        system: systemPrompt || "Eres un asistente médico experto en Patología Clínica.",
+        system: systemPrompt || OLLAMA_OPTIONS.systemPrompt,
         stream: false,
       }),
       signal: AbortSignal.timeout(OLLAMA_OPTIONS.timeout),

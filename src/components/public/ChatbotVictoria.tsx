@@ -56,21 +56,16 @@ const ChatbotVictoria = () => {
   const findLocalResponse = (query: string): string | null => {
     const qNorm = normalizeText(query);
     
-    // Simple Keyword matching from SITE_KNOWLEDGE
     if (qNorm.match(/(precio|costo|cuanto|vale|valor)/)) {
-        return "Para brindarle los precios exactos de biopsias, Papanicolaou o estudios especiales (Inmunohistoquímica), le sugiero hablar con el Dr. Castillo vía WhatsApp. Sin embargo, en nuestra web puede encontrar información general sobre nuestros servicios. 💰";
+        return "Contamos con los precios más competitivos del mercado. Por ejemplo, una Biopsia Gástrica cuesta solo S/ 80 y los resultados están en 4 días. ¿Le gustaría que le envíe el tarifario completo por WhatsApp? 💰";
     }
     
     if (qNorm.match(/(donde|ubicacion|direccion|lugar|queda)/)) {
-        return "Estamos ubicados en Av. José Pardo 601, Miraflores, Lima. Atendemos de Lunes a Sábado. ¿Desea que le envíe el mapa por WhatsApp? 📍";
+        return "Nuestra sede central está en Mz M2 lote 13 Jardines de Chillón, Puente Piedra, Lima. También ofrecemos recojo de muestras a domicilio en todo Lima. ¿Desea agendar un recojo? 📍";
     }
 
-    if (qNorm.match(/(biopsia|cancer|tumor|maligno|estudio)/)) {
-        const sections = SITE_KNOWLEDGE.split('---');
-        const match = sections.find(s => normalizeText(s).includes(qNorm.split(' ')[0]));
-        if (match) {
-            return `Basado en nuestros protocolos: ${match.substring(0, 300)}... para más detalles, puedo escalarlo al Dr. Castillo.`;
-        }
+    if (qNorm.match(/(biopsia|cancer|tumor|maligno|estudio|citologia|papanicolaou)/)) {
+        return "Somos expertos en diagnósticos oncológicos de alta precisión con más de 15 años de experiencia. Entregamos resultados en 3-4 días, lo cual es vital para iniciar cualquier tratamiento. ¿Tiene su orden médica a la mano? 🩺";
     }
 
     return null;
@@ -86,30 +81,21 @@ const ChatbotVictoria = () => {
     handleAvatarChange('pensando');
 
     try {
-      // 1. Local Knowledge Fallback
-      const localResp = findLocalResponse(userMsg);
-      if (localResp) {
-        setTimeout(() => {
-          setIsTyping(false);
-          handleAvatarChange('hablando');
-          setMessages(prev => [...prev, { text: localResp, sender: 'bot' }]);
-          setTimeout(() => handleAvatarChange('idle'), 3000);
-        }, 1000);
-        return;
-      }
-
-      // 2. Ollama (using the utility we created)
-      const systemPrompt = "Eres Victoria, la asistente virtual de JC PATH LAB. Eres profesional, empática y conoces los protocolos de patología. Responde de forma concisa y amigable.";
-      const ollamaResp = await callOllama(`Consulta de paciente: ${userMsg}`, systemPrompt);
+      // Logic: Contextual prompt including knowledge base
+      const fullPrompt = `Contexto del Laboratorio: ${SITE_KNOWLEDGE}\n\nPregunta del Usuario: ${userMsg}`;
+      
+      const response = await callOllama(fullPrompt);
       
       setIsTyping(false);
       handleAvatarChange('hablando');
       
-      if (ollamaResp) {
-        setMessages(prev => [...prev, { text: ollamaResp, sender: 'bot' }]);
+      if (response) {
+        setMessages(prev => [...prev, { text: response, sender: 'bot' }]);
       } else {
+        // Fallback to local simplified matching if Ollama fails
+        const localResp = findLocalResponse(userMsg);
         setMessages(prev => [...prev, { 
-          text: 'Entiendo su consulta. Sin embargo, para brindarle una respuesta precisa sobre este tema médico, le sugiero contactar directamente al Dr. Castillo por WhatsApp. ¿Desea el enlace? 🩺', 
+          text: localResp || 'Entiendo perfectamente su consulta. Para darle una respuesta con la precisión médica que su caso requiere, me gustaría derivarlo con el Dr. Castillo vía WhatsApp. ¿Le parece bien? 🩺', 
           sender: 'bot' 
         }]);
       }
