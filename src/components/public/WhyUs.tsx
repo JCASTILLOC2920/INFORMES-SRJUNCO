@@ -4,7 +4,7 @@ export default function WhyUs() {
       title: "Trayectoria Comprobada",
       description: "+15 años de experiencia liderando diagnósticos oncológicos de alta complejidad.",
       icon: (
-        <svg className="w-[1.5rem] h-[1.5rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-[1.6rem] h-[1.6rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       )
@@ -13,7 +13,7 @@ export default function WhyUs() {
       title: "Volumen Diagnóstico",
       description: "+50,000 estudios realizados con 100% de confianza médica en todo el Perú.",
       icon: (
-        <svg className="w-[1.5rem] h-[1.5rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-[1.6rem] h-[1.6rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       )
@@ -22,7 +22,7 @@ export default function WhyUs() {
       title: "Rapidez y Eficiencia",
       description: "Resultados en 3-4 días hábiles, guía fundamental para el inicio de tratamiento.",
       icon: (
-        <svg className="w-[1.5rem] h-[1.5rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-[1.6rem] h-[1.6rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       )
@@ -30,34 +30,39 @@ export default function WhyUs() {
   ];
 
   return (
-    <section className="py-[8rem] bg-white overflow-hidden">
-      <div className="container mx-auto px-[1rem]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[5rem] items-center">
-          <div className="bg-[#003d63] rounded-[3rem] p-[3rem] sm:p-[4rem] text-white relative overflow-hidden shadow-[0_30px_70px_rgba(0,61,99,0.2)] group transition-all duration-700">
+    <section id="nosotros" className="py-[10rem] bg-white overflow-hidden relative">
+      {/* Background Decorative Grid */}
+      <div className="absolute inset-0 -z-10 opacity-[0.02] pointer-events-none" 
+           style={{ backgroundImage: 'linear-gradient(var(--secondary) 1px, transparent 1px), linear-gradient(90deg, var(--secondary) 1px, transparent 1px)', backgroundSize: '60px 60px' }}>
+      </div>
+
+      <div className="container mx-auto px-[1.5rem]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[6rem] items-center">
+          <div className="bg-[var(--nexus-void)] rounded-[3.5rem] p-[3.5rem] sm:p-[5rem] text-white relative overflow-hidden shadow-[0_40px_100px_rgba(0,27,46,0.3)] group transition-all duration-1000 animate-reveal">
              <div className="relative z-10">
-                <p className="text-[#008de3] font-black text-[0.65rem] uppercase tracking-[0.4em] mb-[1.5rem]">Misión de Precisión</p>
-                <h2 className="text-[2.5rem] md:text-[3rem] font-black mb-[2rem] leading-tight tracking-tighter italic">Comprometidos con la excelencia diagnóstica.</h2>
-                <p className="text-blue-100/70 text-[1.125rem] mb-[3rem] leading-relaxed font-medium">
+                <span className="text-[var(--cyan-pulse)] font-black text-[0.7rem] uppercase tracking-[0.5em] mb-[1.5rem] block">Misión de Precisión</span>
+                <h2 className="text-[2.8rem] md:text-[3.5rem] font-black mb-[2rem] leading-[1.1] tracking-tighter italic">Comprometidos con la <span className="text-[var(--secondary)]">excelencia</span> diagnóstica.</h2>
+                <p className="text-blue-100/60 text-[1.15rem] mb-[3.5rem] leading-relaxed font-medium border-l-2 border-[var(--cyan-pulse)]/30 pl-8">
                   En JC PATH LAB, entendemos que cada muestra representa una vida. Nuestra ingeniería diagnóstica sigue los más rigurosos estándares globales para garantizar la máxima exactitud.
                 </p>
-                <button className="bg-[#008de3] text-white px-[2.5rem] py-[1rem] rounded-full font-black text-[0.7rem] uppercase tracking-widest shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 group-hover:scale-105">
+                <button className="bg-[var(--secondary)] text-white px-[3rem] py-[1.2rem] rounded-2xl font-black text-[0.75rem] uppercase tracking-[0.2em] shadow-xl hover:shadow-[0_0_30px_rgba(0,141,227,0.4)] transition-all transform hover:-translate-y-1 active:scale-95 group-hover:scale-105 border border-white/10">
                   Nuestro Centro
                 </button>
              </div>
              {/* Elite decorative accents */}
-             <div className="absolute top-0 right-0 w-[20rem] h-[20rem] bg-blue-400 opacity-5 rounded-full translate-x-[5rem] -translate-y-[5rem] blur-3xl group-hover:opacity-10 transition-opacity"></div>
-             <div className="absolute -bottom-[5rem] -left-[5rem] w-[15rem] h-[15rem] bg-[#008de3] opacity-10 rounded-full blur-2xl"></div>
+             <div className="absolute top-0 right-0 w-[25rem] h-[25rem] bg-[var(--cyan-pulse)] opacity-5 rounded-full translate-x-[10rem] -translate-y-[10rem] blur-[120px] group-hover:opacity-20 transition-opacity duration-1000 animate-pulse-aura"></div>
+             <div className="absolute -bottom-[8rem] -left-[8rem] w-[20rem] h-[20rem] bg-[var(--secondary)] opacity-10 rounded-full blur-[100px]"></div>
           </div>
           
-          <div className="space-y-[3.5rem] px-[1rem] sm:px-[0rem]">
+          <div className="space-y-[4rem] px-[1rem] sm:px-[0rem] stagger-reveal">
             {features.map((feature, index) => (
-              <div key={index} className="flex items-start space-x-[2rem] group decoration-none">
-                <div className="flex-shrink-0 w-[4rem] h-[4rem] bg-[#f0f9ff] text-[#008de3] rounded-[1.25rem] flex items-center justify-center shadow-inner group-hover:bg-[#008de3] group-hover:text-white transition-all duration-500">
+              <div key={index} className="flex items-start space-x-[2.5rem] group">
+                <div className="flex-shrink-0 w-[5rem] h-[5rem] bg-[var(--accent)] text-[var(--secondary)] rounded-[2rem] flex items-center justify-center shadow-xl border border-[var(--secondary)]/5 group-hover:bg-[var(--secondary)] group-hover:text-white transition-all duration-700 transform group-hover:rotate-[15deg]">
                   {feature.icon}
                 </div>
-                <div>
-                  <h3 className="text-[1.25rem] font-black text-[#003d63] mb-[0.75rem] tracking-tight group-hover:text-[#008de3] transition-colors">{feature.title}</h3>
-                  <p className="text-gray-500 text-[0.85rem] leading-relaxed font-medium">{feature.description}</p>
+                <div className="pt-2">
+                  <h3 className="text-[1.5rem] font-black text-[var(--nexus-void)] mb-[0.75rem] tracking-tight group-hover:text-[var(--secondary)] transition-colors duration-500">{feature.title}</h3>
+                  <p className="text-gray-500 text-[1rem] leading-relaxed font-medium opacity-80 group-hover:opacity-100 transition-opacity duration-500">{feature.description}</p>
                 </div>
               </div>
             ))}

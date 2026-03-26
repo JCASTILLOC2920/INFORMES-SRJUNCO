@@ -25,8 +25,8 @@ export default function Header() {
 
   return (
     <header 
-      className={`fixed top-0 w-full z-header transition-all duration-500 ${
-        isScrolled || isMenuOpen ? 'bg-white/95 backdrop-blur-md shadow-lg py-[1rem]' : 'bg-transparent py-[1.5rem]'
+      className={`fixed top-0 w-full z-header transition-all duration-700 ${
+        isScrolled || isMenuOpen ? 'bg-white/80 backdrop-blur-2xl border-b border-[var(--secondary)]/10 shadow-[0_10px_40px_rgba(0,0,0,0.05)] py-[0.8rem]' : 'bg-transparent py-[1.5rem]'
       }`}
     >
       <div className="container mx-auto px-[1.5rem]">
@@ -51,12 +51,13 @@ export default function Header() {
               <Link 
                 key={link.name}
                 href={link.href}
-                className="text-[0.9rem] font-bold text-gray-600 hover:text-[#008de3] transition-colors tracking-tight uppercase"
+                className="text-[0.8rem] font-black text-gray-500 hover:text-[var(--secondary)] transition-all tracking-[0.2em] uppercase relative group"
               >
                 {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[var(--cyan-pulse)] transition-all duration-500 group-hover:w-full"></span>
               </Link>
             ))}
-            <button className="bg-[#008de3] text-white px-[2rem] py-[0.75rem] rounded-full text-[0.8rem] font-black uppercase tracking-wider shadow-lg hover:shadow-[#008de3]/40 transition-all transform hover:-translate-y-0.5 active:scale-95">
+            <button className="bg-[var(--nexus-void)] text-white px-[2.2rem] py-[0.8rem] rounded-2xl text-[0.75rem] font-black uppercase tracking-[0.15em] shadow-xl hover:bg-[var(--secondary)] hover:shadow-[0_0_25px_rgba(0,141,227,0.3)] transition-all transform hover:-translate-y-0.5 active:scale-95 border border-white/10">
               Agendar Cita
             </button>
           </nav>
