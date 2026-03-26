@@ -18,6 +18,9 @@ model Report {
   patientFirstName String
   patientLastName  String
   age             Int?
+  phone           String?
+  gender          String?
+  serviceType     String?
   solicitor       String?
   sampleType      String?
   receptionDate   DateTime?
@@ -26,8 +29,15 @@ model Report {
   microscopy      String?
   diagnosis       String?
   cost            Float?   @default(0)
+  transportCost   Float?   @default(0)
+  isPendingPayment Boolean @default(false)
   prepayment      Float?   @default(0)
   balance         Float?   @default(0)
+  contactName     String?
+  contactPhone    String?
+  studyMotive     String?
+  clinic          String?
+  expectedDeliveryDate DateTime?
   hasImages       Boolean  @default(false)
   
   createdAt       DateTime @default(now())

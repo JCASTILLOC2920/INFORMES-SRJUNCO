@@ -1,7 +1,21 @@
-import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
-import ImageModule from 'docxtemplater-image-module-free';
-import { saveAs } from 'file-saver';
+// Optimizaciones de Rendimiento Extremo (Modo Dios)
+// 1. Caching de Plantilla: O(1) acceso tras la primera carga.
+// 2. Lazy Loading: Las bibliotecas pesadas solo ocupan RAM cuando se generan informes.
+// 3. Pre-cÁlculo de Recursos: Imagen vacía pre-procesada.
+
+let templateCache: ArrayBuffer | null = null;
+let emptyImageBuffer: ArrayBuffer | null = null;
+
+const getEmptyImageBuffer = () => {
+  if (emptyImageBuffer) return emptyImageBuffer;
+  const emptyImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
+  const binary_string = window.atob(emptyImageBase64);
+  const len = binary_string.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) bytes[i] = binary_string.charCodeAt(i);
+  emptyImageBuffer = bytes.buffer;
+  return emptyImageBuffer;
+};
 
 export interface ReportData {
   atendido: string;
@@ -25,31 +39,36 @@ export interface ReportData {
 
 export const generateWordReport = async (data: ReportData) => {
   try {
-    const response = await fetch('/plantilla.docx');
-    if (!response.ok) throw new Error('No se pudo cargar la plantilla (.docx)');
+    // 1. CARGA DIFERIDA (Lazy Loading) - Libera RAM inicial
+    const [PizZip, Docxtemplater, ImageModule, { saveAs }] = await Promise.all([
+      import('pizzip').then(m => m.default),
+      import('docxtemplater').then(m => m.default),
+      import('docxtemplater-image-module-free').then(m => m.default),
+      import('file-saver')
+    ]);
+
+    // 2. CACHING AGRESIVO - Evita peticiones de red redundantes
+    if (!templateCache) {
+        const response = await fetch('/plantilla.docx');
+        if (!response.ok) throw new Error('No se pudo cargar la plantilla (.docx)');
+        templateCache = await response.arrayBuffer();
+    }
     
-    const arrayBuffer = await response.arrayBuffer();
-    const zip = new PizZip(arrayBuffer);
+    const zip = new PizZip(templateCache);
 
     const imageOptions = {
       centered: false,
       getImage(tagValue: any) {
         return new Promise((resolve) => {
           if (!tagValue) {
-            // Transparent 1x1 pixel if no image provided
-            const emptyImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==";
-            const binary_string = window.atob(emptyImageBase64);
-            const len = binary_string.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) bytes[i] = binary_string.charCodeAt(i);
-            resolve(bytes.buffer);
+            resolve(getEmptyImageBuffer());
           } else {
             resolve(tagValue);
           }
         });
       },
       getSize() {
-        return [300, 225]; // slightly smaller to fit multiple on a page
+        return [300, 225];
       }
     };
 

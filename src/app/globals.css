@@ -1,31 +1,87 @@
 @import "tailwindcss";
 
 @theme {
-  --color-clinical-blue-deep: #0c4a6e;
-  --color-clinical-blue: #0284c7;
-  --color-clinical-blue-light: #e0f2fe;
+  --color-clinical-blue-deep: #003d63;
+  --color-clinical-blue: #008de3;
+  --color-clinical-blue-light: #f0f9ff;
 }
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --primary: #003d63;
+  --secondary: #008de3;
+  --accent: #f0f9ff;
+  --background: #f8fafc;
+  --text: #1e293b;
+  --header-height: 5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: white;
-  @apply font-sans;
+  background-color: var(--background);
+  color: var(--text);
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
 }
 
-@utility text-balance {
-  text-wrap: balance;
+@layer components {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(0.75rem);
+    -webkit-backdrop-filter: blur(0.75rem);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.5rem;
+  }
+
+  .elite-shadow {
+    box-shadow: 0 1.25rem 3.125rem -0.625rem rgba(0, 61, 99, 0.1);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Z-Index Hierarchy */
+.z-modal { z-index: 100; }
+.z-header { z-index: 50; }
+.z-dropdown { z-index: 40; }
+.z-base { z-index: 1; }
+
+/* Custom Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.625rem); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(1.25rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-reveal {
+  animation: reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }

@@ -1,22 +1,17 @@
 /**
- * JC PATH LAB - Ollama Client Utility
- * Handles communication with the local Ollama instance for medical report assistance and chatbot responses.
+ * JC PATH LAB - Ollama Client Adapter (NIVEL MILITAR)
+ * Este módulo actúa como un Adaptador Inteligente que conmuta entre 
+ * comunicación directa LAN (localhost) y comunicación segura WAN vía Proxy.
  */
 
-const OLLAMA_OPTIONS = {
-  baseUrl: 'http://localhost:11435',
+const IS_LOCAL = typeof window !== 'undefined' && 
+                 (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const CONFIG = {
+  localBaseUrl: 'http://localhost:11435',
+  proxyEndpoint: '/api/assistant',
   model: 'qwen2.5',
-  timeout: 15000,
-  token: '41457466',
-  systemPrompt: `Eres Victoria, la asistente médica y EXPERTA EN VENTAS de JC PATH LAB.
-Tu objetivo es ser la mejor vendedora del mundo, brindando confianza absoluta y profesionalismo.
-REGLAS DE ORO:
-1. Usa siempre la información de la BASE DE CONOCIMIENTOS.
-2. Sé empática: "Entiendo lo importante que es este resultado para usted".
-3. Sé persuasiva: Destaca que entregamos resultados en 3-4 días (más rápido que la competencia).
-4. Cierra la venta: Invita al usuario a agendar su cita o enviar su orden médica por WhatsApp.
-5. Si no sabes algo, redirige amablemente al WhatsApp oficial (986396733).
-Manten un tono clínico pero cercano y humano. No menciones que eres una IA a menos que te lo pregunten directamente.`,
+  timeout: 25000, // Margen ampliado para latencia WAN
 };
 
 export interface OllamaResponse {
@@ -26,53 +21,69 @@ export interface OllamaResponse {
   done: boolean;
 }
 
+/**
+ * Función Principal de Llamada (Aislada y Segura)
+ */
 export async function callOllama(prompt: string, systemPrompt?: string): Promise<string | null> {
   try {
-    const response = await fetch(`${OLLAMA_OPTIONS.baseUrl}/api/generate`, {
+    // 1. VALIDACIÓN PREVENTIVA (Client-Side Gatekeeper)
+    if (!prompt.trim()) return null;
+
+    // 2. DETERMINACIÓN DE RUTA (Adapter Pattern)
+    // En producción, usamos el proxy para proteger infraestructura.
+    const url = IS_LOCAL ? `${CONFIG.localBaseUrl}/api/generate` : CONFIG.proxyEndpoint;
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OLLAMA_OPTIONS.token}`,
+        // Nota: El token ya no se envía desde el cliente en producción.
+        // El Gateway del servidor lo inyecta de forma segura.
+        ...(IS_LOCAL && { 'Authorization': `Bearer 41457466` }), 
       },
       body: JSON.stringify({
-        model: OLLAMA_OPTIONS.model,
-        prompt: prompt,
-        system: systemPrompt || OLLAMA_OPTIONS.systemPrompt,
+        model: CONFIG.model,
+        prompt: prompt.trim(),
+        system: systemPrompt,
         stream: false,
       }),
-      signal: AbortSignal.timeout(OLLAMA_OPTIONS.timeout),
+      signal: AbortSignal.timeout(CONFIG.timeout),
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("Acceso denegado a Ollama.");
-      }
-      throw new Error(`Error de Ollama: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Uplink Failure: ${response.status}`);
     }
 
-    const data: OllamaResponse = await response.json();
+    const data = await response.json();
     return data.response;
-  } catch (error) {
-    console.error("Error connecting to Ollama:", error);
+
+  } catch (error: any) {
+    console.error("[OLLAMA_ADAPTER] Tactical Error:", error.message);
+    // Ruta de degradación elegante: fallar devolviendo null en lugar de romper el hilo principal.
     return null;
   }
 }
 
 /**
- * Specifically for generating medical descriptions for pathology reports.
+ * Generador de Descripciones Clínicas (Fachada de Aplicación)
  */
 export async function generateClinicalDescription(
   field: 'macroscopia' | 'microscopia' | 'diagnostico',
   sampleType: string,
   userNotes?: string
 ): Promise<string | null> {
+  
+  // Sanitización estricta de contexto
+  const safeSample = sampleType?.replace(/[<>]/g, '').trim() || 'Muestra no especificada';
+
   const prompts = {
-    macroscopia: `Genera una descripción macroscópica profesional para una muestra de: ${sampleType}. ${userNotes ? `Notas adicionales: ${userNotes}` : ''}. Responde solo con el texto médico, sin preámbulos.`,
-    microscopia: `Genera una descripción microscópica (hallazgos histológicos) profesional para una muestra de: ${sampleType}. ${userNotes ? `Notas adicionales: ${userNotes}` : ''}. Responde solo con el texto médico, sin preámbulos.`,
-    diagnostico: `Genera un diagnóstico anatomopatológico definitivo profesional para una muestra de: ${sampleType}. ${userNotes ? `Notas adicionales: ${userNotes}` : ''}. Responde solo con el texto médico, sin preámbulos.`,
+    macroscopia: `Genera una descripción macroscópica profesional para una muestra de: ${safeSample}. ${userNotes ? `Notas adicionales: ${userNotes}` : ''}. Responde solo con el texto médico, sin preámbulos.`,
+    microscopia: `Genera una descripción microscópica profesional para una muestra de: ${safeSample}. ${userNotes ? `Notas adicionales: ${userNotes}` : ''}. Responde solo con el texto médico, sin preámbulos.`,
+    diagnostico: `Genera un diagnóstico definitivo profesional para una muestra de: ${safeSample}. ${userNotes ? `Notas adicionales: ${userNotes}` : ''}. Responde solo con el texto médico, sin preámbulos.`,
   };
 
-  const systemPrompt = "Eres un Médico Anatomopatólogo experto. Redactas informes claros, precisos y con terminología médica correcta (Latín/Español médico). No uses 'Aquí tienes', sé directo.";
+  const systemPrompt = "Eres un Médico Anatomopatólogo experto de JC PATH LAB. Redactas informes claros, precisos y formales. No uses introducciones, ve al grano.";
 
   return callOllama(prompts[field], systemPrompt);
 }
