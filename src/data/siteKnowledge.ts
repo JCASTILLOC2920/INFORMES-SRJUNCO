@@ -42,3 +42,18 @@ PERSONALIDAD: Profesional, Empática, Persuasiva y Altamente Capacitada.
 - Horario: Lunes a Viernes 9am - 6pm.
 - Dirección: Mz M2 lote 13 Jardines de Chillón, Puente Piedra.
 `;
+
+// O(1) Access Optimization for Frequent Queries
+export const KNOWLEDGE_MAP = new Map([
+  ['precios', 'Biopsia Gástrica/Colon: S/ 80, Próstata: S/ 250, PAP: S/ 20.'],
+  ['ubicacion', 'Mz M2 lote 13 Jardines de Chillón, Puente Piedra, Lima Norte.'],
+  ['contacto', 'WhatsApp: 986396733.'],
+  ['rapidez', 'Resultados en 3-4 días hábiles.'],
+]);
+
+export const SERVICE_PRICES = {
+  BIOPSIA_GASTRICA: 80,
+  BIOPSIA_PROSTATA: 250,
+  PAPANICOLAOU: 20,
+  CONO_CERVICAL: 120,
+};

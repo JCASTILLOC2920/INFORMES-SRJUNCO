@@ -1,16 +1,22 @@
 import Link from 'next/link';
+import React from 'react';
+import { NAV_LINKS } from '@/data/publicContent';
+
+const FooterLink = React.memo(({ link }: { link: typeof NAV_LINKS[0] }) => (
+  <li>
+    <Link href={link.href} className="hover:text-[var(--cyan-pulse)] transition-all flex items-center group">
+      <span className="w-0 h-[2px] bg-[var(--cyan-pulse)] mr-0 group-hover:w-3 group-hover:mr-3 transition-all"></span>
+      {link.name}
+    </Link>
+  </li>
+));
+
+FooterLink.displayName = 'FooterLink';
 
 export default function Footer() {
-  const navLinks = [
-    { name: 'Inicio', href: '/' },
-    { name: 'Servicios', href: '#servicios' },
-    { name: 'Nosotros', href: '#nosotros' },
-    { name: 'Contacto', href: '#contacto' },
-  ];
-
   return (
     <footer className="footer-nexus bg-[var(--nexus-void)] text-gray-400 py-[8rem] border-t border-white/5 relative overflow-hidden">
-      {/* Footer Accent */}
+      {/* Footer Accent - O(1) impact */}
       <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-[var(--secondary)]/10 rounded-full blur-[150px] -z-10 animate-pulse-aura"></div>
       
       <div className="container mx-auto px-[1.5rem] relative z-10">
@@ -32,13 +38,8 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-black text-[0.7rem] uppercase tracking-[0.4em] mb-8">Estrategia</h4>
             <ul className="space-y-4 text-[0.95rem] font-medium">
-              {navLinks.map(link => (
-                <li key={link.name}>
-                    <Link href={link.href} className="hover:text-[var(--cyan-pulse)] transition-all flex items-center group">
-                        <span className="w-0 h-[2px] bg-[var(--cyan-pulse)] mr-0 group-hover:w-3 group-hover:mr-3 transition-all"></span>
-                        {link.name}
-                    </Link>
-                </li>
+              {NAV_LINKS.map(link => (
+                <FooterLink key={link.name} link={link} />
               ))}
             </ul>
           </div>

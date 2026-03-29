@@ -1,37 +1,24 @@
-export default function WhyUs() {
-  const features = [
-    {
-      title: "Trayectoria Comprobada",
-      description: "+15 años de experiencia liderando diagnósticos oncológicos de alta complejidad.",
-      icon: (
-        <svg className="w-[1.6rem] h-[1.6rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    {
-      title: "Volumen Diagnóstico",
-      description: "+50,000 estudios realizados con 100% de confianza médica en todo el Perú.",
-      icon: (
-        <svg className="w-[1.6rem] h-[1.6rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    {
-      title: "Rapidez y Eficiencia",
-      description: "Resultados en 3-4 días hábiles, guía fundamental para el inicio de tratamiento.",
-      icon: (
-        <svg className="w-[1.6rem] h-[1.6rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      )
-    }
-  ];
+import React from 'react';
+import { FEATURES } from '@/data/publicContent';
 
+const FeatureItem = React.memo(({ feature }: { feature: typeof FEATURES[0] }) => (
+  <div className="flex items-start space-x-[2.5rem] group">
+    <div className="flex-shrink-0 w-[5rem] h-[5rem] bg-[var(--accent)] text-[var(--secondary)] rounded-[2rem] flex items-center justify-center shadow-xl border border-[var(--secondary)]/5 group-hover:bg-[var(--secondary)] group-hover:text-white transition-all duration-700 transform group-hover:rotate-[15deg]">
+      {feature.icon}
+    </div>
+    <div className="pt-2">
+      <h3 className="text-[1.5rem] font-black text-[var(--nexus-void)] mb-[0.75rem] tracking-tight group-hover:text-[var(--secondary)] transition-colors duration-500">{feature.title}</h3>
+      <p className="text-gray-500 text-[1rem] leading-relaxed font-medium opacity-80 group-hover:opacity-100 transition-opacity duration-500">{feature.description}</p>
+    </div>
+  </div>
+));
+
+FeatureItem.displayName = 'FeatureItem';
+
+export default function WhyUs() {
   return (
     <section id="nosotros" className="py-[10rem] bg-white overflow-hidden relative">
-      {/* Background Decorative Grid */}
+      {/* Background Decorative Grid - O(1) impact */}
       <div className="absolute inset-0 -z-10 opacity-[0.02] pointer-events-none" 
            style={{ backgroundImage: 'linear-gradient(var(--secondary) 1px, transparent 1px), linear-gradient(90deg, var(--secondary) 1px, transparent 1px)', backgroundSize: '60px 60px' }}>
       </div>
@@ -55,16 +42,8 @@ export default function WhyUs() {
           </div>
           
           <div className="space-y-[4rem] px-[1rem] sm:px-[0rem] stagger-reveal">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-start space-x-[2.5rem] group">
-                <div className="flex-shrink-0 w-[5rem] h-[5rem] bg-[var(--accent)] text-[var(--secondary)] rounded-[2rem] flex items-center justify-center shadow-xl border border-[var(--secondary)]/5 group-hover:bg-[var(--secondary)] group-hover:text-white transition-all duration-700 transform group-hover:rotate-[15deg]">
-                  {feature.icon}
-                </div>
-                <div className="pt-2">
-                  <h3 className="text-[1.5rem] font-black text-[var(--nexus-void)] mb-[0.75rem] tracking-tight group-hover:text-[var(--secondary)] transition-colors duration-500">{feature.title}</h3>
-                  <p className="text-gray-500 text-[1rem] leading-relaxed font-medium opacity-80 group-hover:opacity-100 transition-opacity duration-500">{feature.description}</p>
-                </div>
-              </div>
+            {FEATURES.map((feature) => (
+              <FeatureItem key={feature.id} feature={feature} />
             ))}
           </div>
         </div>

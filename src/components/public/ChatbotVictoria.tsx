@@ -10,8 +10,8 @@ interface Message {
   sender: 'user' | 'bot';
 }
 
-const ChatbotVictoria = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const ChatbotVictoria = ({ initialOpen = false }: { initialOpen?: boolean }) => {
+  const [isOpen, setIsOpen] = useState(initialOpen);
   const [messages, setMessages] = useState<Message[]>([
     { text: '¡Hola! Soy Victoria, su asistente médica en JC PATH LAB. ¿En qué puedo ayudarle hoy? 🩺', sender: 'bot' }
   ]);
@@ -165,13 +165,6 @@ const ChatbotVictoria = () => {
         </div>
       </div>
 
-      <button 
-        className="chat-toggle-btn"
-        onClick={() => setIsOpen(true)}
-        aria-label="Abrir Chat"
-      >
-        💬
-      </button>
     </>
   );
 };
