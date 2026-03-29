@@ -18,7 +18,6 @@ export default function Header() {
   const navLinks = [
     { name: 'Inicio', href: '/' },
     { name: 'Registro', href: '/admin/reports/new' },
-    { name: 'Listado', href: '/admin/reports/history' },
     { name: 'Servicios', href: '#servicios' },
     { name: 'Contacto', href: '#contacto' },
   ];

@@ -13,6 +13,7 @@ export default function RegistroPaciente() {
   
   const [formData, setFormData] = useState<ReportFormData>({
     serviceType: 'SELECCIONAR',
+    registrationDate: new Date().toISOString().split('T')[0],
     attentionCode: '',
     patientDni: '',
     patientFirstName: '',

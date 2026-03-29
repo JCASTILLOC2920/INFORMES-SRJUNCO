@@ -1,5 +1,6 @@
 export interface ReportFormData {
   serviceType: string;
+  registrationDate: string;
   attentionCode: string;
   patientDni: string;
   patientFirstName: string;

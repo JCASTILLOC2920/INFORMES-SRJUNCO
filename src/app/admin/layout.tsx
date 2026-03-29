@@ -13,7 +13,7 @@ export default function AdminLayout({
 
   const menuItems = [
     { href: '/', icon: <HomeIcon />, label: 'Sitio Principal' },
-    { href: '/admin', icon: <DashboardIcon />, label: 'Dashboard' },
+    { href: '/admin', icon: <DashboardIcon />, label: 'Lista de Pacientes' },
     { href: '/admin/reports/new', icon: <PlusIcon />, label: 'Nuevo Informe' },
     { href: '/admin/reports/history', icon: <HistoryIcon />, label: 'Historial' },
     { href: '/admin/billing', icon: <BillingIcon />, label: 'Gestión Boletas' },
@@ -81,7 +81,7 @@ export default function AdminLayout({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
           </button>
-          <span className="ml-[1rem] text-[0.9rem] font-bold text-[#003d63] uppercase tracking-wider">Admin Dashboard</span>
+          <span className="ml-[1rem] text-[0.9rem] font-bold text-[#003d63] uppercase tracking-wider">Lista de Pacientes</span>
         </header>
 
         <main className="flex-1 overflow-y-auto p-[1rem] sm:p-[2rem] relative bg-[#f8fafc]">

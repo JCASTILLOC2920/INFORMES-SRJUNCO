@@ -38,8 +38,8 @@ export default function AdminDashboard() {
       {/* Dashboard Header - Fluid */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-[1.5rem] px-[0.5rem]">
         <div>
-          <p className="text-[#008de3] font-black text-[0.65rem] uppercase tracking-[0.3em] mb-[0.5rem]">Panel Médico Administrativo</p>
-          <h1 className="text-[2rem] sm:text-[2.5rem] font-black text-[#003d63] tracking-tighter leading-tight">Archivo Digital de Informes</h1>
+          <p className="text-[#008de3] font-black text-[0.65rem] uppercase tracking-[0.3em] mb-[0.5rem]">Base de Datos (Orden de Ingreso)</p>
+          <h1 className="text-[2rem] sm:text-[2.5rem] font-black text-[#003d63] tracking-tighter leading-tight">Lista de Pacientes</h1>
         </div>
         <div className="flex flex-wrap gap-[0.75rem] w-full lg:w-auto">
             <Link href="/admin/reports/history" className="flex-1 lg:flex-none justify-center bg-white text-[#003d63] border border-gray-100 px-[1.5rem] py-[1rem] rounded-2xl font-black text-[0.75rem] shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center space-x-[0.5rem] uppercase tracking-widest">
