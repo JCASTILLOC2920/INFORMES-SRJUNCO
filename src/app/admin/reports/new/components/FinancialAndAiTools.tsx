@@ -41,19 +41,22 @@ export const ReferenceSection = React.memo(({ formData, handleInputChange }: Sec
 ));
 
 export const FinancialSection = React.memo(({ formData, handleInputChange }: SectionProps) => (
-  <section className="pt-[1rem] border-t border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-[1.5rem] items-end">
-    <FormGroup label="Costo Transporte">
+  <section className="pt-[1rem] border-t border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-[1.5rem]">
+    <FormGroup label="Costo Transporte" className="h-full">
       <input type="text" name="transportCost" value={formData.transportCost} onChange={handleInputChange} className={`w-full text-right ${inputStyle}`} />
-      <label className="flex items-center gap-[0.5rem] mt-[0.5rem] cursor-pointer group">
+      <label className="flex items-center gap-[0.5rem] mt-[0.5rem] cursor-pointer group h-[1.5rem]">
         <input type="checkbox" name="isPendingPayment" checked={formData.isPendingPayment} onChange={handleInputChange} className="w-[1.25rem] h-[1.25rem] rounded border-2 border-[#003d63] accent-[#003d63] transition-colors" />
         <span className="text-[0.65rem] font-black text-[#003d63] group-hover:text-[#008de3] uppercase tracking-wider transition-colors pt-1">Pago Pendiente</span>
       </label>
     </FormGroup>
-    <FormGroup label="Adelanto">
+    <FormGroup label="Adelanto" className="h-full">
        <input type="text" name="prepayment" value={formData.prepayment} onChange={handleInputChange} className={`w-full text-right ${inputStyle}`} />
+       <div className="mt-[0.5rem] h-[1.5rem]" /> {/* Espaciador de alineación */}
     </FormGroup>
-    <FormGroup label="Fecha Probable Entrega">
+    <FormGroup label="Fecha Probable Entrega" className="h-full">
       <input type="date" name="expectedDeliveryDate" value={formData.expectedDeliveryDate} onChange={handleInputChange} className={`w-full ${inputStyle}`} />
+      <div className="mt-[0.5rem] h-[1.5rem]" /> {/* Espaciador de alineación */}
     </FormGroup>
   </section>
 ));
+

@@ -150,7 +150,7 @@ export default function RegistroPaciente() {
             disabled={loading} 
             className="w-full sm:w-auto bg-[#003d63] text-white px-[4rem] py-[1rem] rounded-xl font-black uppercase text-[0.8rem] tracking-[0.2em] hover:bg-[#008de3] transition-all shadow-xl shadow-blue-900/10 disabled:opacity-50"
           >
-            {loading ? 'Procesando...' : 'Guardar Registro'}
+            {loading ? 'Procesando...' : 'Registrar Paciente'}
           </button>
         </div>
       </div>

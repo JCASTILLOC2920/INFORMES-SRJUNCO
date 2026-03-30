@@ -3,25 +3,50 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import EditReportModal from '@/components/admin/EditReportModal';
 
 export default function AdminDashboard() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+  const fetchReports = async () => {
+    try {
+      const res = await fetch('/api/reports');
+      const data = await res.json();
+      setReports(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error('Failed to load reports');
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const res = await fetch('/api/reports');
-        const data = await res.json();
-        setReports(Array.isArray(data) ? data : []);
-      } catch (e) {
-        console.error('Failed to load reports');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchReports();
   }, []);
+
+  const handleEditClick = (report: any) => {
+    setSelectedReport(report);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async (updatedData: any) => {
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+      });
+      if (res.ok) {
+        alert('Registro actualizado.');
+        setIsEditModalOpen(false);
+        fetchReports();
+      }
+    } catch (error) {
+      alert('Error al actualizar.');
+    }
+  };
 
   const stats = [
     { label: "Informes Totales", value: reports.length.toString(), change: "+2", status: "up" },
@@ -48,7 +73,7 @@ export default function AdminDashboard() {
             </Link>
             <Link href="/admin/reports/new" className="flex-1 lg:flex-none justify-center bg-[#003d63] text-white px-[2rem] py-[1rem] rounded-2xl font-black text-[0.75rem] shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center space-x-[0.5rem] uppercase tracking-widest">
                 <svg className="w-[1.25rem] h-[1.25rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
-                <span>Nuevo Reporte</span>
+                <span>Registrar Paciente</span>
             </Link>
         </div>
       </div>
@@ -132,7 +157,7 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-[1.5rem] py-[1rem]">
                                 <div className="flex justify-center gap-[0.25rem]">
-                                    <ActionButton icon="edit" />
+                                    <ActionButton icon="edit" onClick={() => handleEditClick(report)} />
                                     <ActionButton icon="view" />
                                     <ActionButton icon="print" />
                                     <ActionButton icon="delete" variant="danger" />
@@ -144,11 +169,17 @@ export default function AdminDashboard() {
             </table>
         </div>
       </div>
+      <EditReportModal 
+        isOpen={isEditModalOpen} 
+        report={selectedReport} 
+        onClose={() => setIsEditModalOpen(false)} 
+        onSave={handleSaveEdit}
+      />
     </div>
   );
 }
 
-function ActionButton({ icon, variant = 'default' }: { icon: string, variant?: 'default' | 'danger' | 'success' }) {
+function ActionButton({ icon, onClick, variant = 'default' }: { icon: string, onClick?: () => void, variant?: 'default' | 'danger' | 'success' }) {
     const icons: any = {
         edit: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>,
         view: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>,
@@ -164,8 +195,9 @@ function ActionButton({ icon, variant = 'default' }: { icon: string, variant?: '
     };
 
     return (
-        <button className={`p-[0.5rem] rounded-xl transition-all border border-transparent hover:border-gray-100 ${colors[variant]}`}>
+        <button onClick={onClick} className={`p-[0.5rem] rounded-xl transition-all border border-transparent hover:border-gray-100 ${colors[variant]}`}>
             {icons[icon]}
         </button>
     );
 }
+

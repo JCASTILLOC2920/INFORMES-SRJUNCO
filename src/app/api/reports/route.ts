@@ -36,6 +36,7 @@ export async function POST(request: Request) {
         patientFirstName: body.patientFirstName,
         patientLastName: body.patientLastName,
         age: age,
+        // @ts-ignore
         phone: body.phone,
         gender: body.gender,
         serviceType: body.serviceType,
@@ -65,3 +66,50 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create report' }, { status: 500 });
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { id } = body;
+
+    if (!id) return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+
+    const cost = parseFloat(body.cost) || 0;
+    const prepayment = parseFloat(body.prepayment) || 0;
+    const balance = cost - prepayment;
+
+    const report = await prisma.report.update({
+      where: { id },
+      data: {
+        attentionCode: body.attentionCode,
+        patientDni: body.patientDni,
+        patientFirstName: body.patientFirstName,
+        patientLastName: body.patientLastName,
+        age: body.age ? parseInt(body.age) : undefined,
+        // @ts-ignore
+        phone: body.phone,
+        gender: body.gender,
+        serviceType: body.serviceType,
+        solicitor: body.solicitor,
+        sampleType: body.sampleType,
+        macroscopy: body.macroscopy,
+        microscopy: body.microscopy,
+        diagnosis: body.diagnosis,
+        cost,
+        prepayment,
+        balance,
+        contactName: body.contactName,
+        contactPhone: body.contactPhone,
+        studyMotive: body.studyMotive,
+        clinic: body.clinic,
+        expectedDeliveryDate: body.expectedDeliveryDate ? new Date(body.expectedDeliveryDate) : undefined,
+      },
+    });
+    return NextResponse.json(report);
+  } catch (error) {
+    console.error('API Update Error:', error);
+    return NextResponse.json({ error: 'Failed to update report' }, { status: 500 });
+  }
+}
+
+

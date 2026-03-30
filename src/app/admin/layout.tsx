@@ -22,7 +22,7 @@ export default function AdminLayout({
   const menuItems = [
     { href: '/', icon: <HomeIcon />, label: 'Sitio Principal' },
     { href: '/admin', icon: <DashboardIcon />, label: 'Lista de Pacientes' },
-    { href: '/admin/reports/new', icon: <PlusIcon />, label: 'Nuevo Informe' },
+    { href: '/admin/reports/new', icon: <PlusIcon />, label: 'Registrar Paciente' },
     { href: '/admin/reports/history', icon: <HistoryIcon />, label: 'Historial' },
     { href: '/admin/billing', icon: <BillingIcon />, label: 'Gestión Boletas' },
     { href: '/admin/settings', icon: <SettingsIcon />, label: 'Configuración' },
