@@ -3,7 +3,7 @@ import React from 'react';
 import { SPECIALTIES } from '@/data/publicContent';
 
 const ServiceCard = React.memo(({ item }: { item: typeof SPECIALTIES[0] }) => (
-  <div className="glow-card nexus-border p-[3rem] rounded-[2.5rem] hover:shadow-[0_25px_70px_rgba(0,141,227,0.12)] transition-all duration-700 group hover:-translate-y-3 relative overflow-hidden flex flex-col h-full">
+  <div className="glow-card nexus-border p-[2rem] md:p-[3rem] rounded-[2.5rem] hover:shadow-[0_25px_70px_rgba(0,141,227,0.12)] transition-all duration-700 group hover:-translate-y-3 relative overflow-hidden flex flex-col h-full">
     <div className="absolute top-0 right-0 w-[10rem] h-[10rem] bg-gradient-to-br from-[var(--secondary)]/10 to-transparent rounded-full -mr-[5rem] -mt-[5rem] group-hover:scale-150 transition-transform duration-1000"></div>
     
     <div className="w-[5.5rem] h-[5.5rem] bg-white text-[var(--secondary)] rounded-[1.8rem] flex items-center justify-center mb-[2.5rem] group-hover:bg-[var(--secondary)] group-hover:text-white transition-all duration-700 shadow-xl border border-[var(--secondary)]/10 p-4">
@@ -45,7 +45,7 @@ export default function Services() {
       <div className="container mx-auto px-[1.5rem]">
         <div className="text-center mb-[6rem] animate-reveal">
           <span className="text-[var(--secondary)] font-black text-[0.7rem] uppercase tracking-[0.5em] mb-[1.5rem] block">Excelencia Diagnóstica</span>
-          <h2 className="text-[3rem] md:text-[4.2rem] font-black text-[var(--nexus-void)] mb-[1.5rem] tracking-tighter leading-none italic">
+          <h2 className="text-[2.2rem] sm:text-[3rem] md:text-[4.2rem] font-black text-[var(--nexus-void)] mb-[1.5rem] tracking-tighter leading-none italic">
             Servicios de <span className="text-gradient">Alta Complejidad</span>
           </h2>
           <div className="w-[8rem] h-[0.3rem] bg-gradient-to-r from-transparent via-[var(--cyan-pulse)] to-transparent mx-auto rounded-full opacity-40"></div>

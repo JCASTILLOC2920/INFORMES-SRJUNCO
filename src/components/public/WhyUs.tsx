@@ -25,10 +25,10 @@ export default function WhyUs() {
 
       <div className="container mx-auto px-[1.5rem]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-[6rem] items-center">
-          <div className="bg-[var(--nexus-void)] rounded-[3.5rem] p-[3.5rem] sm:p-[5rem] text-white relative overflow-hidden shadow-[0_40px_100px_rgba(0,27,46,0.3)] group transition-all duration-1000 animate-reveal">
+          <div className="bg-[var(--nexus-void)] rounded-[3.5rem] p-[2rem] sm:p-[5rem] text-white relative overflow-hidden shadow-[0_40px_100px_rgba(0,27,46,0.3)] group transition-all duration-1000 animate-reveal">
              <div className="relative z-10">
                 <span className="text-[var(--cyan-pulse)] font-black text-[0.7rem] uppercase tracking-[0.5em] mb-[1.5rem] block">Misión de Precisión</span>
-                <h2 className="text-[2.8rem] md:text-[3.5rem] font-black mb-[2rem] leading-[1.1] tracking-tighter italic">Comprometidos con la <span className="text-[var(--secondary)]">excelencia</span> diagnóstica.</h2>
+                <h2 className="text-[2.2rem] md:text-[3.5rem] font-black mb-[2rem] leading-[1.1] tracking-tighter italic">Comprometidos con la <span className="text-[var(--secondary)]">excelencia</span> diagnóstica.</h2>
                 <p className="text-blue-100/60 text-[1.15rem] mb-[3.5rem] leading-relaxed font-medium border-l-2 border-[var(--cyan-pulse)]/30 pl-8">
                   En JC PATH LAB, entendemos que cada muestra representa una vida. Nuestra ingeniería diagnóstica sigue los más rigurosos estándares globales para garantizar la máxima exactitud.
                 </p>

@@ -27,7 +27,7 @@ export default function Hero() {
 
       <div className="container mx-auto px-[1.5rem] z-10 grid lg:grid-cols-2 gap-[4rem] items-center">
         <div className="max-w-[42rem] order-2 lg:order-1 stagger-reveal">
-          <h1 className="text-[3.2rem] md:text-[5rem] font-black text-[#1e293b] leading-[1] mb-[1.5rem] tracking-tighter">
+          <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5rem] font-black text-[#1e293b] leading-[1.05] mb-[1.5rem] tracking-tighter">
             <span className="text-gradient block">JC PATH LAB</span>
             <span className="relative inline-block mt-2">
               Patología de Precisión
@@ -65,7 +65,7 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="absolute -bottom-6 -left-6 z-20 glow-card p-6 rounded-2xl animate-float">
+            <div className="absolute bottom-2 md:-bottom-6 left-2 md:-left-6 z-20 glow-card p-4 md:p-6 rounded-2xl animate-float scale-90 md:scale-100 origin-bottom-left">
                 <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 rounded-xl bg-[var(--secondary)] flex items-center justify-center text-white shadow-lg">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
