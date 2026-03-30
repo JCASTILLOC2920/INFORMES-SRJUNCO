@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import EditReportModal from '@/components/admin/EditReportModal';
+import { exportReportToPdf, exportReportToWord } from '@/utils/reportExporter';
 
 export default function AdminDashboard() {
   const [reports, setReports] = useState<any[]>([]);
@@ -159,7 +160,7 @@ export default function AdminDashboard() {
                                 <div className="flex justify-center gap-[0.25rem]">
                                     <ActionButton icon="edit" onClick={() => handleEditClick(report)} />
                                     <ActionButton icon="view" />
-                                    <ActionButton icon="print" />
+                                    <ActionButton icon="print" onClick={() => exportReportToPdf(report)} />
                                     <ActionButton icon="delete" variant="danger" />
                                 </div>
                             </td>

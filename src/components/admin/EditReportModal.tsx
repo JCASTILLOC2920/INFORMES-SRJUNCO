@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { exportReportToPdf } from '@/utils/reportExporter';
 import { ReportFormData } from '@/types/PatientFormTypes';
 
 interface EditReportModalProps {
@@ -123,6 +124,13 @@ export default function EditReportModal({ report, isOpen, onClose, onSave }: Edi
 
             <div className="p-[1.5rem] border-t border-gray-100 flex justify-end gap-[1rem] bg-gray-50/50">
                <button onClick={onClose} className="px-[2rem] py-[0.8rem] rounded-xl font-black uppercase text-[0.75rem] text-gray-400 hover:bg-gray-200 transition-all">Cancelar</button>
+               <button 
+                onClick={() => exportReportToPdf(formData)} 
+                className="bg-amber-500 text-white px-[2rem] py-[0.8rem] rounded-xl font-black uppercase text-[0.75rem] tracking-widest shadow-lg hover:bg-amber-600 transition-all flex items-center gap-2"
+               >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  <span>Exportar PDF</span>
+               </button>
                <button onClick={() => onSave(formData)} className="bg-[#003d63] text-white px-[3rem] py-[0.8rem] rounded-xl font-black uppercase text-[0.75rem] tracking-widest shadow-lg hover:bg-[#008de3] transition-all">Guardar Cambios</button>
             </div>
           </div>
