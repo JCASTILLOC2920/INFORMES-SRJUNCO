@@ -159,8 +159,10 @@ const ChatbotVictoria = ({ initialOpen = false }: { initialOpen?: boolean }) => 
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
           />
-          <button className="send-btn" onClick={handleSend}>
-            <i className="fas fa-paper-plane" />
+          <button className="send-btn" aria-label="Enviar" onClick={handleSend}>
+            <svg className="w-5 h-5 fill-current text-white translate-x-[2px]" viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
           </button>
         </div>
       </div>
