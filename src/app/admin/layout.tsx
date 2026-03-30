@@ -11,6 +11,12 @@ export default function AdminLayout({
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.href = '/login';
+  };
+
   const menuItems = [
     { href: '/', icon: <HomeIcon />, label: 'Sitio Principal' },
     { href: '/admin', icon: <DashboardIcon />, label: 'Lista de Pacientes' },
@@ -57,13 +63,15 @@ export default function AdminLayout({
         </nav>
 
         <div className="p-[1rem] border-t border-white/10 bg-[#002a45]">
-          <div className="flex items-center space-x-[0.75rem] px-[0.5rem] py-[0.75rem] rounded-xl hover:bg-white/5 cursor-pointer transition-all">
-            <div className="w-[2rem] h-[2rem] rounded-full bg-[#008de3] flex items-center justify-center text-white font-black text-[0.7rem] shadow-lg">
-              JP
+          <div onClick={handleLogout} className="flex items-center space-x-[0.75rem] px-[0.5rem] py-[0.75rem] rounded-xl hover:bg-red-500/20 cursor-pointer transition-all group" title="Cerrar el sistema y borrar cookies">
+            <div className="w-[2rem] h-[2rem] rounded-full bg-[#008de3] group-hover:bg-red-500 flex items-center justify-center text-white font-black text-[0.7rem] shadow-lg transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
             </div>
             <div className="flex-grow min-w-0">
-              <p className="text-[0.75rem] font-bold truncate">Dr. Josehp Castillo</p>
-              <p className="text-[0.6rem] text-blue-200/60 truncate uppercase font-bold tracking-wider">Patólogo Principal</p>
+              <p className="text-[0.75rem] font-bold truncate group-hover:text-red-400 transition-colors">Cerrar Sesión</p>
+              <p className="text-[0.6rem] text-blue-200/60 truncate uppercase font-bold tracking-wider group-hover:text-red-400/60">Bloquear Sistema</p>
             </div>
           </div>
         </div>
