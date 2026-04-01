@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import EditReportModal from '@/components/admin/EditReportModal';
@@ -40,32 +40,34 @@ export default function HistorialPacientes() {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const filteredReports = reports.filter(report => {
-    const matchesType = activeType === 'ALL' || report.attentionCode?.startsWith(activeType);
-    const matchesCode = !filters.attentionCode || report.attentionCode?.toLowerCase().includes(filters.attentionCode.toLowerCase());
-    const matchesDni = !filters.dni || report.patientDni?.includes(filters.dni);
-    const matchesFirstName = !filters.patientName || report.patientFirstName?.toLowerCase().includes(filters.patientName.toLowerCase());
-    const matchesLastName = !filters.patientLastName || report.patientLastName?.toLowerCase().includes(filters.patientLastName.toLowerCase());
-    const matchesSolicitor = !filters.solicitor || report.solicitor?.toLowerCase().includes(filters.solicitor.toLowerCase());
-    
-    // Date filtering
-    let matchesDate = true;
-    if (filters.startDate || filters.endDate) {
-      const reportDate = new Date(report.receptionDate || report.createdAt);
-      if (filters.startDate) {
-        const start = new Date(filters.startDate);
-        start.setHours(0, 0, 0, 0);
-        if (reportDate < start) matchesDate = false;
+  const filteredReports = useMemo(() => {
+    return reports.filter(report => {
+      const matchesType = activeType === 'ALL' || report.attentionCode?.startsWith(activeType);
+      const matchesCode = !filters.attentionCode || report.attentionCode?.toLowerCase().includes(filters.attentionCode.toLowerCase());
+      const matchesDni = !filters.dni || report.patientDni?.includes(filters.dni);
+      const matchesFirstName = !filters.patientName || report.patientFirstName?.toLowerCase().includes(filters.patientName.toLowerCase());
+      const matchesLastName = !filters.patientLastName || report.patientLastName?.toLowerCase().includes(filters.patientLastName.toLowerCase());
+      const matchesSolicitor = !filters.solicitor || report.solicitor?.toLowerCase().includes(filters.solicitor.toLowerCase());
+      
+      // Date filtering
+      let matchesDate = true;
+      if (filters.startDate || filters.endDate) {
+        const reportDate = new Date(report.receptionDate || report.createdAt);
+        if (filters.startDate) {
+          const start = new Date(filters.startDate);
+          start.setHours(0, 0, 0, 0);
+          if (reportDate < start) matchesDate = false;
+        }
+        if (filters.endDate) {
+          const end = new Date(filters.endDate);
+          end.setHours(23, 59, 59, 999);
+          if (reportDate > end) matchesDate = false;
+        }
       }
-      if (filters.endDate) {
-        const end = new Date(filters.endDate);
-        end.setHours(23, 59, 59, 999);
-        if (reportDate > end) matchesDate = false;
-      }
-    }
 
-    return matchesType && matchesCode && matchesDni && matchesFirstName && matchesLastName && matchesSolicitor && matchesDate;
-  });
+      return matchesType && matchesCode && matchesDni && matchesFirstName && matchesLastName && matchesSolicitor && matchesDate;
+    });
+  }, [reports, filters, activeType]);
 
   const clearFilters = () => {
     setFilters({
@@ -166,8 +168,12 @@ export default function HistorialPacientes() {
                 <tr><td colSpan={10} className="p-[5rem] text-center text-gray-300 uppercase tracking-widest font-black text-[0.7rem]">Sin coincidencias encontradas</td></tr>
               ) : filteredReports.map((report, idx) => {
                 const resta = (report.cost || 0) - (report.prepayment || 0);
+                const isOverdue = report.expectedDeliveryDate && 
+                                  new Date(report.expectedDeliveryDate) < new Date() && 
+                                  !report.reportDate;
+
                 return (
-                  <tr key={report.id} className="hover:bg-blue-50/20 transition-all group">
+                  <tr key={report.id} className={`hover:bg-blue-50/20 transition-all group ${isOverdue ? 'bg-red-50/80 hover:bg-red-100/50' : ''}`}>
                     <td className="px-[1rem] py-[1rem] border-r border-gray-50 text-gray-300 font-bold">{idx + 1}</td>
                     <td className="px-[1rem] py-[1rem] border-r border-gray-50 font-black text-[#008de3]">{report.attentionCode}</td>
                     <td className="px-[1rem] py-[1rem] border-r border-gray-50">{report.patientDni}</td>

@@ -7,19 +7,14 @@ function validateReportData(body: any) {
 
   // Mandatory Clinical Fields
   if (!body.attentionCode) errors.push('Código de Atención es requerido.');
-  if (body.attentionCode && !/^[QIC]-/.test(body.attentionCode)) {
-    errors.push('El Código de Atención debe empezar con Q-, I- o C-.');
-  }
 
-  if (!body.patientDni) errors.push('DNI del paciente es requerido.');
   if (body.patientDni && !/^\d{8}$/.test(body.patientDni)) {
     errors.push('El DNI debe tener exactamente 8 dígitos.');
   }
 
   if (!body.patientFirstName) errors.push('Nombres del paciente son requeridos.');
   if (!body.patientLastName) errors.push('Apellidos del paciente son requeridos.');
-  if (!body.gender || body.gender === 'SELECCIONAR') errors.push('Género es requerido.');
-  if (!body.serviceType || body.serviceType === 'SELECCIONAR') errors.push('Tipo de servicio es requerido.');
+  if (!body.gender || body.gender === 'SELECCIONAR') errors.push('Sexo es requerido.');
 
   // Numeric Validation
   const age = parseInt(body.age);
@@ -96,7 +91,21 @@ export async function GET(request: Request) {
 
     const reports = await prisma.report.findMany({
       where,
-      orderBy: { receptionDate: 'desc' }, // Ordenar por fecha de recepción mejor
+      select: {
+        id: true,
+        attentionCode: true,
+        patientDni: true,
+        patientFirstName: true,
+        patientLastName: true,
+        solicitor: true,
+        cost: true,
+        prepayment: true,
+        balance: true,
+        expectedDeliveryDate: true,
+        reportDate: true,
+        receptionDate: true,
+      },
+      orderBy: { receptionDate: 'desc' },
       take: Math.min(limit, 200),
       skip: offset,
     });

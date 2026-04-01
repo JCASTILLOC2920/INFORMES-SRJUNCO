@@ -44,4 +44,8 @@ model Report {
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([attentionCode])
+  @@index([patientDni])
+  @@index([receptionDate])
 }

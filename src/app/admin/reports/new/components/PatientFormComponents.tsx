@@ -29,9 +29,8 @@ export const ServiceSection = React.memo(({ formData, handleInputChange }: Secti
           className={`w-full ${inputStyle} bg-gray-50/50`}
         >
           <option>SELECCIONAR</option>
-          <option>BIOPSIA</option>
           <option>CITOLOGÍA</option>
-          <option>INMUNOHISTOQUÍMICA</option>
+          <option>HEMATOXILINA EOSINA</option>
         </select>
       </FormGroup>
       <FormGroup label="Fecha de Registro">

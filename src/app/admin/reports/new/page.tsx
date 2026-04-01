@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { generateClinicalDescription } from '@/utils/ollamaClient';
 import { ReportFormData } from '@/types/PatientFormTypes';
@@ -11,10 +11,52 @@ export default function RegistroPaciente() {
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
+
+  // Function to get the next attention code
+  const fetchNextAttentionCode = async () => {
+    try {
+      const res = await fetch('/api/reports?limit=100');
+      const reports = await res.json();
+      const currentYearShort = new Date().getFullYear().toString().slice(-2);
+      const prefix = `JQ${currentYearShort}-`;
+      
+      let nextNumber = 529; // Default starting number
+
+      if (Array.isArray(reports) && reports.length > 0) {
+        const numbers = reports
+          .map((r: any) => {
+            const code = r.attentionCode || '';
+            if (code.startsWith(prefix)) {
+              const numPart = code.split('-')[1];
+              return parseInt(numPart, 10);
+            }
+            return null;
+          })
+          .filter((n): n is number => n !== null && !isNaN(n));
+
+        if (numbers.length > 0) {
+          nextNumber = Math.max(...numbers) + 1;
+        }
+      }
+
+      setFormData(prev => ({ ...prev, attentionCode: `${prefix}${nextNumber}` }));
+    } catch (error) {
+      console.error('Error fetching latest code:', error);
+      // Fallback if fetch fails
+      const year = new Date().getFullYear().toString().slice(-2);
+      setFormData(prev => ({ ...prev, attentionCode: `JQ${year}-529` }));
+    }
+  };
+
+  useEffect(() => {
+    fetchNextAttentionCode();
+  }, []);
   
+  const getLocalDate = () => new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD local
+
   const [formData, setFormData] = useState<ReportFormData>({
     serviceType: 'SELECCIONAR',
-    registrationDate: new Date().toISOString().split('T')[0],
+    registrationDate: getLocalDate(),
     attentionCode: '',
     patientDni: '',
     patientFirstName: '',
@@ -30,7 +72,7 @@ export default function RegistroPaciente() {
     isPendingPayment: false,
     prepayment: '0',
     clinic: '',
-    expectedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    expectedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('sv-SE'),
     macroscopy: '',
     microscopy: '',
     diagnosis: '',
@@ -48,16 +90,9 @@ export default function RegistroPaciente() {
   const validateForm = () => {
     const newErrors: string[] = [];
     if (!formData.attentionCode) newErrors.push('Código de Atención es requerido.');
-    if (formData.attentionCode && !/^[QIC]-/.test(formData.attentionCode)) {
-      newErrors.push('El Código de Atención debe empezar con Q-, I- o C-.');
-    }
-    if (!formData.patientDni || !/^\d{8}$/.test(formData.patientDni)) {
-      newErrors.push('DNI debe tener exactamente 8 dígitos.');
-    }
     if (!formData.patientFirstName) newErrors.push('Nombres son requeridos.');
     if (!formData.patientLastName) newErrors.push('Apellidos son requeridos.');
-    if (formData.gender === 'SELECCIONAR') newErrors.push('Género es requerido.');
-    if (formData.serviceType === 'SELECCIONAR') newErrors.push('Tipo de servicio es requerido.');
+    if (formData.gender === 'SELECCIONAR') newErrors.push('Sexo es requerido.');
 
     setErrors(newErrors);
     return newErrors.length === 0;
