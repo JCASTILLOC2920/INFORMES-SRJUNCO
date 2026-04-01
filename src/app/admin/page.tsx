@@ -41,12 +41,18 @@ export default function AdminDashboard() {
         body: JSON.stringify(updatedData)
       });
       if (res.ok) {
-        alert('Registro actualizado.');
+        alert('Registro actualizado exitosamente.');
         setIsEditModalOpen(false);
         fetchReports();
+        return true;
+      } else {
+        const data = await res.json();
+        console.error('Update failed:', data.errors);
+        return false;
       }
     } catch (error) {
-      alert('Error al actualizar.');
+      console.error('Error al actualizar:', error);
+      return false;
     }
   };
 

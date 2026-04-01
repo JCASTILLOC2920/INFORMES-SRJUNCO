@@ -10,6 +10,7 @@ export default function RegistroPaciente() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
   
   const [formData, setFormData] = useState<ReportFormData>({
     serviceType: 'SELECCIONAR',
@@ -40,7 +41,27 @@ export default function RegistroPaciente() {
     const { name, value, type } = e.target;
     const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
     setFormData((prev) => ({ ...prev, [name]: val }));
-  }, []);
+    // Clear errors when user types
+    if (errors.length > 0) setErrors([]);
+  }, [errors]);
+
+  const validateForm = () => {
+    const newErrors: string[] = [];
+    if (!formData.attentionCode) newErrors.push('Código de Atención es requerido.');
+    if (formData.attentionCode && !/^[QIC]-/.test(formData.attentionCode)) {
+      newErrors.push('El Código de Atención debe empezar con Q-, I- o C-.');
+    }
+    if (!formData.patientDni || !/^\d{8}$/.test(formData.patientDni)) {
+      newErrors.push('DNI debe tener exactamente 8 dígitos.');
+    }
+    if (!formData.patientFirstName) newErrors.push('Nombres son requeridos.');
+    if (!formData.patientLastName) newErrors.push('Apellidos son requeridos.');
+    if (formData.gender === 'SELECCIONAR') newErrors.push('Género es requerido.');
+    if (formData.serviceType === 'SELECCIONAR') newErrors.push('Tipo de servicio es requerido.');
+
+    setErrors(newErrors);
+    return newErrors.length === 0;
+  };
 
   const handleAiAssist = async (field: 'macroscopia' | 'microscopia' | 'diagnostico') => {
     const dbFieldMap: Record<string, keyof ReportFormData> = {
@@ -71,35 +92,31 @@ export default function RegistroPaciente() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.attentionCode || !formData.patientFirstName || !formData.patientDni) {
-      alert('Por favor complete los campos obligatorios (*).');
+    if (!validateForm()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     setLoading(true);
     try {
-      const submissionData = {
-        ...formData,
-        age: parseInt(formData.age) || null,
-        transportCost: parseFloat(formData.transportCost) || 0,
-        prepayment: parseFloat(formData.prepayment) || 0,
-      };
-
       const res = await fetch('/api/reports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submissionData)
+        body: JSON.stringify(formData)
       });
+
+      const data = await res.json();
 
       if (res.ok) {
         alert('Paciente registrado exitosamente.');
         router.push('/admin');
       } else {
-        throw new Error('Error al guardar');
+        setErrors(data.errors || ['Error al guardar el registro.']);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (error) {
       console.error(error);
-      alert('Error al registrar paciente.');
+      setErrors(['Error crítico de conexión con el servidor.']);
     } finally {
       setLoading(false);
     }
@@ -121,6 +138,21 @@ export default function RegistroPaciente() {
       </div>
 
       <div className="p-[1.5rem] sm:p-[2.5rem] space-y-[2rem]">
+        {/* Error Messages */}
+        {errors.length > 0 && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg shadow-sm">
+            <div className="flex items-center mb-2">
+              <svg className="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <h3 className="text-red-800 font-black uppercase text-[0.7rem] tracking-wider">Errores de Validación</h3>
+            </div>
+            <ul className="list-disc list-inside text-red-700 text-[0.75rem] font-bold space-y-1">
+              {errors.map((error, i) => <li key={i}>{error}</li>)}
+            </ul>
+          </div>
+        )}
+
         <ServiceSection formData={formData} handleInputChange={handleInputChange} />
         <PatientSection formData={formData} handleInputChange={handleInputChange} />
         <ReferenceSection formData={formData} handleInputChange={handleInputChange} />

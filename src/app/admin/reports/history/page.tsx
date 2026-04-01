@@ -2,10 +2,15 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import EditReportModal from '@/components/admin/EditReportModal';
 
 export default function HistorialPacientes() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeType, setActiveType] = useState('ALL');
+  const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
@@ -36,13 +41,70 @@ export default function HistorialPacientes() {
   };
 
   const filteredReports = reports.filter(report => {
-    return (
-      (!filters.attentionCode || report.attentionCode.toLowerCase().includes(filters.attentionCode.toLowerCase())) &&
-      (!filters.dni || report.patientDni.includes(filters.dni)) &&
-      (!filters.patientName || report.patientFirstName.toLowerCase().includes(filters.patientName.toLowerCase())) &&
-      (!filters.patientLastName || report.patientLastName.toLowerCase().includes(filters.patientLastName.toLowerCase()))
-    );
+    const matchesType = activeType === 'ALL' || report.attentionCode?.startsWith(activeType);
+    const matchesCode = !filters.attentionCode || report.attentionCode?.toLowerCase().includes(filters.attentionCode.toLowerCase());
+    const matchesDni = !filters.dni || report.patientDni?.includes(filters.dni);
+    const matchesFirstName = !filters.patientName || report.patientFirstName?.toLowerCase().includes(filters.patientName.toLowerCase());
+    const matchesLastName = !filters.patientLastName || report.patientLastName?.toLowerCase().includes(filters.patientLastName.toLowerCase());
+    const matchesSolicitor = !filters.solicitor || report.solicitor?.toLowerCase().includes(filters.solicitor.toLowerCase());
+    
+    // Date filtering
+    let matchesDate = true;
+    if (filters.startDate || filters.endDate) {
+      const reportDate = new Date(report.receptionDate || report.createdAt);
+      if (filters.startDate) {
+        const start = new Date(filters.startDate);
+        start.setHours(0, 0, 0, 0);
+        if (reportDate < start) matchesDate = false;
+      }
+      if (filters.endDate) {
+        const end = new Date(filters.endDate);
+        end.setHours(23, 59, 59, 999);
+        if (reportDate > end) matchesDate = false;
+      }
+    }
+
+    return matchesType && matchesCode && matchesDni && matchesFirstName && matchesLastName && matchesSolicitor && matchesDate;
   });
+
+  const clearFilters = () => {
+    setFilters({
+      startDate: '',
+      endDate: '',
+      attentionCode: '',
+      patientName: '',
+      patientLastName: '',
+      dni: '',
+      solicitor: ''
+    });
+    setActiveType('ALL');
+  };
+
+  const handleEdit = (report: any) => {
+    setSelectedReport(report);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveReport = async (updatedData: any) => {
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData),
+      });
+      
+      if (res.ok) {
+        const savedReport = await res.json();
+        setReports(prev => prev.map(r => r.id === savedReport.id ? savedReport : r));
+        setIsModalOpen(false);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error saving report:', error);
+      return false;
+    }
+  };
 
   return (
     <div className="space-y-[1.5rem] pb-[2rem]">
@@ -61,17 +123,22 @@ export default function HistorialPacientes() {
           <FilterInput label="DNI" name="dni" placeholder="Número..." value={filters.dni} onChange={handleFilterChange} />
           <FilterInput label="Med. Solicitante" name="solicitor" placeholder="Referencia..." value={filters.solicitor} onChange={handleFilterChange} />
           <div className="flex gap-[0.5rem]">
-            <button className="flex-1 bg-[#003d63] text-white px-[1rem] py-[0.75rem] rounded-xl font-black text-[0.65rem] uppercase tracking-widest hover:bg-[#008de3] transition-all shadow-lg">Buscar</button>
-            <button className="flex-1 bg-gray-50 text-[#003d63] px-[1rem] py-[0.75rem] rounded-xl font-black text-[0.65rem] uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100">Paciente</button>
+            <button 
+              onClick={clearFilters}
+              className="flex-1 bg-gray-50 text-[#003d63] px-[1rem] py-[0.75rem] rounded-xl font-black text-[0.65rem] uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100"
+            >
+              Limpiar
+            </button>
           </div>
         </div>
       </div>
 
       {/* Tabs - Responsive */}
       <div className="flex flex-wrap gap-[0.5rem] border-b border-gray-100 pb-[0.5rem]">
-        <TabButton active label="Serv. muestra HE (Q)" />
-        <TabButton label="Inmunohistoquimica (I)" />
-        <TabButton label="Citologia (C)" />
+        <TabButton active={activeType === 'ALL'} label="Todos (ALL)" onClick={() => setActiveType('ALL')} />
+        <TabButton active={activeType === 'Q'} label="Serv. muestra HE (Q)" onClick={() => setActiveType('Q')} />
+        <TabButton active={activeType === 'I'} label="Inmunohistoquimica (I)" onClick={() => setActiveType('I')} />
+        <TabButton active={activeType === 'C'} label="Citologia (C)" onClick={() => setActiveType('C')} />
       </div>
 
       {/* Table Container - Fluid with Horizontal Scroll */}
@@ -118,7 +185,7 @@ export default function HistorialPacientes() {
                     </td>
                     <td className="px-[1rem] py-[1rem]">
                       <div className="flex justify-center gap-[0.25rem]">
-                        <MiniAction icon="edit" />
+                        <MiniAction icon="edit" onClick={() => handleEdit(report)} />
                         <MiniAction icon="search" />
                         <MiniAction icon="print" />
                         <MiniAction icon="delete" variant="danger" />
@@ -132,6 +199,14 @@ export default function HistorialPacientes() {
           </table>
         </div>
       </div>
+
+      {/* Modal de Edición */}
+      <EditReportModal 
+        report={selectedReport}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveReport}
+      />
     </div>
   );
 }
@@ -152,9 +227,11 @@ function FilterInput({ label, name, value, onChange, placeholder, type = "text" 
   );
 }
 
-function TabButton({ label, active = false }: { label: string, active?: boolean }) {
+function TabButton({ label, active = false, onClick }: { label: string, active?: boolean, onClick: () => void }) {
   return (
-    <button className={`px-[1.25rem] py-[0.65rem] rounded-xl text-[0.65rem] font-black uppercase tracking-wider transition-all ${
+    <button 
+      onClick={onClick}
+      className={`px-[1.25rem] py-[0.65rem] rounded-xl text-[0.65rem] font-black uppercase tracking-wider transition-all ${
       active 
         ? 'bg-[#003d63] text-white shadow-lg' 
         : 'text-gray-400 hover:text-[#008de3] hover:bg-blue-50'
@@ -164,7 +241,7 @@ function TabButton({ label, active = false }: { label: string, active?: boolean 
   );
 }
 
-function MiniAction({ icon, variant = 'default' }: { icon: string, variant?: 'default' | 'danger' }) {
+function MiniAction({ icon, variant = 'default', onClick }: { icon: string, variant?: 'default' | 'danger', onClick?: () => void }) {
   const icons: any = {
     edit: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
     search: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
@@ -179,7 +256,10 @@ function MiniAction({ icon, variant = 'default' }: { icon: string, variant?: 'de
   };
 
   return (
-    <button className={`p-[0.4rem] rounded-lg transition-all border border-transparent hover:border-gray-50 ${colors[variant]}`}>
+    <button 
+      onClick={onClick}
+      className={`p-[0.4rem] rounded-lg transition-all border border-transparent hover:border-gray-50 ${colors[variant]}`}
+    >
       {icons[icon]}
     </button>
   );

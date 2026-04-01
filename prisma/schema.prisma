@@ -7,8 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Report {
@@ -39,6 +40,7 @@ model Report {
   clinic          String?
   expectedDeliveryDate DateTime?
   hasImages       Boolean  @default(false)
+  imageUrls       String[] @default([]) // <-- NUEVO: URLs de las imagenes de Supabase Storage
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

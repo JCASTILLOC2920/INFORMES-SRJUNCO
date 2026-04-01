@@ -1,22 +1,24 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { exportReportToPdf } from '@/utils/reportExporter';
-import { ReportFormData } from '@/types/PatientFormTypes';
 
 interface EditReportModalProps {
   report: any;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedData: any) => void;
+  onSave: (updatedData: any) => Promise<boolean>; // Cambiado a Promise para manejar éxito/error
 }
 
 export default function EditReportModal({ report, isOpen, onClose, onSave }: EditReportModalProps) {
   const [formData, setFormData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('desc');
+  const [errors, setErrors] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (report) {
       setFormData({ ...report });
+      setErrors([]);
     }
   }, [report]);
 
@@ -25,6 +27,39 @@ export default function EditReportModal({ report, isOpen, onClose, onSave }: Edi
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev: any) => ({ ...prev, [name]: value }));
+    if (errors.length > 0) setErrors([]);
+  };
+
+  const validateForm = () => {
+    const newErrors: string[] = [];
+    if (!formData.attentionCode) newErrors.push('Código de Atención es requerido.');
+    if (formData.attentionCode && !/^[QIC]-/.test(formData.attentionCode)) {
+      newErrors.push('El Código de Atención debe empezar con Q-, I- o C-.');
+    }
+    if (!formData.patientDni || !/^\d{8}$/.test(formData.patientDni)) {
+      newErrors.push('DNI debe tener exactamente 8 dígitos.');
+    }
+    if (!formData.patientFirstName) newErrors.push('Nombres son requeridos.');
+    if (!formData.patientLastName) newErrors.push('Apellidos son requeridos.');
+    if (formData.gender === 'SELECCIONAR') newErrors.push('Género es requerido.');
+    if (formData.serviceType === 'SELECCIONAR') newErrors.push('Tipo de servicio es requerido.');
+
+    setErrors(newErrors);
+    return newErrors.length === 0;
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) return;
+    
+    setLoading(true);
+    const success = await onSave(formData);
+    setLoading(false);
+    
+    if (!success) {
+      // Nota: El error detallado debería venir del backend, pero onSave actualmente
+      // es una prop que viene del padre. Actualizaremos el padre para manejar esto mejor.
+      setErrors(['Error al actualizar el registro. Verifique los datos o el servidor.']);
+    }
   };
 
   return (
@@ -41,6 +76,15 @@ export default function EditReportModal({ report, isOpen, onClose, onSave }: Edi
             <svg className="w-[1.5rem] h-[1.5rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
+
+        {/* Error Banner */}
+        {errors.length > 0 && (
+          <div className="bg-red-50 border-b border-red-200 p-4 shrink-0 overflow-y-auto max-h-[8rem]">
+            <ul className="text-red-700 text-[0.75rem] font-bold list-disc list-inside space-y-1">
+              {errors.map((error, i) => <li key={i}>{error}</li>)}
+            </ul>
+          </div>
+        )}
 
         <div className="flex-1 flex overflow-hidden p-[1.5rem] gap-[1.5rem] bg-[#f8fafc]">
           {/* Left Side: Datos Servicio */}
@@ -131,7 +175,13 @@ export default function EditReportModal({ report, isOpen, onClose, onSave }: Edi
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                   <span>Exportar PDF</span>
                </button>
-               <button onClick={() => onSave(formData)} className="bg-[#003d63] text-white px-[3rem] py-[0.8rem] rounded-xl font-black uppercase text-[0.75rem] tracking-widest shadow-lg hover:bg-[#008de3] transition-all">Guardar Cambios</button>
+               <button 
+                onClick={handleSave} 
+                className="bg-[#003d63] text-white px-[3rem] py-[0.8rem] rounded-xl font-black uppercase text-[0.75rem] tracking-widest shadow-lg hover:bg-[#008de3] transition-all disabled:opacity-50"
+                disabled={loading}
+               >
+                {loading ? 'Guardando...' : 'Guardar Cambios'}
+               </button>
             </div>
           </div>
         </div>
@@ -203,3 +253,4 @@ function EditorBox({ label, value, onChange }: any) {
 function EditorAction({ label }: any) {
   return <button className="w-[1.8rem] h-[1.8rem] flex items-center justify-center font-black rounded hover:bg-white text-[0.75rem] text-gray-500 transition-colors uppercase">{label}</button>;
 }
+
