@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import EditReportModal from '@/components/admin/EditReportModal';
@@ -7,7 +8,7 @@ import EditReportModal from '@/components/admin/EditReportModal';
 export default function HistorialPacientes() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeType, setActiveType] = useState('ALL');
+  const [activeType, setActiveType] = useState('HEMATOXILINA EOSINA');
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
@@ -42,14 +43,13 @@ export default function HistorialPacientes() {
 
   const filteredReports = useMemo(() => {
     return reports.filter(report => {
-      const matchesType = activeType === 'ALL' || report.attentionCode?.startsWith(activeType);
+      const matchesType = report.serviceType === activeType;
       const matchesCode = !filters.attentionCode || report.attentionCode?.toLowerCase().includes(filters.attentionCode.toLowerCase());
       const matchesDni = !filters.dni || report.patientDni?.includes(filters.dni);
       const matchesFirstName = !filters.patientName || report.patientFirstName?.toLowerCase().includes(filters.patientName.toLowerCase());
       const matchesLastName = !filters.patientLastName || report.patientLastName?.toLowerCase().includes(filters.patientLastName.toLowerCase());
       const matchesSolicitor = !filters.solicitor || report.solicitor?.toLowerCase().includes(filters.solicitor.toLowerCase());
       
-      // Date filtering
       let matchesDate = true;
       if (filters.startDate || filters.endDate) {
         const reportDate = new Date(report.receptionDate || report.createdAt);
@@ -79,7 +79,6 @@ export default function HistorialPacientes() {
       dni: '',
       solicitor: ''
     });
-    setActiveType('ALL');
   };
 
   const handleEdit = (report: any) => {
@@ -109,104 +108,138 @@ export default function HistorialPacientes() {
   };
 
   return (
-    <div className="space-y-[1.5rem] pb-[2rem]">
-      {/* Filters Section - Responsive Grid */}
-      <div className="bg-white p-[1.5rem] rounded-[1.5rem] shadow-xl shadow-blue-900/5 border border-gray-50 elite-shadow">
-        <h2 className="text-[0.7rem] font-black text-[#003d63] uppercase tracking-[0.2em] mb-[1.5rem] flex items-center gap-[0.5rem]">
-          <span className="w-[0.5rem] h-[1rem] bg-[#008de3] rounded-full"></span>
-          Filtros de Búsqueda Avanzada
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1rem] items-end">
-          <FilterInput label="Fec. Inicio" name="startDate" type="date" value={filters.startDate} onChange={handleFilterChange} />
-          <FilterInput label="Fec. Final" name="endDate" type="date" value={filters.endDate} onChange={handleFilterChange} />
-          <FilterInput label="Cod. Atención" name="attentionCode" placeholder="Q, I, C..." value={filters.attentionCode} onChange={handleFilterChange} />
-          <FilterInput label="Nombres" name="patientName" placeholder="Juan..." value={filters.patientName} onChange={handleFilterChange} />
-          <FilterInput label="Apellidos" name="patientLastName" placeholder="Perez..." value={filters.patientLastName} onChange={handleFilterChange} />
-          <FilterInput label="DNI" name="dni" placeholder="Número..." value={filters.dni} onChange={handleFilterChange} />
-          <FilterInput label="Med. Solicitante" name="solicitor" placeholder="Referencia..." value={filters.solicitor} onChange={handleFilterChange} />
-          <div className="flex gap-[0.5rem]">
-            <button 
-              onClick={clearFilters}
-              className="flex-1 bg-gray-50 text-[#003d63] px-[1rem] py-[0.75rem] rounded-xl font-black text-[0.65rem] uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100"
-            >
-              Limpiar
-            </button>
+    <div className="min-h-screen bg-[#f8fafc] pb-[6rem] lg:pb-0 font-sans selection:bg-[#008de3]/10">
+      <div className="max-w-[90rem] mx-auto px-[1rem] sm:px-[2rem] py-[1.5rem]">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[2rem] gap-4">
+          <div>
+            <h1 className="text-[1.85rem] font-black text-[#002a45] tracking-tight leading-none mb-2">
+              Historial Clínico
+            </h1>
+            <p className="text-[#64748b] text-[0.9rem] font-bold uppercase tracking-[0.1em]">
+              Bitácora de Informes y Diagnósticos
+            </p>
+          </div>
+          <Link href="/admin" className="hidden lg:flex items-center gap-2 bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100 text-[#002a45] font-black text-[0.75rem] uppercase tracking-widest hover:bg-gray-50 transition-all">
+             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+             Dashboard
+          </Link>
+        </div>
+
+        {/* Filters Section - Premium Clinical Style */}
+        <div className="bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgb(0,42,69,0.04)] border border-gray-100 p-[2rem] mb-[2.5rem] animate-in fade-in slide-in-from-top duration-500">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1.5rem] items-end">
+            <FilterInput label="Desde" name="startDate" type="date" value={filters.startDate} onChange={handleFilterChange} />
+            <FilterInput label="Hasta" name="endDate" type="date" value={filters.endDate} onChange={handleFilterChange} />
+            <FilterInput label="Identificación" name="dni" placeholder="DNI..." value={filters.dni} onChange={handleFilterChange} />
+            <FilterInput label="Código" name="attentionCode" placeholder="JQ..." value={filters.attentionCode} onChange={handleFilterChange} />
+            <FilterInput label="Nombre Paciente" name="patientName" placeholder="Nombres..." value={filters.patientName} onChange={handleFilterChange} />
+            <FilterInput label="Apellido Paciente" name="patientLastName" placeholder="Apellidos..." value={filters.patientLastName} onChange={handleFilterChange} />
+            <FilterInput label="Médico Referente" name="solicitor" placeholder="Doctor..." value={filters.solicitor} onChange={handleFilterChange} />
+            
+            <div className="flex gap-[0.75rem]">
+              <button 
+                onClick={clearFilters}
+                className="flex-grow bg-gray-50 text-[#64748b] px-[1.5rem] py-[1.1rem] rounded-2xl font-black text-[0.7rem] uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100 shadow-sm"
+              >
+                Resetear Filtros
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Tabs - Responsive */}
-      <div className="flex flex-wrap gap-[0.5rem] border-b border-gray-100 pb-[0.5rem]">
-        <TabButton active={activeType === 'ALL'} label="Todos (ALL)" onClick={() => setActiveType('ALL')} />
-        <TabButton active={activeType === 'Q'} label="Serv. muestra HE (Q)" onClick={() => setActiveType('Q')} />
-        <TabButton active={activeType === 'I'} label="Inmunohistoquimica (I)" onClick={() => setActiveType('I')} />
-        <TabButton active={activeType === 'C'} label="Citologia (C)" onClick={() => setActiveType('C')} />
-      </div>
+        {/* Tab Selection */}
+        <div className="flex border-b border-gray-100 mb-[2rem] overflow-x-auto no-scrollbar gap-[0.5rem]">
+            <TabButton active={activeType === 'HEMATOXILINA EOSINA'} label="Hematoxilina Eosina" onClick={() => setActiveType('HEMATOXILINA EOSINA')} />
+            <TabButton active={activeType === 'PAPANICOLAO'} label="Papanicolaou" onClick={() => setActiveType('PAPANICOLAO')} />
+        </div>
 
-      {/* Table Container - Fluid with Horizontal Scroll */}
-      <div className="bg-white rounded-[1.5rem] shadow-2xl shadow-blue-900/5 border border-gray-50 overflow-hidden">
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-[0.75rem] border-collapse min-w-[75rem]">
-            <thead>
-              <tr className="bg-[#003d63] text-white font-black uppercase tracking-widest">
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5">#</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5 whitespace-nowrap">COD-ATENCIÓN</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5">DNI</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5 whitespace-nowrap">MED. SOLICITANTE</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5">PACIENTE</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5 text-right">COSTO</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5 text-right">ADELANTO</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5 text-right">RESTA</th>
-                <th className="px-[1rem] py-[1.25rem] border-r border-white/5 text-center whitespace-nowrap">FEC. ENTREGA</th>
-                <th className="px-[1rem] py-[1.25rem] text-center">ACCIONES</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50 font-bold text-gray-600">
-              {loading ? (
-                <tr><td colSpan={10} className="p-[5rem] text-center animate-pulse uppercase tracking-[0.2em] text-gray-300 font-black text-[0.7rem]">Cargando bitácora clínica...</td></tr>
-              ) : filteredReports.length === 0 ? (
-                <tr><td colSpan={10} className="p-[5rem] text-center text-gray-300 uppercase tracking-widest font-black text-[0.7rem]">Sin coincidencias encontradas</td></tr>
-              ) : filteredReports.map((report, idx) => {
-                const resta = (report.cost || 0) - (report.prepayment || 0);
-                const isOverdue = report.expectedDeliveryDate && 
-                                  new Date(report.expectedDeliveryDate) < new Date() && 
-                                  !report.reportDate;
+        {/* Table Results */}
+        <div className="bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden animate-in fade-in duration-700">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-center border-collapse min-w-[85rem] table-fixed">
+              <thead>
+                <tr className="bg-[#f8fafc] text-[#002a45] text-[0.65rem] font-black uppercase tracking-[0.25em] border-b border-gray-100">
+                  <th className="p-[1.25rem] w-[3.5rem]">#</th>
+                  <th className="p-[1.25rem] w-[9rem]">Código</th>
+                  <th className="p-[1.25rem] w-[8.5rem]">DNI</th>
+                  <th className="p-[1.25rem] w-[14rem]">Médico Solicitante</th>
+                  <th className="p-[1.25rem] w-[18.5rem] text-left">Paciente</th>
+                  <th className="p-[1.25rem] w-[7.5rem]">Costo</th>
+                  <th className="p-[1.25rem] w-[7.5rem]">Adelanto</th>
+                  <th className="p-[1.25rem] w-[7.5rem]">Resta</th>
+                  <th className="p-[1.25rem] w-[9rem]">Entrega</th>
+                  <th className="p-[1.25rem] w-[11rem] bg-gray-50/50">Gestión</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-700 text-[0.8rem] font-bold bg-[#fdfdfd]">
+                {loading ? (
+                  <tr><td colSpan={10} className="p-[5rem] text-center uppercase tracking-widest text-[#94a3b8] opacity-40 font-black text-[0.75rem]">Accediendo a base de datos...</td></tr>
+                ) : filteredReports.length === 0 ? (
+                  <tr><td colSpan={10} className="p-[5rem] text-center text-[#94a3b8] uppercase tracking-widest font-black text-[0.75rem] opacity-40">No hay registros para este filtro</td></tr>
+                ) : filteredReports.map((report, idx) => {
+                  const resta = (report.cost || 0) - (report.prepayment || 0);
+                  const isOverdue = report.expectedDeliveryDate && 
+                                    new Date(report.expectedDeliveryDate) < new Date() && 
+                                    !report.reportDate;
+                  const hasDebt = resta > 0;
+                  const amountColor = hasDebt ? "bg-[#ff0000] text-white" : "bg-[#28a745] text-white";
 
-                return (
-                  <tr key={report.id} className={`hover:bg-blue-50/20 transition-all group ${isOverdue ? 'bg-red-50/80 hover:bg-red-100/50' : ''}`}>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50 text-gray-300 font-bold">{idx + 1}</td>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50 font-black text-[#008de3]">{report.attentionCode}</td>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50">{report.patientDni}</td>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50 truncate max-w-[10rem] group-hover:text-[#003d63] transition-colors">{report.solicitor || '---'}</td>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50 font-black uppercase text-[#003d63] whitespace-nowrap">
-                      {report.patientLastName}, {report.patientFirstName}
-                    </td>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50 text-right bg-green-50/30 text-green-700 font-black">S/ {(report.cost || 0).toFixed(2)}</td>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50 text-right bg-green-50/30 text-green-700 font-black">S/ {(report.prepayment || 0).toFixed(2)}</td>
-                    <td className={`px-[1rem] py-[1rem] border-r border-gray-50 text-right font-black ${resta > 0 ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
-                      S/ {resta.toFixed(2)}
-                    </td>
-                    <td className="px-[1rem] py-[1rem] border-r border-gray-50 font-bold text-center whitespace-nowrap text-gray-400">
-                      {report.expectedDeliveryDate ? format(new Date(report.expectedDeliveryDate), 'dd/MM/yyyy') : '---'}
-                    </td>
-                    <td className="px-[1rem] py-[1rem]">
-                      <div className="flex justify-center gap-[0.25rem]">
-                        <MiniAction icon="edit" onClick={() => handleEdit(report)} />
-                        <MiniAction icon="search" />
-                        <MiniAction icon="print" />
-                        <MiniAction icon="delete" variant="danger" />
-                        <MiniAction icon="lab" />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  return (
+                    <tr key={report.id} className={`hover:bg-[#f1f5f9]/50 transition-colors border-b border-gray-50 group ${isOverdue ? 'bg-red-50/30' : ''}`}>
+                      <td className="p-[1rem] text-center opacity-30 text-[0.7rem]">{idx + 1}</td>
+                      <td className="p-[1rem] text-center whitespace-nowrap font-black text-[#002a45]">
+                        <span className="bg-blue-50/50 px-3 py-1.5 rounded-lg border border-blue-100/50">{report.attentionCode}</span>
+                      </td>
+                      <td className="p-[1rem] text-[#64748b]">{report.patientDni || '---'}</td>
+                      <td className="p-[1rem] uppercase truncate px-4 text-[#64748b] font-bold text-[0.75rem]">
+                        {report.solicitor === 'SELECCIONAR' ? '---' : report.solicitor}
+                      </td>
+                      <td className="p-[1rem] uppercase text-left truncate px-4 text-[#002a45] tracking-tight">
+                        {report.patientLastName}, {report.patientFirstName}
+                      </td>
+                      <td className="p-[1rem] font-black">
+                        <span className="px-3 py-1 rounded-full bg-gray-100 text-[#64748b] text-[0.7rem]">S/ {report.cost?.toFixed(0)}</span>
+                      </td>
+                      <td className="p-[1rem] font-black">
+                        <span className="px-3 py-1 rounded-full bg-green-50 text-[#28a745] text-[0.7rem]">S/ {report.prepayment?.toFixed(0)}</span>
+                      </td>
+                      <td className="p-[1rem] font-black">
+                        <span className={`px-3 py-1 rounded-full text-[0.7rem] shadow-sm ${amountColor}`}>S/ {resta.toFixed(0)}</span>
+                      </td>
+                      <td className={`p-[1rem] font-black text-[0.75rem] ${isOverdue ? 'text-red-500 animate-pulse' : 'text-[#334155]'}`}>
+                        {report.expectedDeliveryDate ? format(new Date(report.expectedDeliveryDate), 'dd MMM yy', { locale: es }) : '---'}
+                      </td>
+                      <td className="p-[1rem] bg-gray-50/30 group-hover:bg-gray-100/50 transition-colors">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <MiniAction icon="edit" onClick={() => handleEdit(report)} />
+                          <MiniAction icon="print" />
+                          <MiniAction icon="lab" />
+                          <MiniAction icon="delete" variant="danger" />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Mobile Action Bar */}
+        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] z-50">
+            <div className="bg-[#002a45] rounded-3xl shadow-2xl shadow-blue-900/50 p-2 flex items-center justify-between border border-white/10 backdrop-blur-md">
+                <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="w-14 h-14 flex items-center justify-center text-white/40"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3" /></svg></button>
+                <Link href="/admin/reports/new" className="bg-[#008de3] text-white px-8 py-4 rounded-2xl font-black uppercase text-[0.8rem] tracking-widest shadow-lg shadow-blue-500/30 flex items-center gap-3">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                  Paciente
+                </Link>
+                <button className="w-14 h-14 flex items-center justify-center text-white/40"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
+            </div>
         </div>
       </div>
 
-      {/* Modal de Edición */}
       <EditReportModal 
         report={selectedReport}
         isOpen={isModalOpen}
@@ -219,15 +252,15 @@ export default function HistorialPacientes() {
 
 function FilterInput({ label, name, value, onChange, placeholder, type = "text" }: any) {
   return (
-    <div className="flex flex-col gap-[0.4rem] w-full">
-      <label className="text-[0.6rem] font-black uppercase text-gray-400 tracking-[0.1em] ml-[0.25rem]">{label}</label>
+    <div className="flex flex-col gap-[0.5rem] w-full">
+      <label className="text-[0.6rem] font-black uppercase text-[#64748b] tracking-[0.2em] ml-[0.5rem]">{label}</label>
       <input 
         type={type} 
         name={name} 
         value={value} 
         onChange={onChange}
         placeholder={placeholder} 
-        className="w-full border border-gray-200 bg-gray-50/50 p-[0.65rem] rounded-xl text-[0.8rem] font-bold outline-none focus:ring-2 focus:ring-[#008de3] focus:bg-white transition-all"
+        className="w-full border-2 border-gray-100 bg-[#f8fafc] p-[1.1rem] rounded-2xl text-[0.85rem] font-bold outline-none focus:border-[#008de3] focus:bg-white transition-all text-[#002a45] placeholder-[#94a3b8] h-[3.5rem]"
       />
     </div>
   );
@@ -237,10 +270,10 @@ function TabButton({ label, active = false, onClick }: { label: string, active?:
   return (
     <button 
       onClick={onClick}
-      className={`px-[1.25rem] py-[0.65rem] rounded-xl text-[0.65rem] font-black uppercase tracking-wider transition-all ${
+      className={`px-[1.75rem] py-[1.1rem] rounded-t-2xl text-[0.7rem] font-black uppercase tracking-[0.2em] transition-all border-b-[3px] ${
       active 
-        ? 'bg-[#003d63] text-white shadow-lg' 
-        : 'text-gray-400 hover:text-[#008de3] hover:bg-blue-50'
+        ? 'text-[#008de3] border-[#008de3] bg-blue-50/50 shadow-sm' 
+        : 'text-[#64748b] border-transparent hover:text-[#002a45]'
     }`}>
       {label}
     </button>
@@ -249,25 +282,18 @@ function TabButton({ label, active = false, onClick }: { label: string, active?:
 
 function MiniAction({ icon, variant = 'default', onClick }: { icon: string, variant?: 'default' | 'danger', onClick?: () => void }) {
   const icons: any = {
-    edit: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
-    search: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
-    print: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>,
-    delete: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>,
-    lab: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.691.387a6 6 0 01-3.861.517l-2.399-.48a2 2 0 00-1.02.547l-2.387 2.387a2 2 0 001.414 3.414h15.716a2 2 0 001.414-3.414l-2.387-2.387z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15.985 10.613l-4-4a2 2 0 00-2.828 0l-4 4m0 0l4 4a2 2 0 002.828 0l4-4" /></svg>
+    edit: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
+    print: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>,
+    delete: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>,
+    lab: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.691.387a6 6 0 01-3.861.517l-2.399-.48a2 2 0 00-1.02.547l-2.387 2.387a2 2 0 001.414 3.414h15.716a2 2 0 001.414-3.414l-2.387-2.387z" /></svg>
   };
 
   const colors = {
-    default: 'text-gray-400 hover:text-[#008de3] hover:bg-white',
-    danger: 'text-red-200 hover:text-red-600 hover:bg-red-50'
+    default: 'text-[#64748b] hover:text-[#008de3] hover:bg-white hover:shadow-sm hover:border-gray-100',
+    danger: 'text-red-300 hover:text-red-600 hover:bg-white hover:shadow-sm hover:border-red-100'
   };
 
   return (
-    <button 
-      onClick={onClick}
-      className={`p-[0.4rem] rounded-lg transition-all border border-transparent hover:border-gray-50 ${colors[variant]}`}
-    >
-      {icons[icon]}
-    </button>
+    <button onClick={onClick} className={`p-2.5 rounded-xl transition-all border border-transparent ${colors[variant]}`}>{icons[icon]}</button>
   );
 }
-

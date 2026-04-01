@@ -7,56 +7,101 @@ interface SectionProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 
-const inputStyle = "border-[3px] border-[#002a45] bg-white p-[0.75rem] rounded-xl focus:ring-2 focus:ring-[#008de3] outline-none font-bold text-[0.85rem] h-[3.2rem] transition-all";
-const btnStyle = "bg-[#003d63] text-white px-[1.5rem] rounded-xl text-[0.7rem] font-black uppercase tracking-wider hover:bg-[#008de3] transition-all shadow-md h-[3.2rem] flex items-center justify-center shrink-0";
+const inputStyle = "w-full border-2 border-gray-100 bg-[#f8fafc] p-[1rem] rounded-[1.25rem] focus:ring-4 focus:ring-[#008de3]/5 focus:border-[#008de3] focus:bg-white outline-none font-bold text-[0.85rem] h-[3.5rem] transition-all text-[#002a45] placeholder-[#94a3b8]";
+const btnStyle = "bg-[#002a45] text-white px-[1.5rem] rounded-[1.25rem] text-[0.7rem] font-black uppercase tracking-[0.15em] hover:bg-[#008de3] transition-all shadow-lg shadow-blue-900/10 h-[3.5rem] flex items-center justify-center shrink-0 min-w-[7rem]";
 
 export const ReferenceSection = React.memo(({ formData, handleInputChange }: SectionProps) => (
-  <section className="grid grid-cols-1 md:grid-cols-2 gap-[2rem]">
-    <div className="space-y-[1.5rem]">
-      <h2 className="text-[0.7rem] font-black text-[#003d63] uppercase tracking-[0.2em]">Referencia y Contacto</h2>
-      <FormGroup label="Persona de Contacto">
-        <input type="text" name="contactName" value={formData.contactName} onChange={handleInputChange} className={`w-full ${inputStyle}`} />
-      </FormGroup>
-      <FormGroup label="Teléfono Contacto">
-        <input type="text" name="contactPhone" value={formData.contactPhone} onChange={handleInputChange} className={`w-full ${inputStyle}`} />
-      </FormGroup>
-    </div>
-    <div className="space-y-[1.5rem]">
-      <h2 className="text-[0.7rem] font-black text-[#003d63] uppercase tracking-[0.2em]">Médico Solicitante</h2>
-      <FormGroup label="Médico Referente">
-        <div className="flex gap-[0.5rem] items-center">
-          <select name="solicitor" value={formData.solicitor} onChange={handleInputChange} className={`flex-grow w-full ${inputStyle}`}>
-            <option>SELECCIONAR</option>
-            <option>DR. CASTILLO</option>
-            <option>OTROS</option>
-          </select>
-          <button className={btnStyle}>Copiar</button>
+  <section className="animate-in fade-in slide-in-from-bottom duration-500 delay-300">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-[2.5rem]">
+      {/* Contact Information */}
+      <div className="space-y-[1.5rem]">
+        <div className="flex items-center gap-4 mb-4">
+           <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#008de3]">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+           </div>
+           <h2 className="text-[0.75rem] font-black text-[#002a45] uppercase tracking-[0.25em]">Referencia y Contacto</h2>
         </div>
-      </FormGroup>
-      <FormGroup label="Motivo del Estudio">
-        <textarea name="studyMotive" value={formData.studyMotive} onChange={handleInputChange} rows={3} className={`w-full border-[3px] border-[#002a45] bg-white p-[0.75rem] rounded-xl focus:ring-2 focus:ring-[#008de3] outline-none font-bold text-[0.85rem] resize-none transition-all`}></textarea>
-      </FormGroup>
+        <FormGroup label="Persona de Contacto">
+          <input type="text" name="contactName" value={formData.contactName} onChange={handleInputChange} placeholder="Nombre completo" className={inputStyle} />
+        </FormGroup>
+        <FormGroup label="Teléfono Contacto">
+          <input type="text" name="contactPhone" value={formData.contactPhone} onChange={handleInputChange} placeholder="999 999 999" className={inputStyle} />
+        </FormGroup>
+      </div>
+
+      {/* Medical Information */}
+      <div className="space-y-[1.5rem]">
+        <div className="flex items-center gap-4 mb-4">
+           <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#008de3]">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01m-.01 4h.01" /></svg>
+           </div>
+           <h2 className="text-[0.75rem] font-black text-[#002a45] uppercase tracking-[0.25em]">Médico y Estudio</h2>
+        </div>
+        <FormGroup label="Médico Referente (Solicitante)">
+          <div className="flex gap-[0.5rem] items-center">
+            <select name="solicitor" value={formData.solicitor} onChange={handleInputChange} className={inputStyle}>
+              <option>SELECCIONAR</option>
+              <option>DR. CASTILLO</option>
+              <option>OTROS</option>
+            </select>
+            <button className={btnStyle}>Copiar</button>
+          </div>
+        </FormGroup>
+        <FormGroup label="Muestra y Motivo del Estudio">
+          <textarea 
+            name="studyMotive" 
+            value={formData.studyMotive} 
+            onChange={handleInputChange} 
+            rows={3} 
+            placeholder="Descripción detallada de la muestra..."
+            className="w-full border-2 border-gray-100 bg-[#f8fafc] p-[1rem] rounded-[1.5rem] focus:ring-4 focus:ring-[#008de3]/5 focus:border-[#008de3] focus:bg-white outline-none font-bold text-[0.85rem] resize-none transition-all text-[#002a45] placeholder-[#94a3b8] min-h-[7rem]"
+          ></textarea>
+        </FormGroup>
+      </div>
     </div>
   </section>
 ));
 
 export const FinancialSection = React.memo(({ formData, handleInputChange }: SectionProps) => (
-  <section className="pt-[1rem] border-t border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-[1.5rem]">
-    <FormGroup label="Costo Transporte" className="h-full">
-      <input type="text" name="transportCost" value={formData.transportCost} onChange={handleInputChange} className={`w-full text-right ${inputStyle}`} />
-      <label className="flex items-center gap-[0.5rem] mt-[0.5rem] cursor-pointer group h-[1.5rem]">
-        <input type="checkbox" name="isPendingPayment" checked={formData.isPendingPayment} onChange={handleInputChange} className="w-[1.25rem] h-[1.25rem] rounded border-2 border-[#003d63] accent-[#003d63] transition-colors" />
-        <span className="text-[0.65rem] font-black text-[#003d63] group-hover:text-[#008de3] uppercase tracking-wider transition-colors pt-1">Pago Pendiente</span>
-      </label>
-    </FormGroup>
-    <FormGroup label="Adelanto" className="h-full">
-       <input type="text" name="prepayment" value={formData.prepayment} onChange={handleInputChange} className={`w-full text-right ${inputStyle}`} />
-       <div className="mt-[0.5rem] h-[1.5rem]" /> {/* Espaciador de alineación */}
-    </FormGroup>
-    <FormGroup label="Fecha Probable Entrega" className="h-full">
-      <input type="date" name="expectedDeliveryDate" value={formData.expectedDeliveryDate} onChange={handleInputChange} className={`w-full ${inputStyle}`} />
-      <div className="mt-[0.5rem] h-[1.5rem]" /> {/* Espaciador de alineación */}
-    </FormGroup>
+  <section className="pt-[2rem] border-t border-gray-100 animate-in fade-in slide-in-from-bottom duration-500 delay-400">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-[1.5rem]">
+      <FormGroup label="Inversión y Transporte">
+        <div className="relative group">
+          <input type="text" name="transportCost" value={formData.transportCost} onChange={handleInputChange} className={`text-right pr-[3rem] ${inputStyle}`} />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[#94a3b8] font-black text-[0.8rem]">S/</span>
+        </div>
+        <label className="flex items-center gap-[0.75rem] mt-[0.75rem] cursor-pointer group px-2">
+          <div className="relative">
+            <input 
+              type="checkbox" 
+              name="isPendingPayment" 
+              checked={formData.isPendingPayment} 
+              onChange={handleInputChange} 
+              className="peer appearance-none w-[1.5rem] h-[1.5rem] rounded-lg border-2 border-[#002a45]/20 checked:bg-[#e33e2b] checked:border-transparent transition-all" 
+            />
+            <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+          </div>
+          <span className="text-[0.65rem] font-black text-[#64748b] group-hover:text-[#e33e2b] uppercase tracking-widest transition-colors">Estado: Pago Pendiente</span>
+        </label>
+      </FormGroup>
+
+      <FormGroup label="Adelanto / Pago Inicial">
+        <div className="relative">
+          <input type="text" name="prepayment" value={formData.prepayment} onChange={handleInputChange} className={`text-right pr-[3rem] ${inputStyle}`} />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[#94a3b8] font-black text-[0.8rem]">S/</span>
+        </div>
+      </FormGroup>
+
+      <FormGroup label="Compromiso: Fecha de Entrega">
+        <input 
+          type="date" 
+          name="expectedDeliveryDate" 
+          value={formData.expectedDeliveryDate} 
+          onChange={handleInputChange} 
+          className={inputStyle} 
+        />
+      </FormGroup>
+    </div>
   </section>
 ));
 
