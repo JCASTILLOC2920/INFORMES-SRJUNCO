@@ -3,8 +3,9 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import EditReportModal from '@/components/admin/EditReportModal';
-import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
+import dynamic from 'next/dynamic';
+const EditReportModal = dynamic(() => import('@/components/admin/EditReportModal'), { ssr: false });
+const DeleteConfirmModal = dynamic(() => import('@/components/admin/DeleteConfirmModal'), { ssr: false });
 import { exportReportToPdf, exportReportToWord } from '@/utils/reportExporter';
 
 /**
@@ -17,75 +18,74 @@ export default function HistorialPacientes() {
   const [loading, setLoading] = useState(true);
   const [activeType, setActiveType] = useState('HEMATOXILINA EOSINA');
   
-  // ESTADO DE FILTROS
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
     attentionCode: '',
-    patientName: '',
+    patientFirstName: '',
     patientLastName: '',
     dni: '',
     solicitor: ''
   });
+
+  // PAGINACIÓN ATÓMICA
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const LIMIT = 50;
 
   // ESTADO DE MODALES
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const fetchReports = useCallback(async () => {
+  const fetchReports = useCallback(async (isLoadMore = false) => {
     setLoading(true);
     try {
-      // Nota: Para el historial cargamos todos los registros iniciales y filtramos en cliente
-      // para una experiencia "Instant Search" suave en listas largas (hasta ~1000 items).
-      const res = await fetch('/api/reports?limit=200');
+      const params = new URLSearchParams();
+      params.append('limit', LIMIT.toString());
+      params.append('offset', (isLoadMore ? (page + 1) * LIMIT : 0).toString());
+      params.append('type', activeType);
+
+      // Inyectar filtros activos
+      if (filters.startDate) params.append('startDate', filters.startDate);
+      if (filters.endDate) params.append('endDate', filters.endDate);
+      if (filters.attentionCode) params.append('attentionCode', filters.attentionCode);
+      if (filters.patientFirstName) params.append('patientFirstName', filters.patientFirstName);
+      if (filters.patientLastName) params.append('patientLastName', filters.patientLastName);
+      if (filters.dni) params.append('dni', filters.dni);
+      if (filters.solicitor) params.append('solicitor', filters.solicitor);
+
+      const res = await fetch(`/api/reports?${params.toString()}`);
       const data = await res.json();
-      setReports(Array.isArray(data) ? data : []);
+      
+      if (Array.isArray(data)) {
+        setReports(prev => isLoadMore ? [...prev, ...data] : data);
+        setHasMore(data.length === LIMIT);
+        if (isLoadMore) setPage(prev => prev + 1);
+        else setPage(0);
+      }
     } catch (e) {
       console.error('[HISTORY_FAIL] Uplink Error:', e);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filters, activeType, page]);
 
   useEffect(() => {
     fetchReports();
-  }, [fetchReports]);
+  }, [activeType]); // Recarga automática al cambiar de pestaña
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const filteredReports = useMemo(() => {
-    return reports.filter(report => {
-      const matchesType = report.serviceType === activeType;
-      const matchesCode = !filters.attentionCode || report.attentionCode?.toLowerCase().includes(filters.attentionCode.toLowerCase());
-      const matchesDni = !filters.dni || report.patientDni?.includes(filters.dni);
-      const matchesFirstName = !filters.patientName || report.patientFirstName?.toLowerCase().includes(filters.patientName.toLowerCase());
-      const matchesLastName = !filters.patientLastName || report.patientLastName?.toLowerCase().includes(filters.patientLastName.toLowerCase());
-      const matchesSolicitor = !filters.solicitor || report.solicitor?.toLowerCase().includes(filters.solicitor.toLowerCase());
-      
-      let matchesDate = true;
-      if (filters.startDate || filters.endDate) {
-        const reportDate = new Date(report.receptionDate || report.createdAt);
-        if (filters.startDate) {
-          const start = new Date(filters.startDate);
-          start.setHours(0, 0, 0, 0);
-          if (reportDate < start) matchesDate = false;
-        }
-        if (filters.endDate) {
-          const end = new Date(filters.endDate);
-          end.setHours(23, 59, 59, 999);
-          if (reportDate > end) matchesDate = false;
-        }
-      }
-
-      return matchesType && matchesCode && matchesDni && matchesFirstName && matchesLastName && matchesSolicitor && matchesDate;
-    });
-  }, [reports, filters, activeType]);
+  const handleLocalize = () => {
+    setPage(0);
+    fetchReports(false);
+  };
 
   const clearFilters = () => {
-    setFilters({ startDate: '', endDate: '', attentionCode: '', patientName: '', patientLastName: '', dni: '', solicitor: '' });
+    setFilters({ startDate: '', endDate: '', attentionCode: '', patientFirstName: '', patientLastName: '', dni: '', solicitor: '' });
   };
 
   // GESTIÓN DE EDICIÓN
@@ -157,12 +157,18 @@ export default function HistorialPacientes() {
             <FilterInput label="Hasta" name="endDate" type="date" value={filters.endDate} onChange={handleFilterChange} />
             <FilterInput label="Identificación" name="dni" placeholder="DNI..." value={filters.dni} onChange={handleFilterChange} />
             <FilterInput label="Código" name="attentionCode" placeholder="JQ..." value={filters.attentionCode} onChange={handleFilterChange} />
-            <FilterInput label="Nombre Paciente" name="patientName" placeholder="Nombres..." value={filters.patientName} onChange={handleFilterChange} />
+            <FilterInput label="Nombre Paciente" name="patientFirstName" placeholder="Nombres..." value={filters.patientFirstName} onChange={handleFilterChange} />
             <FilterInput label="Apellido Paciente" name="patientLastName" placeholder="Apellidos..." value={filters.patientLastName} onChange={handleFilterChange} />
             <FilterInput label="Médico Referente" name="solicitor" placeholder="Doctor..." value={filters.solicitor} onChange={handleFilterChange} />
             
             <div className="flex gap-[0.75rem]">
-              <button onClick={clearFilters} className="flex-grow bg-gray-50 text-[#64748b] px-[1.5rem] py-[1.1rem] rounded-2xl font-black text-[0.7rem] uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100 shadow-sm">Limpiar Filtros</button>
+              <button 
+                onClick={handleLocalize} 
+                className="flex-grow bg-[#002a45] text-white px-[1.5rem] py-[1.1rem] rounded-2xl font-black text-[0.7rem] uppercase tracking-widest hover:bg-[#008de3] transition-all shadow-lg shadow-blue-900/20"
+              >
+                Localizar
+              </button>
+              <button onClick={clearFilters} className="bg-gray-50 text-[#64748b] px-[1rem] py-[1.1rem] rounded-2xl font-black text-[0.7rem] uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100 shadow-sm">Limpiar</button>
             </div>
           </div>
         </div>
@@ -176,58 +182,58 @@ export default function HistorialPacientes() {
         {/* Table Results */}
         <div className="bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden animate-in fade-in duration-700">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-center border-collapse min-w-[85rem] table-fixed">
+            <table className="w-full text-center border-collapse border border-slate-200 min-w-[85rem] table-fixed">
               <thead>
-                <tr className="bg-[#f8fafc] text-[#002a45] text-[0.65rem] font-black uppercase tracking-[0.25em] border-b border-gray-100">
-                  <th className="p-[1.25rem] w-[3.5rem]">#</th>
-                  <th className="p-[1.25rem] w-[9rem]">Código</th>
-                  <th className="p-[1.25rem] w-[8.5rem]">DNI</th>
-                  <th className="p-[1.25rem] w-[14rem]">Médico Solicitante</th>
-                  <th className="p-[1.25rem] w-[18.5rem] text-left">Paciente</th>
-                  <th className="p-[1.25rem] w-[7.5rem]">Costo</th>
-                  <th className="p-[1.25rem] w-[7.5rem]">Adelanto</th>
-                  <th className="p-[1.25rem] w-[7.5rem]">Resta</th>
-                  <th className="p-[1.25rem] w-[9rem]">Entrega</th>
-                  <th className="p-[1.25rem] w-[11rem] bg-gray-50/50">Gestión</th>
+                <tr className="bg-[#f8fafc] text-[#002a45] text-[0.65rem] font-black uppercase tracking-[0.25em]">
+                  <th className="p-[1.25rem] w-[3.5rem] border border-slate-200">#</th>
+                  <th className="p-[1.25rem] w-[9rem] border border-slate-200">Código</th>
+                  <th className="p-[1.25rem] w-[8.5rem] border border-slate-200">DNI</th>
+                  <th className="p-[1.25rem] w-[14rem] border border-slate-200">Médico Solicitante</th>
+                  <th className="p-[1.25rem] w-[18.5rem] text-left border border-slate-200">Paciente</th>
+                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-200">Costo</th>
+                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-200">Adelanto</th>
+                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-200">Resta</th>
+                  <th className="p-[1.25rem] w-[9rem] border border-slate-200">Entrega</th>
+                  <th className="p-[1.25rem] w-[11rem] bg-gray-50/50 border border-slate-200">Gestión</th>
                 </tr>
               </thead>
               <tbody className="text-gray-700 text-[0.8rem] font-bold bg-[#fdfdfd]">
-                {loading ? (
+                {loading && reports.length === 0 ? (
                   <tr><td colSpan={10} className="p-[5rem] text-center uppercase tracking-widest text-[#94a3b8] opacity-40 font-black text-[0.75rem]">Accediendo a base de datos...</td></tr>
-                ) : filteredReports.length === 0 ? (
+                ) : reports.length === 0 ? (
                   <tr><td colSpan={10} className="p-[5rem] text-center text-[#94a3b8] uppercase tracking-widest font-black text-[0.75rem] opacity-40">No hay registros para este filtro</td></tr>
-                ) : filteredReports.map((report, idx) => {
+                ) : reports.map((report, idx) => {
                   const resta = (report.cost || 0) - (report.prepayment || 0);
                   const isOverdue = report.expectedDeliveryDate && new Date(report.expectedDeliveryDate) < new Date() && !report.reportDate;
                   const hasDebt = resta > 0;
                   const amountColor = hasDebt ? "bg-[#ff0000] text-white shadow-sm" : "bg-[#28a745] text-white shadow-sm";
 
                   return (
-                    <tr key={report.id} className={`hover:bg-[#f1f5f9]/50 transition-colors border-b border-gray-50 group`}>
-                      <td className="p-[1rem] text-center opacity-30 text-[0.7rem]">{idx + 1}</td>
-                      <td className="p-[1rem] text-center whitespace-nowrap font-black text-[#002a45]">
+                    <tr key={report.id} className={`hover:bg-[#f1f5f9]/50 transition-colors group`}>
+                      <td className="p-[1rem] text-center border border-slate-200 opacity-50 text-[0.7rem]">{idx + 1}</td>
+                      <td className="p-[1rem] text-center border border-slate-200 whitespace-nowrap font-black text-[#002a45]">
                         <span className="bg-blue-50/50 px-3 py-1.5 rounded-lg border border-blue-100/50">{report.attentionCode}</span>
                       </td>
-                      <td className="p-[1rem] text-[#64748b]">{report.patientDni || '---'}</td>
-                      <td className="p-[1rem] uppercase truncate px-4 text-[#64748b] font-bold text-[0.75rem]">
+                      <td className="p-[1rem] border border-slate-200 text-[#64748b]">{report.patientDni || '---'}</td>
+                      <td className="p-[1rem] border border-slate-200 uppercase truncate px-4 text-[#64748b] font-bold text-[0.75rem]">
                         {report.solicitor === 'SELECCIONAR' ? '---' : report.solicitor}
                       </td>
-                      <td className="p-[1rem] uppercase text-left truncate px-4 text-[#002a45] tracking-tight">
+                      <td className="p-[1rem] border border-slate-200 uppercase text-left truncate px-4 text-[#002a45] tracking-tight">
                         {report.patientLastName}, {report.patientFirstName}
                       </td>
-                      <td className="p-[1rem] font-black">
+                      <td className="p-[1rem] border border-slate-200 font-black">
                         <span className="px-3 py-1 rounded-full bg-gray-100 text-[#64748b] text-[0.7rem]">S/ {report.cost?.toFixed(0)}</span>
                       </td>
-                      <td className="p-[1rem] font-black">
+                      <td className="p-[1rem] border border-slate-200 font-black">
                         <span className="px-3 py-1 rounded-full bg-green-50 text-[#28a745] text-[0.7rem]">S/ {report.prepayment?.toFixed(0)}</span>
                       </td>
-                      <td className="p-[1rem] font-black">
+                      <td className="p-[1rem] border border-slate-200 font-black">
                         <span className={`px-3 py-1 rounded-full text-[0.7rem] ${amountColor}`}>S/ {resta.toFixed(0)}</span>
                       </td>
-                      <td className={`p-[1rem] font-black text-[0.75rem] ${isOverdue ? 'text-red-500 animate-pulse' : 'text-[#334155]'}`}>
+                      <td className={`p-[1rem] border border-slate-200 font-black text-[0.75rem] ${isOverdue ? 'text-red-500 animate-pulse' : 'text-[#334155]'}`}>
                         {report.expectedDeliveryDate ? format(new Date(report.expectedDeliveryDate), 'dd MMM yy', { locale: es }) : '---'}
                       </td>
-                      <td className="p-[1rem] bg-gray-50/30 group-hover:bg-gray-100/50 transition-colors">
+                      <td className="p-[1rem] border border-slate-200 bg-gray-50/30 group-hover:bg-gray-100/50 transition-colors">
                         <div className="flex items-center justify-center gap-1.5 text-gray-400">
                           <MiniAction icon="edit" onClick={() => handleEdit(report)} />
                           <MiniAction icon="print" onClick={() => exportReportToPdf(report)} />
@@ -241,6 +247,18 @@ export default function HistorialPacientes() {
               </tbody>
             </table>
           </div>
+          
+          {hasMore && (
+            <div className="p-8 flex justify-center border-t border-gray-100 bg-gray-50/10">
+                <button 
+                  onClick={() => fetchReports(true)} 
+                  disabled={loading}
+                  className="bg-white border-2 border-slate-200 text-[#002a45] px-10 py-3 rounded-2xl font-black text-[0.75rem] uppercase tracking-widest hover:bg-[#002a45] hover:text-white transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                >
+                   {loading ? 'Cargando registros...' : 'Cargar historial previo'}
+                </button>
+            </div>
+          )}
         </div>
       </div>
 

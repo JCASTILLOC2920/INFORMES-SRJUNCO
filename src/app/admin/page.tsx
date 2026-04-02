@@ -1,11 +1,17 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import EditReportModal from '@/components/admin/EditReportModal';
-import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
+import useSWR from 'swr';
+import dynamic from 'next/dynamic';
+
+const EditReportModal = dynamic(() => import('@/components/admin/EditReportModal'), { ssr: false });
+const DeleteConfirmModal = dynamic(() => import('@/components/admin/DeleteConfirmModal'), { ssr: false });
+
 import { exportReportToPdf, exportReportToWord } from '@/utils/reportExporter';
+
+const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 /**
  * JC PATH LAB - DASHBOARD ADMINISTRATIVO (NIVEL ANTIGRAVITY)
@@ -13,8 +19,6 @@ import { exportReportToPdf, exportReportToWord } from '@/utils/reportExporter';
  */
 
 export default function AdminDashboard() {
-  const [reports, setReports] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [activeType, setActiveType] = useState('HEMATOXILINA EOSINA');
   
   // ESTADO DE FILTROS
@@ -30,30 +34,23 @@ export default function AdminDashboard() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // MOTOR DE BÚSQUEDA (CONECTADO A API)
-  const fetchReports = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (filters.startDate) params.append('startDate', filters.startDate);
-      if (filters.endDate) params.append('endDate', filters.endDate);
-      if (filters.attentionCode) params.append('attentionCode', filters.attentionCode);
-      if (filters.name) params.append('name', filters.name);
-      params.append('limit', '50');
+  // MOTOR DE BÚSQUEDA ULTRA-ÁGIL (SWR)
+  const queryParams = new URLSearchParams();
+  if (filters.startDate) queryParams.append('startDate', filters.startDate);
+  if (filters.endDate) queryParams.append('endDate', filters.endDate);
+  if (filters.attentionCode) queryParams.append('attentionCode', filters.attentionCode);
+  if (filters.name) queryParams.append('name', filters.name);
+  queryParams.append('limit', '50');
 
-      const res = await fetch(`/api/reports?${params.toString()}`);
-      const data = await res.json();
-      setReports(Array.isArray(data) ? data : []);
-    } catch (e) {
-      console.error('[DASHBOARD_FAIL] Uplink Error:', e);
-    } finally {
-      setLoading(false);
-    }
-  }, [filters]);
+  const { data: reportsData, error, mutate } = useSWR(`/api/reports?${queryParams.toString()}`, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 5000,
+  });
 
-  useEffect(() => {
-    fetchReports();
-  }, []); // Carga inicial
+  const reports = useMemo(() => Array.isArray(reportsData) ? reportsData : [], [reportsData]);
+  const loading = !reportsData && !error;
+
+  const fetchReports = () => mutate();
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

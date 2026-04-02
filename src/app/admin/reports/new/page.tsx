@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useTransition } from 'react';
+import { useState, useCallback, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ServiceSection, PatientSection } from './components/PatientFormComponents';
 import { ReferenceSection, FinancialSection } from './components/FinancialAndAiTools';
@@ -43,6 +43,22 @@ export default function RegistroPaciente() {
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState<ReportFormData>(INITIAL_STATE);
+  
+  // FETCH DE CORRELATIVO SUGERIDO (ANTIGRAVITY INITIALIZATION)
+  useEffect(() => {
+    const fetchNextCode = async () => {
+      try {
+        const res = await fetch('/api/reports/next');
+        const data = await res.json();
+        if (data.nextCode) {
+          setFormData(prev => ({ ...prev, attentionCode: data.nextCode }));
+        }
+      } catch (err) {
+        console.error('[ANTIGRAVITY_PREVIEW] Error fetching next code:', err);
+      }
+    };
+    fetchNextCode();
+  }, []);
 
   // MANEJO DE ENTRADA OPTIMIZADO (AISLAMIENTO DE RENDERIZADO)
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

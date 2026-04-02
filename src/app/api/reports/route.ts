@@ -51,20 +51,37 @@ export async function GET(request: Request) {
     const dni = searchParams.get('dni');
     const name = searchParams.get('name');
     const type = searchParams.get('type');
+    const patientFirstName = searchParams.get('patientFirstName');
+    const patientLastName = searchParams.get('patientLastName');
+    const solicitor = searchParams.get('solicitor');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     if (attentionCode) where.attentionCode = { contains: attentionCode, mode: 'insensitive' };
     if (dni) where.patientDni = { contains: dni };
+    if (patientFirstName) where.patientFirstName = { contains: patientFirstName, mode: 'insensitive' };
+    if (patientLastName) where.patientLastName = { contains: patientLastName, mode: 'insensitive' };
+    if (solicitor) where.solicitor = { contains: solicitor, mode: 'insensitive' };
+    
     if (name) {
       where.OR = [
         { patientFirstName: { contains: name, mode: 'insensitive' } },
         { patientLastName: { contains: name, mode: 'insensitive' } },
+        { patientDni: { contains: name } },
       ];
     }
+    
     if (type && type !== 'ALL') {
-      if (where.attentionCode) {
-        where.attentionCode.startsWith = type;
-      } else {
-        where.attentionCode = { startsWith: type };
+      where.serviceType = type;
+    }
+
+    if (startDate || endDate) {
+      where.receptionDate = {};
+      if (startDate) where.receptionDate.gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        where.receptionDate.lte = end;
       }
     }
 
@@ -181,7 +198,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('[ANTIGRAVITY_API] POST Error:', error);
     if (error.code === 'P2002') {
-      return NextResponse.json({ errors: ['Colisión de Identificador: El código ya existe. Reintente.'] }, { status: 409 });
+      return NextResponse.json({ errors: ['CÓDIGO DE ATENCIÓN REPETIDO'] }, { status: 409 });
     }
     return NextResponse.json({ error: 'Critical System Failure' }, { status: 500 });
   }

@@ -3,7 +3,11 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import VictoriaGateway from "@/components/public/VictoriaGateway";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: "JC PATH LAB | Laboratorio de Anatomía Patológica Especializada",

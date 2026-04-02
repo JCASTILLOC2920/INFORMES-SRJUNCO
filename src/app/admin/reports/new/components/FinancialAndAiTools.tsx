@@ -7,7 +7,7 @@ interface SectionProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 
-const inputStyle = "w-full border-2 border-gray-100 bg-[#f8fafc] p-[1rem] rounded-[1.25rem] focus:ring-4 focus:ring-[#008de3]/5 focus:border-[#008de3] focus:bg-white outline-none font-bold text-[0.85rem] h-[3.5rem] transition-all text-[#002a45] placeholder-[#94a3b8]";
+const inputStyle = "w-full border-2 border-slate-300 bg-white p-[1rem] rounded-[1.25rem] focus:ring-4 focus:ring-blue-500/10 focus:border-[#008de3] outline-none font-bold text-[0.85rem] h-[3.5rem] transition-all text-[#002a45] placeholder-[#94a3b8] shadow-sm hover:border-slate-400";
 const btnStyle = "bg-[#002a45] text-white px-[1.5rem] rounded-[1.25rem] text-[0.7rem] font-black uppercase tracking-[0.15em] hover:bg-[#008de3] transition-all shadow-lg shadow-blue-900/10 h-[3.5rem] flex items-center justify-center shrink-0 min-w-[7rem]";
 
 export const ReferenceSection = React.memo(({ formData, handleInputChange }: SectionProps) => (
@@ -65,7 +65,7 @@ export const ReferenceSection = React.memo(({ formData, handleInputChange }: Sec
             onChange={handleInputChange} 
             rows={3} 
             placeholder="Descripción detallada de la muestra..."
-            className="w-full border-2 border-gray-100 bg-[#f8fafc] p-[1rem] rounded-[1.5rem] focus:ring-4 focus:ring-[#008de3]/5 focus:border-[#008de3] focus:bg-white outline-none font-bold text-[0.85rem] resize-none transition-all text-[#002a45] placeholder-[#94a3b8] min-h-[7rem]"
+            className="w-full border-2 border-slate-300 bg-white p-[1rem] rounded-[1.5rem] focus:ring-4 focus:ring-blue-500/10 focus:border-[#008de3] outline-none font-bold text-[0.85rem] resize-none transition-all text-[#002a45] placeholder-[#94a3b8] min-h-[7rem] shadow-sm hover:border-slate-400"
           ></textarea>
         </FormGroup>
       </div>

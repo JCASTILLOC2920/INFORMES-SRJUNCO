@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import AuthGuard from '@/components/auth/AuthGuard';
+// AuthGuard eliminado: La seguridad ahora está centralizada en middleware.ts para máxima agilidad.
 
 export default function AdminLayout({
   children,
@@ -29,8 +29,7 @@ export default function AdminLayout({
   ];
 
   return (
-    <AuthGuard>
-      <div className="flex h-screen bg-[#f8fafc] overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#f8fafc] overflow-hidden font-sans">
         {/* Mobile Sidebar Overlay */}
         {isSidebarOpen && (
           <div 
@@ -102,7 +101,6 @@ export default function AdminLayout({
           </main>
         </div>
       </div>
-    </AuthGuard>
   );
 }
 
