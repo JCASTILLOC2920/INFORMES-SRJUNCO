@@ -133,28 +133,30 @@ export default function EditReportModal({ report, isOpen, onClose, onSave }: Edi
                {activeTab === 'desc' && (
                  <div className="space-y-[3.5rem] max-w-[65rem] mx-auto animate-in slide-in-from-bottom duration-500">
                     {/* Macroscopia Section */}
-                    <div className="space-y-[1.5rem]">
-                       <div className="flex justify-between items-center bg-[#002a45] p-4 rounded-t-[1.5rem] border border-white/5">
-                          <label className="text-[0.7rem] font-black text-white uppercase tracking-[0.3em]">Examen Macroscópico</label>
-                          <div className="bg-white/10 px-3 py-1 rounded-lg text-[0.6rem] text-white/50 font-bold uppercase">Módulo AI Activo</div>
-                       </div>
-                       <EditorBox 
-                          value={formData.macroscopy} 
-                          onChange={(val: string) => setFormData({...formData, macroscopy: val})} 
-                       />
-                    </div>
+                     <div className="space-y-[1.5rem]">
+                        <div className="flex justify-between items-center bg-[#002a45] p-4 rounded-t-[1.5rem] border border-white/5">
+                           <label className="text-[0.7rem] font-black text-white uppercase tracking-[0.3em]">Examen Macroscópico</label>
+                           <div className="bg-white/10 px-3 py-1 rounded-lg text-[0.6rem] text-white/50 font-bold uppercase tracking-widest">Digital Transcription</div>
+                        </div>
+                        <EditorBox 
+                           label="Macroscopia"
+                           value={formData.macroscopy} 
+                           onChange={(val: string) => setFormData({...formData, macroscopy: val})} 
+                        />
+                     </div>
 
-                    {/* Microscopia Section */}
-                    <div className="space-y-[1.5rem]">
-                       <div className="flex justify-between items-center bg-[#002a45] p-4 rounded-t-[1.5rem] border border-white/5">
-                          <label className="text-[0.7rem] font-black text-white uppercase tracking-[0.3em]">Examen Microscópico</label>
-                          <div className="bg-white/10 px-3 py-1 rounded-lg text-[0.6rem] text-white/50 font-bold uppercase">Módulo AI Activo</div>
-                       </div>
-                       <EditorBox 
-                          value={formData.microscopy} 
-                          onChange={(val: string) => setFormData({...formData, microscopy: val})} 
-                       />
-                    </div>
+                     {/* Microscopia Section */}
+                     <div className="space-y-[1.5rem]">
+                        <div className="flex justify-between items-center bg-[#002a45] p-4 rounded-t-[1.5rem] border border-white/5">
+                           <label className="text-[0.7rem] font-black text-white uppercase tracking-[0.3em]">Examen Microscópico</label>
+                           <div className="bg-white/10 px-3 py-1 rounded-lg text-[0.6rem] text-white/50 font-bold uppercase tracking-widest">Digital Transcription</div>
+                        </div>
+                        <EditorBox 
+                           label="Microscopia"
+                           value={formData.microscopy} 
+                           onChange={(val: string) => setFormData({...formData, microscopy: val})} 
+                        />
+                     </div>
                  </div>
                )}
                
@@ -239,41 +241,70 @@ function TabBtn({ active, onClick, label }: any) {
   );
 }
 
-function EditorBox({ value, onChange }: any) {
+function EditorBox({ value, onChange, label }: any) {
   return (
-    <div className="border-2 border-gray-100 rounded-b-[2.5rem] overflow-hidden bg-white shadow-[0_15px_40px_rgba(0,0,0,0.02)] relative group">
+    <div className="border-2 border-gray-100 rounded-b-[2.5rem] overflow-hidden bg-white shadow-[0_15px_40px_rgba(0,42,69,0.02)] relative group">
        {/* High-End Toolbar */}
        <div className="bg-[#f8fafc] border-b border-gray-100 p-2 flex gap-1 items-center">
           <div className="flex border-r border-gray-200 pr-2 gap-1 px-2">
-             <EditorBtn icon="bold" />
-             <EditorBtn icon="italic" />
-             <EditorBtn icon="underline" />
+             <EditorBtn icon="bold" onClick={() => {
+                const textarea = document.getElementById(`editor-${label.replace(/\s+/g, '-')}`) as HTMLTextAreaElement;
+                if (!textarea) return;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+                const selected = text.substring(start, end);
+                const before = text.substring(0, start);
+                const after = text.substring(end);
+                onChange(before + `**${selected}**` + after);
+             }} />
+             <EditorBtn icon="italic" onClick={() => {
+                const textarea = document.getElementById(`editor-${label.replace(/\s+/g, '-')}`) as HTMLTextAreaElement;
+                if (!textarea) return;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+                const selected = text.substring(start, end);
+                const before = text.substring(0, start);
+                const after = text.substring(end);
+                onChange(before + `_${selected}_` + after);
+             }} />
+             <EditorBtn icon="underline" onClick={() => {
+                const textarea = document.getElementById(`editor-${label.replace(/\s+/g, '-')}`) as HTMLTextAreaElement;
+                if (!textarea) return;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+                const selected = text.substring(start, end);
+                const before = text.substring(0, start);
+                const after = text.substring(end);
+                onChange(before + `<u>${selected}</u>` + after);
+             }} />
           </div>
           <div className="flex gap-3 text-[0.6rem] font-black text-[#94a3b8] uppercase tracking-[0.2em] ml-4">
-             <span className="hover:text-[#008de3] cursor-pointer transition-colors">Inter - Pathological Standard</span>
-             <span className="hidden sm:inline opacity-30">|</span>
-             <span className="hidden sm:inline hover:text-[#008de3] cursor-pointer transition-colors">Digital Diagnosis Protocol</span>
+             <span className="hover:text-[#008de3] cursor-pointer transition-colors">{label} - Standard</span>
           </div>
           <div className="ml-auto px-4"><div className="w-2 h-2 rounded-full bg-[#28a745] animate-pulse"></div></div>
        </div>
        <textarea 
+          id={`editor-${label.replace(/\s+/g, '-')}`}
           value={value || ''} 
           onChange={(e) => onChange(e.target.value)} 
-          className="w-full h-[22rem] p-[2.5rem] text-[0.95rem] font-bold text-[#002a45] outline-none resize-none leading-relaxed custom-scrollbar selection:bg-[#008de3]/20" 
-          placeholder="Inicie la transcripción del diagnóstico..."
+          className="w-full h-[22rem] p-[2.5rem] text-[0.95rem] font-bold text-[#002a45] outline-none resize-none leading-relaxed custom-scrollbar" 
+          placeholder="Inicie la transcripción..."
        />
     </div>
   );
 }
 
-function EditorBtn({ icon }: { icon: 'bold' | 'italic' | 'underline' }) {
+function EditorBtn({ icon, onClick }: { icon: 'bold' | 'italic' | 'underline', onClick?: () => void }) {
   const icons = {
     bold: <path strokeLinecap="round" strokeLinejoin="round" d="M6 12h8a4 4 0 100-8H6v8zm0 0h10a4 4 0 110 8H6v-8z" />,
     italic: <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 0h-4M8 20h4" />,
     underline: <path strokeLinecap="round" strokeLinejoin="round" d="M7 5v7a5 5 0 0010 0V5M5 19h14" />
   };
   return (
-    <button className="w-9 h-9 flex items-center justify-center font-black rounded-xl hover:bg-white hover:shadow-sm text-[#64748b] hover:text-[#008de3] transition-all">
+    <button onClick={onClick} className="w-9 h-9 flex items-center justify-center font-black rounded-xl hover:bg-white hover:shadow-sm text-[#64748b] hover:text-[#008de3] transition-all">
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">{icons[icon]}</svg>
     </button>
   );

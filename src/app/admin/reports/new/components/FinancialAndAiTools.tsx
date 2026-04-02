@@ -44,7 +44,18 @@ export const ReferenceSection = React.memo(({ formData, handleInputChange }: Sec
               <option>DR. CASTILLO</option>
               <option>OTROS</option>
             </select>
-            <button className={btnStyle}>Copiar</button>
+            <button 
+              type="button"
+              onClick={() => {
+                if (formData.solicitor && formData.solicitor !== 'SELECCIONAR') {
+                  navigator.clipboard.writeText(formData.solicitor);
+                  alert(`Copiado: ${formData.solicitor}`);
+                }
+              }}
+              className={btnStyle}
+            >
+              Copiar
+            </button>
           </div>
         </FormGroup>
         <FormGroup label="Muestra y Motivo del Estudio">

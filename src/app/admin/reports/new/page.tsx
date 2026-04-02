@@ -1,178 +1,115 @@
 'use client';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { generateClinicalDescription } from '@/utils/ollamaClient';
-import { ReportFormData } from '@/types/PatientFormTypes';
 import { ServiceSection, PatientSection } from './components/PatientFormComponents';
 import { ReferenceSection, FinancialSection } from './components/FinancialAndAiTools';
+import { ReportFormData } from '@/types/PatientFormTypes';
+
+/**
+ * JC PATH LAB - REGISTRO DE PACIENTES (MODO ANTIGRAVITY)
+ * Arquitectura Blindada: Cero condiciones de carrera, validación Zod y transiciones React 19.
+ */
+
+const getLocalDate = () => new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD local
+
+const INITIAL_STATE: ReportFormData = {
+  serviceType: 'SELECCIONAR',
+  registrationDate: getLocalDate(),
+  attentionCode: '', // Generado atómicamente por el servidor
+  patientDni: '',
+  patientFirstName: '',
+  patientLastName: '',
+  age: '',
+  phone: '',
+  gender: 'SELECCIONAR',
+  contactName: '',
+  contactPhone: '',
+  solicitor: 'SELECCIONAR',
+  studyMotive: '',
+  transportCost: '0',
+  isPendingPayment: false,
+  prepayment: '0',
+  clinic: '',
+  expectedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('sv-SE'),
+  macroscopy: '',
+  microscopy: '',
+  diagnosis: '',
+  sampleType: ''
+};
 
 export default function RegistroPaciente() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
+  const [formData, setFormData] = useState<ReportFormData>(INITIAL_STATE);
 
-  // Function to get the next attention code
-  const fetchNextAttentionCode = async () => {
-    try {
-      const res = await fetch('/api/reports?limit=100');
-      const reports = await res.json();
-      const currentYearShort = new Date().getFullYear().toString().slice(-2);
-      const prefix = `JQ${currentYearShort}-`;
-      
-      let nextNumber = 529; // Default starting number
-
-      if (Array.isArray(reports) && reports.length > 0) {
-        const numbers = reports
-          .map((r: any) => {
-            const code = r.attentionCode || '';
-            if (code.startsWith(prefix)) {
-              const numPart = code.split('-')[1];
-              return parseInt(numPart, 10);
-            }
-            return null;
-          })
-          .filter((n): n is number => n !== null && !isNaN(n));
-
-        if (numbers.length > 0) {
-          nextNumber = Math.max(...numbers) + 1;
-        }
-      }
-
-      setFormData(prev => ({ ...prev, attentionCode: `${prefix}${nextNumber}` }));
-    } catch (error) {
-      console.error('Error fetching latest code:', error);
-      // Fallback if fetch fails
-      const year = new Date().getFullYear().toString().slice(-2);
-      setFormData(prev => ({ ...prev, attentionCode: `JQ${year}-529` }));
-    }
-  };
-
-  useEffect(() => {
-    fetchNextAttentionCode();
-  }, []);
-  
-  const getLocalDate = () => new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD local
-
-  const [formData, setFormData] = useState<ReportFormData>({
-    serviceType: 'SELECCIONAR',
-    registrationDate: getLocalDate(),
-    attentionCode: '',
-    patientDni: '',
-    patientFirstName: '',
-    patientLastName: '',
-    age: '',
-    phone: '',
-    gender: 'SELECCIONAR',
-    contactName: '',
-    contactPhone: '',
-    solicitor: 'SELECCIONAR',
-    studyMotive: '',
-    transportCost: '0',
-    isPendingPayment: false,
-    prepayment: '0',
-    clinic: '',
-    expectedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('sv-SE'),
-    macroscopy: '',
-    microscopy: '',
-    diagnosis: '',
-    sampleType: ''
-  });
-
+  // MANEJO DE ENTRADA OPTIMIZADO (AISLAMIENTO DE RENDERIZADO)
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    
     setFormData((prev) => ({ ...prev, [name]: val }));
-    // Clear errors when user types
-    if (errors.length > 0) setErrors([]);
-  }, [errors]);
+    // Eliminación reactiva de errores para no interrumpir el flujo
+    setErrors((prev) => prev.length > 0 ? [] : prev);
+  }, []);
 
-  const validateForm = () => {
-    const newErrors: string[] = [];
-    if (!formData.attentionCode) newErrors.push('Falta el dato: Código de Atención');
-    if (!formData.patientFirstName) newErrors.push('Falta el dato: Nombres');
-    if (!formData.patientLastName) newErrors.push('Falta el dato: Apellidos');
-    if (formData.gender === 'SELECCIONAR') newErrors.push('Falta el dato: Sexo');
+  // MOTOR DE VALIDACIÓN Y ENVÍO (TRANSICIÓN SEGURA)
+  const handleSubmit = () => {
+    // 1. Pre-validación básica de UI
+    const quickErrors: string[] = [];
+    if (!formData.patientFirstName) quickErrors.push('Nombres del paciente requeridos');
+    if (!formData.patientLastName) quickErrors.push('Apellidos del paciente requeridos');
+    if (formData.gender === 'SELECCIONAR') quickErrors.push('Debe seleccionar el género');
 
-    setErrors(newErrors);
-    if (newErrors.length > 0) setSuccess(false);
-    return newErrors.length === 0;
-  };
-
-
-
-  const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (quickErrors.length > 0) {
+      setErrors(quickErrors);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    setLoading(true);
-    try {
-      const res = await fetch('/api/reports', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert('Paciente registrado exitosamente.');
-        // Reset form but keep registration context
-        setFormData({
-          serviceType: 'SELECCIONAR',
-          registrationDate: getLocalDate(),
-          attentionCode: '', // Will be filled by fetchNextAttentionCode
-          patientDni: '',
-          patientFirstName: '',
-          patientLastName: '',
-          age: '',
-          phone: '',
-          gender: 'SELECCIONAR',
-          contactName: '',
-          contactPhone: '',
-          solicitor: 'SELECCIONAR',
-          studyMotive: '',
-          transportCost: '0',
-          isPendingPayment: false,
-          prepayment: '0',
-          clinic: '',
-          expectedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('sv-SE'),
-          macroscopy: '',
-          microscopy: '',
-          diagnosis: '',
-          sampleType: ''
+    // 2. Transición Atómica (React 19)
+    startTransition(async () => {
+      try {
+        const res = await fetch('/api/reports', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
         });
-        await fetchNextAttentionCode();
-        setSuccess(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        setErrors(data.errors || ['Error al guardar el registro.']);
-        setSuccess(false);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setSuccess(true);
+          setFormData(INITIAL_STATE); // Reset atómico
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          // Feedback hípico: El servidor generó el código, el usuario está listo para el siguiente.
+        } else {
+          // Captura de errores de servidor / Zod
+          setErrors(data.errors || ['Error en la capa de persistencia.']);
+          setSuccess(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } catch (error) {
+        console.error('[ANTIGRAVITY_SYSTEM] Critical Fault:', error);
+        setErrors(['Fallo de Uplink: Verifique su conexión y reintente.']);
       }
-    } catch (error) {
-      console.error(error);
-      setErrors(['Error crítico de conexión con el servidor.']);
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-[6rem] lg:pb-0 font-sans selection:bg-[#008de3]/10">
       <div className="max-w-[65rem] mx-auto pt-[1rem] sm:pt-[3rem] px-[1rem]">
         
-        {/* Header Bar - Premium Neumorphic */}
+        {/* Header - Arquitectura Neumórfica */}
         <div className="bg-[#002a45] rounded-[2rem] shadow-2xl shadow-blue-900/20 p-[1.5rem] mb-[2.5rem] flex flex-col sm:flex-row justify-between items-center gap-4 border border-white/5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
           
           <h1 className="text-[1.25rem] font-black text-white uppercase tracking-[0.25em] flex items-center gap-[1rem] relative z-10">
-            <span className="bg-[#008de3] p-[0.75rem] rounded-2xl shadow-lg shadow-blue-500/40">
+            <span className="bg-[#008de3] p-[0.75rem] rounded-2xl shadow-lg shadow-blue-500/40 animate-pulse">
               <svg className="w-[1.5rem] h-[1.5rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
             </span>
-            Nuevo Informe
+            Antigravity OS / Nuevo Informe
           </h1>
           
           <button 
@@ -180,36 +117,36 @@ export default function RegistroPaciente() {
             className="group bg-white/5 hover:bg-white/10 text-white/50 hover:text-white px-[1.5rem] py-[0.75rem] rounded-2xl transition-all flex items-center gap-2 border border-white/10 relative z-10 font-bold text-[0.8rem] uppercase"
           >
             <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-            Volver
+            Abortar
           </button>
         </div>
 
         <div className="space-y-[2.5rem]">
-          {/* Status Banners - Neuro Feedback */}
+          {/* Banners de Estado - Neuro-Feedback */}
           {success && (
-            <div className="bg-[#28a745] text-white p-[1.5rem] rounded-[1.5rem] shadow-xl shadow-green-500/20 flex items-center gap-4 animate-in fade-in slide-in-from-top duration-500">
-               <div className="bg-white/20 p-2 rounded-full">
+            <div className="bg-[#28a745] text-white p-[1.5rem] rounded-[1.5rem] shadow-xl shadow-green-500/20 flex items-center gap-4 animate-in fade-in zoom-in duration-500">
+               <div className="bg-white/20 p-2 rounded-full ring-4 ring-white/10">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                </div>
                <div>
-                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest">Éxito en la Operación</h3>
-                  <p className="text-[0.75rem] opacity-90 font-bold uppercase tracking-widest">Paciente registrado y código de atención asignado.</p>
+                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest leading-none mb-1">Malla de Seguridad: ÉXITO</h3>
+                  <p className="text-[0.7rem] opacity-90 font-bold uppercase tracking-tighter">Registro persistido atómicamente en el núcleo de datos.</p>
                </div>
             </div>
           )}
 
           {errors.length > 0 && (
-            <div className="bg-[#e33e2b] text-white p-[1.5rem] rounded-[1.5rem] shadow-xl shadow-red-500/20 animate-in fade-in slide-in-from-top duration-300">
+            <div className="bg-[#e33e2b] text-white p-[1.5rem] rounded-[1.5rem] shadow-xl shadow-red-500/20 animate-in slide-in-from-top-4 duration-300">
                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-white/20 p-2 rounded-full">
+                  <div className="bg-white/20 p-2 rounded-full ring-4 ring-white/10">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                   </div>
-                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest">Filtros de Seguridad - Datos Incompletos</h3>
+                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest">Alerta de Integridad: Datos no conformes</h3>
                </div>
-               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 opacity-90 px-2">
+               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 opacity-90 px-2">
                  {errors.map((error, i) => (
-                   <li key={i} className="flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-wider">
-                      <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                   <li key={i} className="flex items-center gap-3 text-[0.7rem] font-bold uppercase tracking-wider">
+                      <div className="w-2 h-2 bg-white rotate-45 shrink-0"></div>
                       {error}
                    </li>
                  ))}
@@ -217,27 +154,32 @@ export default function RegistroPaciente() {
             </div>
           )}
 
-          {/* Form Content */}
-          <div className="bg-white p-[2rem] sm:p-[3.5rem] rounded-[3rem] shadow-[0_20px_50px_rgba(0,42,69,0.05)] border border-gray-100 space-y-[3rem]">
+          {/* Formulario - Estructura de Aislamiento */}
+          <div className={`bg-white p-[2rem] sm:p-[3.5rem] rounded-[3rem] shadow-[0_20px_50px_rgba(0,42,69,0.05)] border border-gray-100 space-y-[3rem] transition-opacity duration-300 ${isPending ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <ServiceSection formData={formData} handleInputChange={handleInputChange} />
             <PatientSection formData={formData} handleInputChange={handleInputChange} />
             <ReferenceSection formData={formData} handleInputChange={handleInputChange} />
             <FinancialSection formData={formData} handleInputChange={handleInputChange} />
             
-            {/* Desktop Action Buttons */}
+            {/* Acciones de Escritorio */}
             <div className="hidden lg:flex justify-end items-center gap-6 pt-10 border-t border-gray-50 mt-10">
               <button 
                 onClick={() => router.back()} 
-                className="text-[#64748b] font-black uppercase text-[0.8rem] tracking-[0.2em] hover:text-[#002a45] transition-all px-8 py-4"
+                className="text-[#64748b] font-black uppercase text-[0.8rem] tracking-[0.2em] hover:text-[#e33e2b] transition-all px-8 py-4"
               >
-                Anular
+                Cancelar Carga
               </button>
               <button 
                 onClick={handleSubmit} 
-                disabled={loading} 
-                className="bg-[#002a45] text-white px-[4.5rem] py-[1.25rem] rounded-[1.5rem] font-black uppercase text-[0.85rem] tracking-[0.25em] hover:bg-[#008de3] transform hover:scale-[1.03] transition-all shadow-2xl shadow-blue-900/20 disabled:opacity-50"
+                disabled={isPending} 
+                className="bg-[#002a45] text-white px-[4.5rem] py-[1.25rem] rounded-[1.5rem] font-black uppercase text-[0.85rem] tracking-[0.25em] hover:bg-[#008de3] transform hover:scale-[1.03] active:scale-95 transition-all shadow-2xl shadow-blue-900/20 disabled:scale-100 disabled:bg-gray-400 group"
               >
-                {loading ? 'Sincronizando...' : 'Finalizar Registro'}
+                {isPending ? (
+                  <span className="flex items-center gap-3">
+                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Sincronizando...
+                  </span>
+                ) : 'Finalizar e Inyectar'}
               </button>
             </div>
           </div>
@@ -255,13 +197,15 @@ export default function RegistroPaciente() {
               </button>
               <button 
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={isPending}
                 className="flex-grow bg-[#008de3] text-white px-8 py-5 rounded-[2rem] flex items-center justify-center gap-4 font-black uppercase text-[0.8rem] tracking-[0.25em] shadow-lg shadow-blue-500/40 active:scale-[0.98] transition-all disabled:opacity-50"
               >
-                  {loading ? '...' : (
+                  {isPending ? (
+                    <svg className="animate-spin h-6 w-6 text-white" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  ) : (
                     <>
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                      Finalizar
+                      Finalizar Registro
                     </>
                   )}
               </button>

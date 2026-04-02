@@ -48,19 +48,18 @@ export const ServiceSection = React.memo(({ formData, handleInputChange }: Secti
           className={inputStyle}
         />
       </FormGroup>
-      <FormGroup label="Cód. Atención">
+      <FormGroup label="Cód. Atención (Auto-Generado)">
         <div className="flex gap-[0.5rem]">
           <input 
             type="text" 
             name="attentionCode" 
-            value={formData.attentionCode} 
-            onChange={handleInputChange} 
-            placeholder="JQ..." 
-            className={inputStyle} 
+            value={formData.attentionCode || "ASIGNACIÓN AUTOMÁTICA"} 
+            readOnly
+            className={`${inputStyle} opacity-60 cursor-not-allowed border-blue-200 bg-blue-50/30`} 
           />
-          <button className={btnStyle}>
-            Validar
-          </button>
+          <div className="bg-[#008de3]/10 text-[#008de3] px-[1rem] rounded-[1.25rem] text-[0.6rem] font-black uppercase tracking-[0.1rem] flex items-center justify-center border border-[#008de3]/20">
+            Protegido
+          </div>
         </div>
       </FormGroup>
     </div>
