@@ -39,11 +39,20 @@ export const ReferenceSection = React.memo(({ formData, handleInputChange }: Sec
         </div>
         <FormGroup label="Médico Referente (Solicitante)">
           <div className="flex gap-[0.5rem] items-center">
-            <select name="solicitor" value={formData.solicitor} onChange={handleInputChange} className={inputStyle}>
-              <option>SELECCIONAR</option>
-              <option>DR. CASTILLO</option>
-              <option>OTROS</option>
-            </select>
+            <input 
+              list="doctors-list"
+              name="solicitor" 
+              value={formData.solicitor} 
+              onChange={handleInputChange} 
+              className={inputStyle}
+              placeholder="Buscar o escribir nombre..."
+            />
+            <datalist id="doctors-list">
+              <option value="DR. CASTILLO" />
+              <option value="DR. VEGA" />
+              <option value="DRA. GARCIA" />
+              <option value="OTROS" />
+            </datalist>
             <button 
               type="button"
               onClick={() => {

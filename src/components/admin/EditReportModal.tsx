@@ -108,7 +108,15 @@ export default function EditReportModal({ report, isOpen, onClose, onSave }: Edi
               <div className="pt-4 space-y-[1.25rem]">
                 <h3 className="text-[0.65rem] font-black text-[#64748b] uppercase tracking-[0.3em] mb-4 border-b border-gray-100 pb-2">Clínica y Costos</h3>
                 <ModalField label="Servicio Méd." name="serviceType" value={formData.serviceType} onChange={handleInputChange} type="select" options={['SELECCIONAR', 'PAPANICOLAO', 'HEMATOXILINA EOSINA']} />
-                <ModalField label="Méd. Referente" name="solicitor" value={formData.solicitor} onChange={handleInputChange} type="select" options={['SELECCIONAR', 'DR. CASTILLO', 'OTROS']} showCopy />
+                <ModalField 
+                  label="Méd. Referente" 
+                  name="solicitor" 
+                  value={formData.solicitor} 
+                  onChange={handleInputChange} 
+                  type="datalist" 
+                  options={['DR. CASTILLO', 'DR. VEGA', 'DRA. GARCIA', 'OTROS']} 
+                  showCopy 
+                />
                 <ModalField label="Muestra/Motivo" name="studyMotive" value={formData.studyMotive} onChange={handleInputChange} type="textarea" />
                 <ModalField label="Compromiso" name="expectedDeliveryDate" value={formData.expectedDeliveryDate} onChange={handleInputChange} type="date" />
                 
@@ -213,6 +221,20 @@ function ModalField({ label, name, value, onChange, type = 'text', options = [],
           <select name={name} value={value || ''} onChange={onChange} className={inputBase}>
             {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
           </select>
+        ) : type === 'datalist' ? (
+          <>
+            <input 
+              list={`list-${name}`} 
+              name={name} 
+              value={value || ''} 
+              onChange={onChange} 
+              className={inputBase} 
+              placeholder={placeholder} 
+            />
+            <datalist id={`list-${name}`}>
+              {options.map((o: string) => <option key={o} value={o} />)}
+            </datalist>
+          </>
         ) : type === 'textarea' ? (
           <textarea name={name} value={value || ''} onChange={onChange} rows={3} className={`${inputBase} resize-none`} placeholder={placeholder} />
         ) : (

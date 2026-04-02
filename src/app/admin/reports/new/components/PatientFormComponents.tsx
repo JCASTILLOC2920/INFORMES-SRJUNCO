@@ -56,30 +56,30 @@ export const ServiceSection = React.memo(({ formData, handleInputChange }: Secti
             <input 
               type="text" 
               name="attentionCode" 
-              value={formData.attentionCode || (isLocked ? "ASIGNACIÓN AUTOMÁTICA" : "")} 
+              value={formData.attentionCode || (isLocked ? "Calculando..." : "")} 
               onChange={handleInputChange}
               readOnly={isLocked}
-              placeholder="Escriba código manual..."
-              className={`${inputStyle} ${isLocked ? 'opacity-60 cursor-not-allowed border-blue-200 bg-blue-50/30' : 'border-blue-500 bg-white ring-4 ring-blue-500/10 animate-in zoom-in-95 duration-200'}`} 
+              placeholder="Ej: JQ26-529"
+              className={`${inputStyle} ${isLocked ? 'opacity-70 bg-slate-100 text-blue-800' : 'border-blue-500 bg-white ring-4 ring-blue-500/10 animate-in zoom-in-95 duration-200'}`} 
             />
             <button 
               type="button"
               onClick={() => setIsLocked(!isLocked)}
               className={`px-[1rem] rounded-[1.25rem] text-[0.6rem] font-black uppercase tracking-[0.1rem] flex items-center justify-center border transition-all duration-300 min-w-[7rem] hover:scale-[1.02] active:scale-95 ${
                 isLocked 
-                ? 'bg-[#008de3]/10 text-[#008de3] border-[#008de3]/20' 
+                ? 'bg-blue-600 text-white border-transparent shadow-lg shadow-blue-500/20' 
                 : 'bg-[#e33e2b] text-white border-transparent shadow-lg shadow-red-500/20'
               }`}
             >
               {isLocked ? (
                 <span className="flex items-center gap-2">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  Protegido
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  Protegido / Corregir
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                  Corregir
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  Modo Manual
                 </span>
               )}
             </button>

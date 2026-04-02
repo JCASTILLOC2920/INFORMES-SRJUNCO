@@ -49,3 +49,19 @@ model Report {
   @@index([patientDni])
   @@index([receptionDate])
 }
+
+model Doctor {
+  id              String   @id @default(cuid())
+  type            String?  // TIPO
+  province        String?  // PROVINCIA
+  name            String   // DOCTOR (Nombre completo)
+  specialization  String?  // # ESPECIALIZACIÓN
+  licenseNumber   String?  // # COLEGIADO
+  phone           String?  // # TELEFONO
+  email           String?  // CORREO
+  signatureUrl    String?  // FIRMA
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([name])
+}
