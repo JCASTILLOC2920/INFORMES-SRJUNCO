@@ -7,7 +7,11 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function DoctorsPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { data: doctors, error, mutate } = useSWR(`/api/doctors${searchTerm ? `?q=${searchTerm}` : ''}`, fetcher);
+  const { data: doctorsData, error, mutate } = useSWR(`/api/doctors${searchTerm ? `?q=${searchTerm}` : ''}`, fetcher);
+
+  const doctors = Array.isArray(doctorsData) ? doctorsData : [];
+  const apiError = error || (doctorsData && doctorsData.error);
+  const loading = !doctorsData && !error;
 
   const handleDelete = async (id: string) => {
     if (!confirm('¿Está seguro de eliminar este médico?')) return;
@@ -37,6 +41,20 @@ export default function DoctorsPage() {
         </div>
       </div>
 
+      {/* Alerta de Error Crítico (Arquitectura Antigravity) */}
+      {apiError && (
+        <div className="mb-8 bg-red-50 border-2 border-red-200 p-6 rounded-2xl flex items-center gap-4 animate-in slide-in-from-top duration-500">
+           <div className="bg-red-500 p-3 rounded-xl text-white shadow-lg shadow-red-500/20">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+           </div>
+           <div>
+              <h3 className="text-red-800 font-black uppercase text-[0.8rem] tracking-widest">Protocolo de Error Activado</h3>
+              <p className="text-red-600 text-[0.75rem] font-bold">No se pudo sincronizar con el núcleo de datos: {apiError.message || JSON.stringify(apiError)}</p>
+              <p className="text-red-400 text-[0.65rem] uppercase mt-1">Sugerencia: Ejecute 'npx prisma db push' para sincronizar la base de datos.</p>
+           </div>
+        </div>
+      )}
+
       {/* Contenedor Principal de la Tabla */}
       <div className="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
         
@@ -63,6 +81,7 @@ export default function DoctorsPage() {
                type="text" 
                value={searchTerm}
                onChange={(e) => setSearchTerm(e.target.value)}
+               placeholder="Filtrar por nombre o licencia..."
                className="border border-gray-300 rounded px-4 py-1.5 outline-none focus:ring-2 focus:ring-[#1e40af]/20 focus:border-[#1e40af] transition-all min-w-[15rem] shadow-sm" 
              />
           </div>
@@ -86,7 +105,7 @@ export default function DoctorsPage() {
               </tr>
             </thead>
             <tbody className="text-[#334155] text-[0.8rem] font-bold">
-              {doctors?.map((doc: any, index: number) => (
+              {doctors.map((doc: any, index: number) => (
                 <tr key={doc.id} className="hover:bg-blue-50/50 transition-colors">
                   <td className="border border-gray-200 p-3 text-center text-gray-400 font-normal">{index + 1}</td>
                   <td className="border border-gray-200 p-3">{doc.type || 'DR. CLIENTE'}</td>
@@ -118,10 +137,10 @@ export default function DoctorsPage() {
                   </td>
                 </tr>
               ))}
-              {(!doctors || doctors.length === 0) && (
+              {(loading || doctors.length === 0) && !apiError && (
                 <tr>
                   <td colSpan={10} className="p-20 text-center text-gray-300 font-black uppercase tracking-[0.4em] italic bg-gray-50/20">
-                    Buscando especialistas en el núcleo...
+                    {loading ? 'Sincronizando con el núcleo...' : 'No se encontraron médicos en el sistema'}
                   </td>
                 </tr>
               )}
@@ -131,7 +150,7 @@ export default function DoctorsPage() {
 
         {/* Paginación (Simulación como en la imagen) */}
         <div className="p-6 bg-white flex justify-between items-center text-[0.8rem] text-[#64748b] font-medium border-t border-gray-100">
-           <span>Mostrando 0 a 0 de 0 registros</span>
+           <span>Mostrando {doctors.length} registros</span>
            <div className="flex gap-2">
               <button disabled className="px-4 py-1.5 rounded border border-gray-200 text-gray-300">Anterior</button>
               <button disabled className="px-4 py-1.5 rounded border border-gray-200 text-gray-300">Siguiente</button>
