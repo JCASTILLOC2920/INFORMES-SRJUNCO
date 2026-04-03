@@ -178,17 +178,17 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-center border-collapse min-w-[85rem] table-fixed">
               <thead>
-                <tr className="bg-[#f8fafc] text-[#002a45] text-[0.65rem] font-black uppercase tracking-[0.2em] border-b border-gray-100">
-                  <th className="p-[1.25rem] w-[3.5rem]">#</th>
-                  <th className="p-[1.25rem] w-[9rem]">Código</th>
-                  <th className="p-[1.25rem] w-[8rem]">Doc. Identidad</th>
-                  <th className="p-[1.25rem] w-[14rem]">Médico Referente</th>
-                  <th className="p-[1.25rem] w-[18rem] text-left">Paciente</th>
-                  <th className="p-[1.25rem] w-[7rem]">Costo</th>
-                  <th className="p-[1.25rem] w-[7rem]">Adelanto</th>
-                  <th className="p-[1.25rem] w-[7rem]">Resta</th>
-                  <th className="p-[1.25rem] w-[8.5rem]">Entrega</th>
-                  <th className="p-[1.25rem] w-[11rem] bg-gray-50/50">Gestión</th>
+                <tr className="bg-[#008de3] text-white text-[0.7rem] font-black uppercase tracking-widest">
+                  <th className="border border-white/20 p-3 w-[3rem]">#</th>
+                  <th className="border border-white/20 p-3 w-[9rem] text-center">Código</th>
+                  <th className="border border-white/20 p-3 w-[9rem] text-center">Doc. Identidad</th>
+                  <th className="border border-white/20 p-3 w-[14rem] text-center">Médico Referente</th>
+                  <th className="border border-white/20 p-3 w-[18rem] text-left">Paciente</th>
+                  <th className="border border-white/20 p-3 w-[7.5rem] text-center">Costo</th>
+                  <th className="border border-white/20 p-3 w-[7.5rem] text-center">Adelanto</th>
+                  <th className="border border-white/20 p-3 w-[7.5rem] text-center">Resta</th>
+                  <th className="border border-white/20 p-3 w-[9rem] text-center">Entrega</th>
+                  <th className="border border-white/20 p-3 w-[10rem] text-center">Gestión</th>
                 </tr>
               </thead>
               <tbody className="text-gray-700 text-[0.8rem] font-bold">
@@ -202,29 +202,29 @@ export default function AdminDashboard() {
                   const financeColorClass = hasDebt ? "bg-[#ff0000] text-white" : "bg-[#28a745] text-white";
 
                   return (
-                    <tr key={report.id} className="hover:bg-[#f1f5f9]/50 transition-colors border-b border-gray-50 group">
-                      <td className="p-[1rem] text-center opacity-30 text-[0.7rem]">{idx + 1}</td>
-                      <td className="p-[1rem] text-center whitespace-nowrap font-black text-[#002a45]">{report.attentionCode}</td>
-                      <td className="p-[1rem] text-center text-[#64748b]">{report.patientDni || '---'}</td>
-                      <td className="p-[1rem] uppercase text-center truncate px-4 text-[#64748b]">
+                    <tr key={report.id} className="hover:bg-blue-50/50 transition-colors group">
+                      <td className="border border-gray-100 p-3 text-center text-gray-400 font-normal">{idx + 1}</td>
+                      <td className="border border-gray-100 p-3 text-center whitespace-nowrap font-black text-[#002a45]">{report.attentionCode}</td>
+                      <td className="border border-gray-100 p-3 text-center text-[#64748b]">{report.patientDni || '---'}</td>
+                      <td className="border border-gray-100 p-3 uppercase text-center truncate px-4 text-[#64748b]">
                           {report.solicitor === 'SELECCIONAR' ? '---' : report.solicitor}
                       </td>
-                      <td className="p-[1rem] uppercase text-left truncate px-4 text-[#002a45]">
+                      <td className="border border-gray-100 p-3 uppercase text-left truncate px-4 text-[#002a45]">
                           {report.patientLastName}, {report.patientFirstName}
                       </td>
-                      <td className="p-[1rem] font-bold text-center">
+                      <td className="border border-gray-100 p-3 font-bold text-center">
                           <span className={`px-3 py-1 rounded-full text-[0.7rem] bg-gray-100 text-[#002a45]`}>S/ {report.cost?.toFixed(0)}</span>
                       </td>
-                      <td className="p-[1rem] font-bold text-center">
+                      <td className="border border-gray-100 p-3 font-bold text-center">
                           <span className={`px-3 py-1 rounded-full text-[0.7rem] bg-green-50 text-[#28a745]`}>S/ {report.prepayment?.toFixed(0)}</span>
                       </td>
-                      <td className="p-[1rem] font-bold text-center">
+                      <td className="border border-gray-100 p-3 font-bold text-center">
                           <span className={`px-3 py-1 rounded-full text-[0.7rem] ${financeColorClass}`}>S/ {report.balance?.toFixed(0)}</span>
                       </td>
-                      <td className="p-[1rem] font-black text-center text-[#334155] text-[0.75rem]">
+                      <td className="border border-gray-100 p-3 font-black text-center text-[#334155] text-[0.75rem]">
                           {report.expectedDeliveryDate ? format(new Date(report.expectedDeliveryDate), 'dd MMM', { locale: es }) : '---'}
                       </td>
-                      <td className="p-[1rem] bg-gray-50/30 group-hover:bg-gray-100/50 transition-colors">
+                      <td className="border border-gray-100 p-3 bg-gray-50/30 group-hover:bg-transparent transition-colors">
                           <div className="flex items-center justify-center gap-1">
                               <button onClick={() => handleEditClick(report)} className="p-2 text-[#64748b] hover:text-[#008de3] hover:bg-white rounded-lg shadow-sm transition-all" title="Editar">
                                   <svg className="w-[1.1rem] h-[1.1rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
