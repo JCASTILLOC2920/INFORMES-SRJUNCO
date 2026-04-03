@@ -6,7 +6,7 @@ import HeroCarousel from './HeroCarousel';
 
 export default function Hero() {
   return (
-    <section id="inicio" className="relative min-h-[95vh] flex items-center pt-[7rem] pb-[4rem] overflow-hidden bg-white">
+    <section id="inicio" className="relative min-h-[95vh] flex items-center pt-[11.5rem] pb-[4rem] overflow-hidden bg-white">
       {/* Nexus Background Grid - Optimized O(1) impact */}
       <div className="absolute inset-0 -z-10 opacity-[0.03] pointer-events-none" 
            style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--secondary) 1px, transparent 0)', backgroundSize: '40px 40px' }}>

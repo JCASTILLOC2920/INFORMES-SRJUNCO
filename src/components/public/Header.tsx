@@ -28,6 +28,11 @@ export default function Header() {
         isScrolled || isMenuOpen ? 'bg-white/80 backdrop-blur-2xl border-b border-[var(--secondary)]/10 shadow-[0_10px_40px_rgba(0,0,0,0.05)] py-[0.8rem]' : 'bg-transparent py-[1.5rem]'
       }`}
     >
+      {/* Trust Banner (Bloque 4) - Top Alignment for zero-collision */}
+      <div className="bg-[#EFF6FF] text-[#1E3A8A] text-center py-[6px] text-[0.75rem] font-medium border-b border-[var(--secondary)]/5 tracking-wide">
+        Operatividad garantizada: Lunes a Sábado | Resultados de alta precisión en 72h
+      </div>
+
       <div className="container mx-auto px-[1.5rem]">
         <div className="flex justify-between items-center">
           {/* Logo Section */}
@@ -56,6 +61,9 @@ export default function Header() {
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[var(--cyan-pulse)] transition-all duration-500 group-hover:w-full"></span>
               </Link>
             ))}
+            <button className="bg-transparent border-2 border-[#001F3F] text-[#001F3F] px-[1.2rem] py-[0.7rem] rounded-[6px] text-[0.75rem] font-semibold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-[#001F3F] hover:text-white">
+              Portal de Resultados
+            </button>
             <button className="bg-[var(--nexus-void)] text-white px-[2.2rem] py-[0.8rem] rounded-2xl text-[0.75rem] font-black uppercase tracking-[0.15em] shadow-xl hover:bg-[var(--secondary)] hover:shadow-[0_0_25px_rgba(0,141,227,0.3)] transition-all transform hover:-translate-y-0.5 active:scale-95 border border-white/10">
               Agendar Cita
             </button>
@@ -74,8 +82,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Credentials Banner removed as requested */}
-
         {/* Mobile menu overlay */}
         <div 
           className={`fixed inset-0 bg-white/98 flex flex-col items-center justify-center space-y-[2rem] transition-all duration-500 lg:hidden ${
@@ -92,7 +98,10 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-          <button className="bg-[#003d63] text-white px-[3rem] py-[1.25rem] rounded-full text-[1rem] font-black uppercase tracking-widest shadow-2xl">
+          <button className="bg-transparent border-2 border-[#001F3F] text-[#001F3F] px-[1.2rem] py-[1rem] rounded-[6px] text-[1rem] font-semibold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-[#001F3F] hover:text-white w-[80%] max-w-[300px]">
+            Portal de Resultados
+          </button>
+          <button className="bg-[#003d63] text-white px-[3rem] py-[1.25rem] rounded-full text-[1rem] font-black uppercase tracking-widest shadow-2xl w-[80%] max-w-[300px]">
             Agendar Cita
           </button>
         </div>
