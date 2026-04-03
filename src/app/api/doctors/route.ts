@@ -46,9 +46,12 @@ export async function POST(request: Request) {
       }
     });
     return NextResponse.json(doctor);
-  } catch (error) {
+  } catch (error: any) {
     console.error('[MED_CORE] POST ERROR:', error);
-    return NextResponse.json({ error: 'Data Persist Failure' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Data Persist Failure', 
+      details: error.message || String(error)
+    }, { status: 500 });
   }
 }
 

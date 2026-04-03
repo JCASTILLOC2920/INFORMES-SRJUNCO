@@ -1,17 +1,8 @@
 import Image from 'next/image';
 import React from 'react';
+import HeroCarousel from './HeroCarousel';
 
-const AvatarStack = React.memo(() => (
-  <div className="flex -space-x-[1rem]">
-    {[21, 22, 23, 24, 25].map(imgId => (
-      <div key={imgId} className="w-[3rem] h-[3rem] rounded-full border-[3px] border-white bg-white flex items-center justify-center overflow-hidden elite-shadow transition-transform hover:scale-110 hover:z-20 cursor-default">
-        <img src={`https://i.pravatar.cc/100?img=${imgId}`} alt="User Trust Avatar" className="w-full h-full object-cover" />
-      </div>
-    ))}
-  </div>
-));
 
-AvatarStack.displayName = 'AvatarStack';
 
 export default function Hero() {
   return (
@@ -27,42 +18,42 @@ export default function Hero() {
 
       <div className="container mx-auto px-[1.5rem] z-10 grid lg:grid-cols-2 gap-[4rem] items-center">
         <div className="max-w-[42rem] order-2 lg:order-1 stagger-reveal">
-          <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5rem] font-black text-[#1e293b] leading-[1.05] mb-[1.5rem] tracking-tighter">
-            <span className="text-gradient block">JC PATH LAB</span>
+          <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5rem] font-black text-[#1e293b] leading-[1.1] mb-[1.5rem] tracking-tighter">
+            <span className="text-gradient block">Patología de Precisión</span>
             <span className="relative inline-block mt-2">
-              Patología de Precisión
+              en Lima Norte
               <div className="absolute -bottom-2 left-0 w-1/3 h-1 bg-[var(--cyan-pulse)] rounded-full opacity-50"></div>
             </span>
           </h1>
-          <p className="text-[1.15rem] text-gray-600 mb-[2.5rem] max-w-[34rem] leading-relaxed font-medium border-l-4 border-[var(--secondary)]/20 pl-6">
+          <p className="text-[18px] text-[#1F2937] mb-[2.5rem] max-w-[34rem] leading-relaxed font-medium border-l-4 border-[var(--secondary)]/20 pl-6">
             Diagnóstico especializado en Biopsias, Citología e Inmunohistoquímica con tecnología de punta en Puente Piedra, Lima Norte. Resultados rápidos en 3-4 días.
           </p>
+          <a 
+            href="#contacto" 
+            className="inline-block mt-[32px] px-[32px] py-[16px] bg-[#001F3F] text-[#FFFFFF] rounded-[6px] border-none text-[1.125rem] font-[600] cursor-pointer shadow-lg transition-transform hover:scale-105 active:scale-95"
+          >
+            Agendar Examen Ahora
+          </a>
           
-          <div className="mt-[3rem] flex items-center space-x-[2rem] text-gray-500">
-            <AvatarStack />
-            <div className="flex flex-col">
-              <span className="text-[0.7rem] font-black uppercase tracking-[0.2em] text-[var(--secondary)] mb-1">Elite Medical Trust</span>
-              <p className="text-[0.85rem] font-bold text-gray-700">
-                <span className="text-[var(--nexus-void)]">+5,000</span> diagnósticos precisos
-              </p>
+          <div className="mt-[3rem] flex items-center gap-[8px] text-gray-500">
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-5 h-5 fill-[#F59E0B]" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
             </div>
+            <p className="text-[0.85rem] font-bold text-gray-700">
+              <span className="text-[var(--nexus-void)]">4.9/5</span> basado en 5,000+ diagnósticos en Puente Piedra
+            </p>
           </div>
         </div>
 
-        <div className="relative group order-1 lg:order-2">
+        <div className="relative group order-1 lg:order-2 h-[400px] md:h-[500px] lg:h-[600px] w-full">
             <div className="absolute -inset-4 bg-gradient-to-tr from-[var(--secondary)]/10 to-[var(--cyan-pulse)]/10 rounded-[3.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
             
-            <div className="relative z-10 glass-card p-[1rem] rounded-[3rem] elite-shadow overflow-hidden transition-all duration-700 transform group-hover:scale-[1.02] border-[1px] border-white/50">
-              <div className="rounded-[2.2rem] overflow-hidden bg-gray-100">
-                <Image 
-                  src="/doctor.png" 
-                  alt="Dr. Josehp Castillo Cuenca - Director Médico" 
-                  width={800} 
-                  height={600} 
-                  className="w-full h-auto aspect-[4/3] object-cover transition-transform duration-[3s] group-hover:scale-105"
-                  priority
-                />
-              </div>
+            <div className="relative h-full z-10 glass-card p-[1rem] rounded-[3rem] elite-shadow overflow-hidden transition-all duration-700 transform group-hover:scale-[1.02] border-[1px] border-white/50">
+                <HeroCarousel />
             </div>
 
             <div className="absolute bottom-2 md:-bottom-6 left-2 md:-left-6 z-20 glow-card p-4 md:p-6 rounded-2xl animate-float scale-90 md:scale-100 origin-bottom-left">
