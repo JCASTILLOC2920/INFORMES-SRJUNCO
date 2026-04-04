@@ -21,7 +21,7 @@ const services = [
 export default function SpecializedServices() {
   return (
     <section className="bg-transparent">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px] max-w-[1200px] mx-auto px-[20px] py-[64px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px] max-w-[1600px] mx-auto px-[20px] py-[64px]">
         {services.map((service, index) => (
           <div 
             key={index}

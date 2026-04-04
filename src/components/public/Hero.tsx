@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[60%] bg-gradient-to-br from-[var(--secondary)] to-[var(--cyan-pulse)] rounded-full blur-[120px] opacity-[0.07] -z-10 animate-pulse-aura"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[30%] h-[50%] bg-[var(--primary)] rounded-full blur-[100px] opacity-[0.05] -z-10"></div>
 
-      <div className="container mx-auto px-[1.5rem] z-10 grid lg:grid-cols-[1.2fr_1fr] gap-[64px] items-center">
+      <div className="max-w-[1700px] mx-auto px-[1.5rem] z-10 grid lg:grid-cols-[1.2fr_1fr] gap-[64px] items-center">
         <div className="max-w-[42rem] order-2 lg:order-1 stagger-reveal">
           <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5rem] font-black text-[#1e293b] leading-[1.1] mb-[1.5rem] tracking-tighter">
             <span className="text-gradient block">Patología de Precisión</span>

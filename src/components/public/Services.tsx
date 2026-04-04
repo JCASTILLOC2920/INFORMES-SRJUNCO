@@ -42,7 +42,7 @@ export default function Services() {
       <div className="absolute top-0 left-1/4 w-[20rem] h-[20rem] bg-[var(--secondary)]/5 rounded-full blur-[100px] -z-10"></div>
       <div className="absolute bottom-0 right-1/4 w-[30rem] h-[30rem] bg-[var(--cyan-pulse)]/5 rounded-full blur-[120px] -z-10"></div>
 
-      <div className="container mx-auto px-[1.5rem]">
+      <div className="max-w-[1700px] mx-auto px-[1.5rem]">
         <div className="text-center mb-[6rem] animate-reveal">
           <span className="text-[var(--secondary)] font-black text-[0.7rem] uppercase tracking-[0.5em] mb-[1.5rem] block">Excelencia Diagnóstica</span>
           <h2 className="text-[2.2rem] sm:text-[3rem] md:text-[4.2rem] font-black text-[var(--nexus-void)] mb-[1.5rem] tracking-tighter leading-none italic">

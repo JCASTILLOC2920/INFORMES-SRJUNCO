@@ -109,6 +109,7 @@ body {
 
 .animate-float {
   animation: float 4s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes reveal {
@@ -119,10 +120,12 @@ body {
 .animate-reveal {
   opacity: 0;
   animation: reveal 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-pulse-aura {
   animation: pulse-aura 3s ease-in-out infinite;
+  will-change: transform, box-shadow;
 }
 
 @keyframes pulse-aura {

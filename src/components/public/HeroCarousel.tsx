@@ -4,10 +4,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 const images = [
-  '/images/hero/5.jpg',
-  '/images/hero/1.jpg',
-  '/images/hero/2.jpg',
-  '/images/hero/4.jpg'
+  '/images/hero/5.webp',
+  '/images/hero/1.webp',
+  '/images/hero/2.webp',
+  '/images/hero/4.webp'
 ];
 
 export default function HeroCarousel() {
@@ -42,8 +42,9 @@ export default function HeroCarousel() {
             alt={`Carrusel de Patología - Imagen ${index + 1}`}
             fill
             className="object-cover transition-transform duration-[10s] ease-linear scale-100 group-hover:scale-110"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
             priority={index === 0}
+            quality={index === 0 ? 90 : 75}
           />
         </div>
       ))}

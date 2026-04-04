@@ -19,7 +19,7 @@ export default function Footer() {
       {/* Footer Accent - O(1) impact */}
       <div className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-[var(--secondary)]/10 rounded-full blur-[150px] -z-10 animate-pulse-aura"></div>
       
-      <div className="container mx-auto px-[1.5rem] relative z-10">
+      <div className="max-w-[1700px] mx-auto px-[1.5rem] relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[5rem] mb-[5rem]">
           <div className="col-span-1 lg:col-span-1">
             <div className="flex items-center space-x-4 text-white mb-8 group">

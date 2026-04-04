@@ -23,7 +23,7 @@ export default function WhyUs() {
            style={{ backgroundImage: 'linear-gradient(var(--secondary) 1px, transparent 1px), linear-gradient(90deg, var(--secondary) 1px, transparent 1px)', backgroundSize: '60px 60px' }}>
       </div>
 
-      <div className="container mx-auto px-[1.5rem]">
+      <div className="max-w-[1700px] mx-auto px-[1.5rem]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-[6rem] items-center">
           <div className="bg-[var(--nexus-void)] rounded-[3.5rem] p-[2rem] sm:p-[5rem] text-white relative overflow-hidden shadow-[0_40px_100px_rgba(0,27,46,0.3)] group transition-all duration-1000 animate-reveal">
              <div className="relative z-10">

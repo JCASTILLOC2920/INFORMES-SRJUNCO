@@ -11,6 +11,8 @@ const DeleteConfirmModal = dynamic(() => import('@/components/admin/DeleteConfir
 
 import { exportReportToPdf, exportReportToWord } from '@/utils/reportExporter';
 
+import TableSkeleton from '@/components/admin/TableSkeleton';
+
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 /**
@@ -50,6 +52,11 @@ export default function AdminDashboard() {
   const reports = useMemo(() => Array.isArray(reportsData) ? reportsData : [], [reportsData]);
   const loading = !reportsData && !error;
 
+  // MEMORIZACIÓN DE REPORTES FILTRADOS POR TIPO (AHORRO CPU)
+  const filteredReports = useMemo(() => {
+    return reports.filter(r => r.serviceType === activeType);
+  }, [reports, activeType]);
+
   const fetchReports = () => mutate();
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,8 +66,6 @@ export default function AdminDashboard() {
 
   const clearFilters = () => {
     setFilters({ startDate: '', endDate: '', attentionCode: '', name: '' });
-    // El useEffect disparará la recarga al cambiar filtros si lo hiciéramos reactivo, 
-    // pero el usuario pidió un botón "Localizar".
   };
 
   // GESTIÓN DE EDICIÓN
@@ -109,9 +114,20 @@ export default function AdminDashboard() {
     }
   };
 
+  // MINI-COMPONENTE INTERNO PARA ICONOS (Ahorro DOM)
+  const IconButton = ({ onClick, children, title, colorClass = "text-[#64748b] hover:text-[#008de3]" }: any) => (
+    <button 
+      onClick={onClick} 
+      className={`p-2 ${colorClass} hover:bg-white rounded-lg shadow-sm transition-all`} 
+      title={title}
+    >
+      {children}
+    </button>
+  );
+
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-[5rem] lg:pb-0 font-sans selection:bg-[#008de3]/10">
-      <div className="max-w-[90rem] mx-auto px-[1rem] sm:px-[2rem] py-[1.5rem]">
+      <div className="max-w-full mx-auto px-[1rem] lg:px-[0.5rem] py-[1.5rem]">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[2rem] gap-4">
@@ -193,11 +209,11 @@ export default function AdminDashboard() {
               </thead>
               <tbody className="text-gray-700 text-[0.8rem] font-bold">
               {loading ? (
-                  <tr><td colSpan={10} className="p-8 text-center text-gray-500 font-black uppercase tracking-widest opacity-30">Analizando registros...</td></tr>
-              ) : reports.filter(r => r.serviceType === activeType).length === 0 ? (
-                  <tr><td colSpan={10} className="p-8 text-center text-gray-500 font-black uppercase tracking-widest opacity-30">No se encontraron coincidencias bajo este filtro.</td></tr>
+                  <TableSkeleton rows={8} />
+              ) : filteredReports.length === 0 ? (
+                  <tr><td colSpan={10} className="p-12 text-center text-gray-500 font-black uppercase tracking-widest opacity-30">No se encontraron registros activos.</td></tr>
               ) : (
-                reports.filter(r => r.serviceType === activeType).map((report, idx) => {
+                filteredReports.map((report: any, idx: number) => {
                   const hasDebt = report.balance > 0;
                   const financeColorClass = hasDebt ? "bg-[#ff0000] text-white" : "bg-[#28a745] text-white";
 
@@ -226,15 +242,15 @@ export default function AdminDashboard() {
                       </td>
                       <td className="border border-gray-100 p-3 bg-gray-50/30 group-hover:bg-transparent transition-colors">
                           <div className="flex items-center justify-center gap-1">
-                              <button onClick={() => handleEditClick(report)} className="p-2 text-[#64748b] hover:text-[#008de3] hover:bg-white rounded-lg shadow-sm transition-all" title="Editar">
+                              <IconButton onClick={() => handleEditClick(report)} title="Editar">
                                   <svg className="w-[1.1rem] h-[1.1rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                              </button>
-                              <button onClick={() => exportReportToPdf(report)} className="p-2 text-[#64748b] hover:text-[#008de3] hover:bg-white rounded-lg shadow-sm transition-all" title="Generar PDF">
+                              </IconButton>
+                              <IconButton onClick={() => exportReportToPdf(report)} title="Generar PDF">
                                   <svg className="w-[1.1rem] h-[1.1rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                              </button>
-                              <button onClick={() => handleDeleteClick(report)} className="p-2 text-red-200 hover:text-red-500 hover:bg-white rounded-lg shadow-sm transition-all" title="Purgar">
+                              </IconButton>
+                              <IconButton onClick={() => handleDeleteClick(report)} title="Purgar" colorClass="text-red-200 hover:text-red-500">
                                   <svg className="w-[1.1rem] h-[1.1rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                              </button>
+                              </IconButton>
                           </div>
                       </td>
                     </tr>

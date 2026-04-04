@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { ServiceSection, PatientSection } from './components/PatientFormComponents';
 import { ReferenceSection, FinancialSection } from './components/FinancialAndAiTools';
 import { ReportFormData } from '@/types/PatientFormTypes';
+import RecentPatientsTable from '@/components/admin/RecentPatientsTable';
+import { mutate } from 'swr';
 
 /**
  * JC PATH LAB - REGISTRO DE PACIENTES (MODO ANTIGRAVITY)
@@ -113,10 +115,13 @@ export default function RegistroPaciente() {
           if (isVerified) {
             setSuccess(true);
             setErrors([]);
-            setFormData(INITIAL_STATE);
             
-            // Ciclo Autónomo: Proponer el nuevo código inmediato superior
-            await fetchNextCode();
+            // Ciclo Autónomo: Primero resetear campos, luego inyectar el nuevo código consecutivo
+            setFormData({ ...INITIAL_STATE });
+            await fetchNextCode(); 
+            
+            // Inyectar en la lista visual inferior
+            mutate('/api/reports?limit=10');
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
             // Temporal success message clearing for next entry
@@ -143,7 +148,7 @@ export default function RegistroPaciente() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-[6rem] lg:pb-0 font-sans selection:bg-[#008de3]/10">
-      <div className="max-w-[65rem] mx-auto pt-[1rem] sm:pt-[3rem] px-[1rem]">
+      <div className="max-w-full mx-auto pt-[1rem] sm:pt-[3rem] px-[1rem] lg:px-[2rem]">
         
         {/* Header - Arquitectura Neumórfica */}
         <div className="bg-[#002a45] rounded-[2rem] shadow-2xl shadow-blue-900/20 p-[1.5rem] mb-[2.5rem] flex flex-col sm:flex-row justify-between items-center gap-4 border border-white/5 relative overflow-hidden">
@@ -173,8 +178,8 @@ export default function RegistroPaciente() {
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                </div>
                <div>
-                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest leading-none mb-1">TRANSFERENCIA REALIZADA CON ÉXITO</h3>
-                  <p className="text-[0.7rem] opacity-90 font-bold uppercase tracking-tighter">Información verificada y trasladada al historial clínico.</p>
+                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest leading-none mb-1">REGISTRO COMPLETADO</h3>
+                  <p className="text-[0.7rem] opacity-90 font-bold uppercase tracking-tighter">Información verificada por doble auditoría y trasladada al historial clínico.</p>
                </div>
             </div>
           )}
@@ -230,6 +235,9 @@ export default function RegistroPaciente() {
               </button>
             </div>
           </div>
+
+          {/* Sección: Lista de Pacientes (Inyección Visual) */}
+          <RecentPatientsTable />
         </div>
       </div>
 

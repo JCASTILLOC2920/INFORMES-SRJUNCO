@@ -96,7 +96,7 @@ export default function AdminLayout({
           </header>
 
           <main className="flex-1 overflow-y-auto p-[1rem] sm:p-[2rem] relative bg-[#f8fafc]">
-            <div className="max-w-[85rem] mx-auto">
+            <div className="max-w-full mx-auto px-[1rem] sm:px-[2rem] lg:px-[1rem]">
               {children}
             </div>
           </main>

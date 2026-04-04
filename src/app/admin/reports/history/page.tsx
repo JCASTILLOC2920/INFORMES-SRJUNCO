@@ -136,7 +136,7 @@ export default function HistorialPacientes() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-[6rem] lg:pb-0 font-sans selection:bg-[#008de3]/10">
-      <div className="max-w-[90rem] mx-auto px-[1rem] sm:px-[2rem] py-[1.5rem]">
+      <div className="max-w-full mx-auto px-[1rem] lg:px-[0.5rem] py-[1.5rem]">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[2rem] gap-4">

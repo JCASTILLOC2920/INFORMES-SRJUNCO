@@ -33,13 +33,13 @@ export default function Header() {
         Operatividad garantizada: Lunes a Sábado | Resultados de alta precisión en 72h
       </div>
 
-      <div className="container mx-auto px-[1.5rem]">
+      <div className="max-w-[1700px] mx-auto px-[1.5rem]">
         <div className="flex justify-between items-center">
           {/* Logo Section */}
           <Link href="/" className="relative z-[60] flex items-center">
             <div className="w-[12rem] h-auto transition-transform duration-300 hover:scale-[1.02]">
               <Image 
-                src="/logo.png" 
+                src="/logo.webp" 
                 alt="JC PATH LAB Logo" 
                 width={180} 
                 height={60} 
@@ -53,6 +53,7 @@ export default function Header() {
           <nav className="hidden lg:flex items-center space-x-[2.5rem]">
             <Link 
               href="/login" 
+              prefetch={true}
               className="text-[14px] font-medium text-[#64748B] hover:text-[#0F172A] transition-colors duration-300 flex items-center gap-2"
             >
               <svg className="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
@@ -63,15 +64,20 @@ export default function Header() {
               <Link 
                 key={link.name}
                 href={link.href}
+                prefetch={link.href.startsWith('/')}
                 className="text-[0.8rem] font-black text-gray-500 hover:text-[var(--secondary)] transition-all tracking-[0.2em] uppercase relative group"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[var(--cyan-pulse)] transition-all duration-500 group-hover:w-full"></span>
               </Link>
             ))}
-            <button className="bg-transparent border-2 border-[#001F3F] text-[#001F3F] px-[1.2rem] py-[0.7rem] rounded-[6px] text-[0.75rem] font-semibold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-[#001F3F] hover:text-white">
+            <Link 
+              href="/login" 
+              prefetch={true}
+              className="bg-transparent border-2 border-[#001F3F] text-[#001F3F] px-[1.2rem] py-[0.7rem] rounded-[6px] text-[0.75rem] font-semibold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-[#001F3F] hover:text-white"
+            >
               Portal de Resultados
-            </button>
+            </Link>
             <button className="bg-[var(--nexus-void)] text-white px-[2.2rem] py-[0.8rem] rounded-2xl text-[0.75rem] font-black uppercase tracking-[0.15em] shadow-xl hover:bg-[var(--secondary)] hover:shadow-[0_0_25px_rgba(0,141,227,0.3)] transition-all transform hover:-translate-y-0.5 active:scale-95 border border-white/10">
               Agendar Cita
             </button>
