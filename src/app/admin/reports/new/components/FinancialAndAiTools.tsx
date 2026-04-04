@@ -19,20 +19,23 @@ export const ReferenceSection = React.memo(({ formData, handleInputChange }: Sec
   const [isRegistering, setIsRegistering] = useState(false);
 
   const handleRegisterDoctor = async () => {
-    if (!formData.solicitor || formData.solicitor === 'SELECCIONAR' || formData.solicitor.trim() === '') {
-      alert('Por favor, ingrese el nombre de un médico.');
+    // 1. Validación: Asegurarse de que el nombre no esté vacío
+    if (!formData.solicitor || formData.solicitor.trim() === '' || formData.solicitor === 'SELECCIONAR') {
+      alert('Por favor, ingrese el nombre del médico para registrar.');
       return;
     }
 
+    // 2. Verificar duplicados localmente para rapidez
     const doctorExists = doctors.some((doc: any) => 
       doc.name.toLowerCase() === formData.solicitor.toLowerCase()
     );
 
     if (doctorExists) {
-      alert('El médico ya se encuentra registrado.');
+      alert('Este médico ya se encuentra en la base de datos.');
       return;
     }
 
+    // 3. Envío a la API de Prisma
     setIsRegistering(true);
     try {
       const res = await fetch('/api/doctors', {
@@ -40,20 +43,20 @@ export const ReferenceSection = React.memo(({ formData, handleInputChange }: Sec
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.solicitor.toUpperCase(),
-          type: 'DR. CLIENTE', // Valor por defecto
+          type: 'DR. CLIENTE', // Tipo por defecto para médicos nuevos desde el formulario
         }),
       });
 
       if (res.ok) {
-        alert(`Médico registrado con éxito: ${formData.solicitor.toUpperCase()}`);
-        mutate(); // Recargar la lista de médicos
+        alert(`ÉXITO: Médico ${formData.solicitor.toUpperCase()} registrado en Prisma.`);
+        mutate(); // Esta función de SWR actualiza tu lista desplegable automáticamente
       } else {
         const errorData = await res.json();
-        alert(`Error al registrar médico: ${errorData.error || 'Desconocido'}`);
+        alert(`ERROR: ${errorData.error || 'No se pudo registrar en la base de datos.'}`);
       }
     } catch (error) {
-      console.error('Error al registrar médico:', error);
-      alert('Error de conexión al registrar el médico.');
+      console.error('Fallo en la vinculación:', error);
+      alert('Error de conexión con el servidor de Prisma.');
     } finally {
       setIsRegistering(false);
     }
