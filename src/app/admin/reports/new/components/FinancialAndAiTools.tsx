@@ -129,7 +129,14 @@ export const ReferenceSection = React.memo(({ formData, handleInputChange }: Sec
 
 export const FinancialSection = React.memo(({ formData, handleInputChange }: SectionProps) => (
   <section className="pt-[2rem] border-t border-gray-100 animate-in fade-in slide-in-from-bottom duration-500 delay-400">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-[1.5rem]">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-[1.5rem]">
+      <FormGroup label="Costo Laboratorio">
+        <div className="relative group">
+          <input type="text" name="cost" value={formData.cost} onChange={handleInputChange} className={`text-right pr-[3rem] ${inputStyle}`} />
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[#94a3b8] font-black text-[0.8rem]">S/</span>
+        </div>
+      </FormGroup>
+
       <FormGroup label="Inversión y Transporte">
         <div className="relative group">
           <input type="text" name="transportCost" value={formData.transportCost} onChange={handleInputChange} className={`text-right pr-[3rem] ${inputStyle}`} />

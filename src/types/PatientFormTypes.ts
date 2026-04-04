@@ -13,6 +13,7 @@ export interface ReportFormData {
   solicitor: string;
   studyMotive: string;
   transportCost: string;
+  cost: string;
   isPendingPayment: boolean;
   prepayment: string;
   clinic: string;

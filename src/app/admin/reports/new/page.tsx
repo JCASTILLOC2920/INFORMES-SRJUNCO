@@ -26,6 +26,7 @@ const INITIAL_STATE: ReportFormData = {
   contactPhone: '',
   solicitor: 'SELECCIONAR',
   studyMotive: '',
+  cost: '0',
   transportCost: '0',
   isPendingPayment: false,
   prepayment: '0',
@@ -45,20 +46,21 @@ export default function RegistroPaciente() {
   const [formData, setFormData] = useState<ReportFormData>(INITIAL_STATE);
   
   // FETCH DE CORRELATIVO SUGERIDO (ANTIGRAVITY INITIALIZATION)
-  useEffect(() => {
-    const fetchNextCode = async () => {
-      try {
-        const res = await fetch('/api/reports/next');
-        const data = await res.json();
-        if (data.nextCode) {
-          setFormData(prev => ({ ...prev, attentionCode: data.nextCode }));
-        }
-      } catch (err) {
-        console.error('[ANTIGRAVITY_PREVIEW] Error fetching next code:', err);
+  const fetchNextCode = useCallback(async () => {
+    try {
+      const res = await fetch('/api/reports/next');
+      const data = await res.json();
+      if (data.nextCode) {
+        setFormData(prev => ({ ...prev, attentionCode: data.nextCode }));
       }
-    };
-    fetchNextCode();
+    } catch (err) {
+      console.error('[ANTIGRAVITY_PREVIEW] Error fetching next code:', err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchNextCode();
+  }, [fetchNextCode]);
 
   // MANEJO DE ENTRADA OPTIMIZADO (AISLAMIENTO DE RENDERIZADO)
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -66,25 +68,31 @@ export default function RegistroPaciente() {
     const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
     
     setFormData((prev) => ({ ...prev, [name]: val }));
-    // Eliminación reactiva de errores para no interrumpir el flujo
     setErrors((prev) => prev.length > 0 ? [] : prev);
   }, []);
 
-  // MOTOR DE VALIDACIÓN Y ENVÍO (TRANSICIÓN SEGURA)
+  // MOTOR DE VALIDACIÓN Y ENVÍO (SISTEMA DE GRADO MILITAR)
   const handleSubmit = () => {
-    // 1. Pre-validación básica de UI
-    const quickErrors: string[] = [];
-    if (!formData.patientFirstName) quickErrors.push('Nombres del paciente requeridos');
-    if (!formData.patientLastName) quickErrors.push('Apellidos del paciente requeridos');
-    if (formData.gender === 'SELECCIONAR') quickErrors.push('Debe seleccionar el género');
+    // 1. VALIDACIÓN ESTRICTA CAMPO POR CAMPO
+    const missing: string[] = [];
+    if (formData.serviceType === 'SELECCIONAR') missing.push('Falta seleccionar Tipo de Servicio');
+    if (!formData.attentionCode) missing.push('Falta Código de Atención (Obligatorio)');
+    if (!formData.patientDni) missing.push('Falta ingresar DNI del paciente');
+    if (!formData.patientFirstName) missing.push('Falta llenar Nombres del paciente');
+    if (!formData.patientLastName) missing.push('Falta llenar Apellidos del paciente');
+    if (!formData.age || formData.age === '0') missing.push('Falta especificar Edad del paciente');
+    if (formData.gender === 'SELECCIONAR') missing.push('Falta seleccionar Género biológico');
+    if (!formData.solicitor || formData.solicitor === 'SELECCIONAR') missing.push('Falta especificar Médico Solicitante');
+    if (!formData.studyMotive) missing.push('Falta llenar Motivo del Estudio / Muestra');
+    if (!formData.expectedDeliveryDate) missing.push('Falta definir Fecha de Entrega');
 
-    if (quickErrors.length > 0) {
-      setErrors(quickErrors);
+    if (missing.length > 0) {
+      setErrors(missing);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    // 2. Transición Atómica (React 19)
+    // 2. INYECCIÓN Y VERIFICACIÓN DE TRASLADO
     startTransition(async () => {
       try {
         const res = await fetch('/api/reports', {
@@ -93,22 +101,42 @@ export default function RegistroPaciente() {
           body: JSON.stringify(formData)
         });
 
-        const data = await res.json();
+        const report = await res.json();
 
-        if (res.ok) {
-          setSuccess(true);
-          setFormData(INITIAL_STATE); // Reset atómico
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          // Feedback hípico: El servidor generó el código, el usuario está listo para el siguiente.
+        if (res.ok && report.attentionCode) {
+          // VERIFICADOR DE GRADO MILITAR: ¿Realmente se trasladó a la base de datos?
+          const verifyRes = await fetch(`/api/reports?attentionCode=${report.attentionCode}`);
+          const verifyData = await verifyRes.json();
+          
+          const isVerified = Array.isArray(verifyData) && verifyData.some(r => r.attentionCode === report.attentionCode);
+
+          if (isVerified) {
+            setSuccess(true);
+            setErrors([]);
+            setFormData(INITIAL_STATE);
+            
+            // Ciclo Autónomo: Proponer el nuevo código inmediato superior
+            await fetchNextCode();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Temporal success message clearing for next entry
+            setTimeout(() => setSuccess(false), 5000);
+          } else {
+            setErrors(['ERROR DE TRASLADO: Registro no detectado en el historial tras inyección.']);
+            setSuccess(false);
+          }
         } else {
-          // Captura de errores de servidor / Zod
-          setErrors(data.errors || ['Error en la capa de persistencia.']);
+          // REPORTE FORENSE DE ERRORES
+          const errorMsg = report.errors 
+            ? report.errors.join(' | ') 
+            : (report.error || 'Fallo crítico en el Núcleo de Datos.');
+          setErrors([`REPORTE TÉCNICO DETALLADO: ${errorMsg}`]);
           setSuccess(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      } catch (error) {
-        console.error('[ANTIGRAVITY_SYSTEM] Critical Fault:', error);
-        setErrors(['Fallo de Uplink: Verifique su conexión y reintente.']);
+      } catch (error: any) {
+        setErrors([`FALLO SISTÉMICO (EXCEPTION): ${error.message}`]);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
   };
@@ -145,8 +173,8 @@ export default function RegistroPaciente() {
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                </div>
                <div>
-                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest leading-none mb-1">Malla de Seguridad: ÉXITO</h3>
-                  <p className="text-[0.7rem] opacity-90 font-bold uppercase tracking-tighter">Registro persistido atómicamente en el núcleo de datos.</p>
+                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest leading-none mb-1">TRANSFERENCIA REALIZADA CON ÉXITO</h3>
+                  <p className="text-[0.7rem] opacity-90 font-bold uppercase tracking-tighter">Información verificada y trasladada al historial clínico.</p>
                </div>
             </div>
           )}
@@ -157,7 +185,10 @@ export default function RegistroPaciente() {
                   <div className="bg-white/20 p-2 rounded-full ring-4 ring-white/10">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                   </div>
-                  <h3 className="font-black uppercase text-[0.8rem] tracking-widest">Alerta de Integridad: Datos no conformes</h3>
+                  <div>
+                    <h3 className="font-black uppercase text-[0.8rem] tracking-widest leading-none mb-1">Fallo de Sistema / Error de Integridad</h3>
+                    <p className="text-[0.7rem] opacity-90 font-bold uppercase tracking-tighter">Informe Forense detallado a continuación:</p>
+                  </div>
                </div>
                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 opacity-90 px-2">
                  {errors.map((error, i) => (
