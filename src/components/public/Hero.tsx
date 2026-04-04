@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[60%] bg-gradient-to-br from-[var(--secondary)] to-[var(--cyan-pulse)] rounded-full blur-[120px] opacity-[0.07] -z-10 animate-pulse-aura"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[30%] h-[50%] bg-[var(--primary)] rounded-full blur-[100px] opacity-[0.05] -z-10"></div>
 
-      <div className="container mx-auto px-[1.5rem] z-10 grid lg:grid-cols-2 gap-[4rem] items-center">
+      <div className="container mx-auto px-[1.5rem] z-10 grid lg:grid-cols-[1.2fr_1fr] gap-[64px] items-center">
         <div className="max-w-[42rem] order-2 lg:order-1 stagger-reveal">
           <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5rem] font-black text-[#1e293b] leading-[1.1] mb-[1.5rem] tracking-tighter">
             <span className="text-gradient block">Patología de Precisión</span>
@@ -52,11 +52,17 @@ export default function Hero() {
         <div className="relative group order-1 lg:order-2 h-[400px] md:h-[500px] lg:h-[600px] w-full">
             <div className="absolute -inset-4 bg-gradient-to-tr from-[var(--secondary)]/10 to-[var(--cyan-pulse)]/10 rounded-[3.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
             
-            <div className="relative h-full z-10 glass-card p-[1rem] rounded-[3rem] elite-shadow overflow-hidden transition-all duration-700 transform group-hover:scale-[1.02] border-[1px] border-white/50">
+            <div className="relative h-full z-10 bg-white p-[1rem] rounded-[24px] elite-shadow overflow-hidden transition-all duration-700 transform group-hover:scale-[1.02] border-[1px] border-white/50"
+                 style={{ boxShadow: '0 20px 25px -5px rgba(0, 31, 63, 0.05), 0 8px 10px -6px rgba(0, 31, 63, 0.01)' }}>
                 <HeroCarousel />
             </div>
 
-            <div className="absolute bottom-2 md:-bottom-6 left-2 md:-left-6 z-20 glow-card p-4 md:p-6 rounded-2xl animate-float scale-90 md:scale-100 origin-bottom-left">
+            <div className="absolute -bottom-[20px] -left-[20px] z-20 p-4 md:p-6 rounded-2xl animate-float scale-90 md:scale-100 origin-bottom-left"
+                 style={{ 
+                   background: 'rgba(255, 255, 255, 0.85)', 
+                   backdropFilter: 'blur(12px)', 
+                   border: '1px solid rgba(255, 255, 255, 0.3)' 
+                 }}>
                 <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 rounded-xl bg-[var(--secondary)] flex items-center justify-center text-white shadow-lg">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

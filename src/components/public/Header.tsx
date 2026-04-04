@@ -25,7 +25,7 @@ export default function Header() {
   return (
     <header 
       className={`fixed top-0 w-full z-header transition-all duration-700 ${
-        isScrolled || isMenuOpen ? 'bg-white/80 backdrop-blur-2xl border-b border-[var(--secondary)]/10 shadow-[0_10px_40px_rgba(0,0,0,0.05)] py-[0.8rem]' : 'bg-transparent py-[1.5rem]'
+        isScrolled || isMenuOpen ? 'bg-white border-b border-[var(--secondary)]/10 shadow-[0_10px_40px_rgba(0,0,0,0.05)] py-[0.8rem]' : 'bg-transparent py-[1.5rem]'
       }`}
     >
       {/* Trust Banner (Bloque 4) - Top Alignment for zero-collision */}
@@ -51,6 +51,14 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-[2.5rem]">
+            <Link 
+              href="/login" 
+              className="text-[14px] font-medium text-[#64748B] hover:text-[#0F172A] transition-colors duration-300 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              Acceso a Boletas
+            </Link>
+
             {navLinks.map((link) => (
               <Link 
                 key={link.name}
@@ -88,6 +96,14 @@ export default function Header() {
             isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
           }`}
         >
+          <Link 
+            href="/login" 
+            onClick={() => setIsMenuOpen(false)}
+            className="text-[0.9rem] font-medium text-[#64748B] hover:text-[#0F172A] tracking-widest flex items-center gap-2"
+          >
+            <svg className="w-5 h-5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            Portal Interno
+          </Link>
           {navLinks.map((link) => (
             <Link 
               key={link.name}
