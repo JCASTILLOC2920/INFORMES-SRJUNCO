@@ -5,7 +5,7 @@ import { ServiceSection, PatientSection } from './components/PatientFormComponen
 import { ReferenceSection, FinancialSection } from './components/FinancialAndAiTools';
 import { ReportFormData } from '@/types/PatientFormTypes';
 import RecentPatientsTable from '@/components/admin/RecentPatientsTable';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 
 /**
  * JC PATH LAB - REGISTRO DE PACIENTES (MODO ANTIGRAVITY)
@@ -42,6 +42,7 @@ const INITIAL_STATE: ReportFormData = {
 
 export default function RegistroPaciente() {
   const router = useRouter();
+  const { mutate } = useSWRConfig();
   const [isPending, startTransition] = useTransition();
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
@@ -105,31 +106,24 @@ export default function RegistroPaciente() {
 
         const report = await res.json();
 
-        if (res.ok && report.attentionCode) {
-          // VERIFICADOR DE GRADO MILITAR: ¿Realmente se trasladó a la base de datos?
-          const verifyRes = await fetch(`/api/reports?attentionCode=${report.attentionCode}`);
-          const verifyData = await verifyRes.json();
+        if (res.ok && report.id) {
+          // VERIFICACIÓN ATÓMICA: Si el POST transaccional devolvió OK, el registro está asegurado.
+          setSuccess(true);
+          setErrors([]);
           
-          const isVerified = Array.isArray(verifyData) && verifyData.some(r => r.attentionCode === report.attentionCode);
-
-          if (isVerified) {
-            setSuccess(true);
-            setErrors([]);
-            
-            // Ciclo Autónomo: Primero resetear campos, luego inyectar el nuevo código consecutivo
-            setFormData({ ...INITIAL_STATE });
-            await fetchNextCode(); 
-            
-            // Inyectar en la lista visual inferior
-            mutate('/api/reports?limit=10');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            // Temporal success message clearing for next entry
-            setTimeout(() => setSuccess(false), 5000);
-          } else {
-            setErrors(['ERROR DE TRASLADO: Registro no detectado en el historial tras inyección.']);
-            setSuccess(false);
-          }
+          // Ciclo Autónomo: Reseteo de campos e inyección de nuevo código correlativo
+          setFormData({ ...INITIAL_STATE });
+          await fetchNextCode(); 
+          
+          // Inyectar en la lista visual inferior instantáneamente (Cero Latencia / Optimistic Update)
+          mutate('/api/reports?limit=10', (current: any) => {
+            const newList = Array.isArray(current) ? current : [];
+            return [report, ...newList].slice(0, 10);
+          }, { revalidate: false });
+          
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          // Autolimpiado del mensaje de éxito tras 5 segundos
+          setTimeout(() => setSuccess(false), 5000);
         } else {
           // REPORTE FORENSE DE ERRORES
           const errorMsg = report.errors 

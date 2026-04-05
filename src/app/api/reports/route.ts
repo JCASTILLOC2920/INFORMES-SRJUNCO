@@ -87,7 +87,10 @@ export async function GET(request: Request) {
 
     const reports = await prisma.report.findMany({
       where,
-      orderBy: { receptionDate: 'desc' },
+      orderBy: [
+        { receptionDate: 'desc' },
+        { createdAt: 'desc' }
+      ],
       take: limit,
       skip: offset,
       select: {
@@ -173,7 +176,13 @@ export async function POST(request: Request) {
           serviceType: data.serviceType,
           solicitor: data.solicitor,
           sampleType: data.sampleType,
-          receptionDate: data.registrationDate ? new Date(data.registrationDate) : new Date(),
+          receptionDate: data.registrationDate ? (() => {
+            const d = new Date(data.registrationDate);
+            const now = new Date();
+            // Inyectar precisión temporal para evitar colisiones a medianoche (00:00:00)
+            d.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+            return d;
+          })() : new Date(),
           macroscopy: data.macroscopy,
           microscopy: data.microscopy,
           diagnosis: data.diagnosis,
