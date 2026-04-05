@@ -125,10 +125,15 @@ export default function RegistroPaciente() {
           // Autolimpiado del mensaje de éxito tras 5 segundos
           setTimeout(() => setSuccess(false), 5000);
         } else {
-          // REPORTE FORENSE DE ERRORES
-          const errorMsg = report.errors 
+          // REPORTE FORENSE DE ERRORES EXPENDIDO (MODO DIAGNÓSTICO)
+          let errorMsg = report.errors 
             ? report.errors.join(' | ') 
             : (report.error || 'Fallo crítico en el Núcleo de Datos.');
+          
+          if (report.diagnostic) {
+            errorMsg += ` | DETALLE: ${report.diagnostic} [CODE: ${report.code}]`;
+          }
+
           setErrors([`REPORTE TÉCNICO DETALLADO: ${errorMsg}`]);
           setSuccess(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });

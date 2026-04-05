@@ -209,7 +209,12 @@ export async function POST(request: Request) {
     if (error.code === 'P2002') {
       return NextResponse.json({ errors: ['CÓDIGO DE ATENCIÓN REPETIDO'] }, { status: 409 });
     }
-    return NextResponse.json({ error: 'Critical System Failure' }, { status: 500 });
+    // PARCHE DE DIAGNÓSTICO (TEMPORAL)
+    return NextResponse.json({ 
+      error: 'Critical System Failure', 
+      diagnostic: error.message || 'Sin mensaje de error',
+      code: error.code || 'N/A'
+    }, { status: 500 });
   }
 }
 
