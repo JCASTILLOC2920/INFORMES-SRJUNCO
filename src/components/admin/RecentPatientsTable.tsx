@@ -15,6 +15,10 @@ export default function RecentPatientsTable() {
     </div>
   );
 
+  // BLINDAJE PARA EVITAR EXCEPCIÓN DE CLIENTE (reports.map no es una función si la API falla)
+  const safeReports = Array.isArray(reports) ? reports : [];
+  const hasError = !Array.isArray(reports) && reports?.error;
+
   return (
     <div className="mt-12 animate-in fade-in slide-in-from-bottom duration-700">
       <div className="flex items-center justify-between mb-6 px-4">
@@ -49,9 +53,11 @@ export default function RecentPatientsTable() {
               </tr>
             </thead>
             <tbody className="text-[0.75rem] font-bold">
-              {reports.length === 0 ? (
+              {hasError ? (
+                <tr><td colSpan={5} className="p-12 text-[#e33e2b] uppercase tracking-widest font-black opacity-60">Error al cargar registros: {reports.error}</td></tr>
+              ) : safeReports.length === 0 ? (
                 <tr><td colSpan={5} className="p-12 text-[#94a3b8] uppercase tracking-widest font-black opacity-40">No hay registros recientes</td></tr>
-              ) : reports.map((report: any) => (
+              ) : safeReports.map((report: any) => (
                 <tr key={report.id} className="hover:bg-blue-50/30 transition-colors border-b border-gray-50 last:border-0 group">
                   <td className="p-4 font-black text-[#002a45]">{report.attentionCode}</td>
                   <td className="p-4 text-left uppercase text-[#475569]">
