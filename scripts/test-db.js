@@ -1,0 +1,1 @@
+const { PrismaClient } = require("@prisma/client"); const prisma = new PrismaClient(); prisma.report.findMany({ orderBy: { createdAt: "desc" }, take: 5 }).then(res => { console.table(res); process.exit(0); }).catch(e => { console.error(e); process.exit(1); });
