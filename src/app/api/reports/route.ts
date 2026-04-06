@@ -215,6 +215,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ errors: ['CÓDIGO DE ATENCIÓN REPETIDO'] }, { status: 409 });
     }
     
+    console.error("=== ERROR REAL DE PRISMA ===");
+    console.error(error.message);
+    console.error(error.code);
+    console.error("============================");
+
     return NextResponse.json({ error: 'Critical System Failure' }, { status: 500 });
   }
 }
