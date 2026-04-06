@@ -97,6 +97,12 @@ export default function RegistroPaciente() {
 
     // 2. INYECCIÓN Y VERIFICACIÓN DE TRASLADO
     startTransition(async () => {
+      console.log('[AUDIT DATA FLOW] Iniciando envío de datos:', { 
+        at: new Date().toISOString(),
+        dni: formData.patientDni,
+        service: formData.serviceType 
+      });
+
       try {
         const res = await fetch('/api/reports', {
           method: 'POST',
@@ -107,7 +113,7 @@ export default function RegistroPaciente() {
         const report = await res.json();
 
         if (res.ok && report.id) {
-          // VERIFICACIÓN ATÓMICA: Si el POST transaccional devolvió OK, el registro está asegurado.
+          console.log('[AUDIT DATA FLOW] Sincronización exitosa | ID:', report.id);
           setSuccess(true);
           setErrors([]);
           
@@ -116,15 +122,22 @@ export default function RegistroPaciente() {
           await fetchNextCode(); 
           
           // Inyectar en la lista visual inferior instantáneamente (Cero Latencia / Optimistic Update)
+          console.log('[AUDIT DATA FLOW] Actualizando SWR local...');
           mutate('/api/reports?limit=10', (current: any) => {
-            const newList = Array.isArray(current) ? current : [];
-            return [report, ...newList].slice(0, 10);
-          }, { revalidate: false });
+            const baseList = Array.isArray(current) ? current : [];
+            return [report, ...baseList].slice(0, 10);
+          }, { revalidate: true });
           
           window.scrollTo({ top: 0, behavior: 'smooth' });
           // Autolimpiado del mensaje de éxito tras 5 segundos
           setTimeout(() => setSuccess(false), 5000);
         } else {
+          console.error('[AUDIT ERROR] El servidor rechazó el payload:', {
+            status: res.status,
+            report,
+            attemptedData: formData
+          });
+
           // REPORTE FORENSE DE ERRORES EXPENDIDO (MODO DIAGNÓSTICO)
           let errorMsg = report.errors 
             ? report.errors.join(' | ') 
@@ -139,6 +152,7 @@ export default function RegistroPaciente() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } catch (error: any) {
+        console.error('[AUDIT FATAL ERROR] Excepción en flujo de datos:', error);
         setErrors([`FALLO SISTÉMICO (EXCEPTION): ${error.message}`]);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }

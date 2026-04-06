@@ -116,10 +116,11 @@ export async function GET(request: Request) {
         studyMotive: true,
         clinic: true,
         contactName: true,
-        contactPhone: true
+        contactPhone: true,
+        isPendingPayment: true
       }
     });
-    
+
     return NextResponse.json(reports);
   } catch (error) {
     console.error('[ANTIGRAVITY_AUDIT] GET Error:', error);
@@ -160,6 +161,9 @@ export async function POST(request: Request) {
     const data = result.data;
 
     // 2. EJECUCIÓN ATÓMICA
+    console.log('[AUDIT] Iniciando transacción de reporte...');
+    const startTime = Date.now();
+    
     const report = await (prisma as any).$transaction(async (tx: any) => {
       // Si el cliente no envió código (o para asegurar unicidad), generamos uno nuevo
       const finalCode = data.attentionCode || await getNextAttentionCode(tx);
@@ -176,13 +180,7 @@ export async function POST(request: Request) {
           serviceType: data.serviceType,
           solicitor: data.solicitor,
           sampleType: data.sampleType,
-          receptionDate: data.registrationDate ? (() => {
-            const d = new Date(data.registrationDate);
-            const now = new Date();
-            // Inyectar precisión temporal para evitar colisiones a medianoche (00:00:00)
-            d.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
-            return d;
-          })() : new Date(),
+          receptionDate: data.registrationDate ? new Date(data.registrationDate) : new Date(),
           macroscopy: data.macroscopy,
           microscopy: data.microscopy,
           diagnosis: data.diagnosis,
@@ -199,13 +197,20 @@ export async function POST(request: Request) {
         },
       });
     }, {
-      isolationLevel: Prisma.TransactionIsolationLevel.Serializable // Máximo aislamiento para unicidad
+      isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted // Nivel resiliente para entornos cloud
     });
 
+    const duration = Date.now() - startTime;
+    console.log(`[AUDIT] Transacción completada en ${duration}ms | ID: ${report.id}`);
     return NextResponse.json(report);
 
   } catch (error: any) {
-    console.error('[ANTIGRAVITY_API] POST Error:', error);
+    console.error('[AUDIT ERROR] Fallo en POST /api/reports:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack?.split('\n')[0]
+    });
+    
     if (error.code === 'P2002') {
       return NextResponse.json({ errors: ['CÓDIGO DE ATENCIÓN REPETIDO'] }, { status: 409 });
     }
