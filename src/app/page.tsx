@@ -30,6 +30,7 @@ export default function Home() {
       <Services />
       <WhyUs />
       <Footer />
+      <ChatbotVictoria />
     </main>
   );
 }
