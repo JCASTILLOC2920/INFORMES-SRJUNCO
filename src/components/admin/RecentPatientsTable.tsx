@@ -42,34 +42,34 @@ export default function RecentPatientsTable() {
 
       <div className="bg-white rounded-[2.5rem] shadow-[0_8px_40px_rgb(0,42,69,0.04)] border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-center border-collapse">
+          <table className="w-full text-center border-collapse border border-slate-300">
             <thead>
               <tr className="bg-slate-50 text-[#002a45] text-[0.65rem] font-black uppercase tracking-[0.2em]">
-                <th className="p-4 border-b border-gray-100">Código</th>
-                <th className="p-4 border-b border-gray-100 text-left">Paciente</th>
-                <th className="p-4 border-b border-gray-100">Servicio</th>
-                <th className="p-4 border-b border-gray-100">Costo</th>
-                <th className="p-4 border-b border-gray-100">Estado</th>
+                <th className="p-4 border border-slate-300">Código</th>
+                <th className="p-4 border border-slate-300 text-left">Paciente</th>
+                <th className="p-4 border border-slate-300">Servicio</th>
+                <th className="p-4 border border-slate-300">Costo</th>
+                <th className="p-4 border border-slate-300">Estado</th>
               </tr>
             </thead>
             <tbody className="text-[0.75rem] font-bold">
               {hasError ? (
-                <tr><td colSpan={5} className="p-12 text-[#e33e2b] uppercase tracking-widest font-black opacity-60">Error al cargar registros: {reports.error}</td></tr>
+                <tr><td colSpan={5} className="p-12 text-[#e33e2b] uppercase tracking-widest font-black opacity-60 border border-slate-300">Error al cargar registros: {reports.error}</td></tr>
               ) : safeReports.length === 0 ? (
-                <tr><td colSpan={5} className="p-12 text-[#94a3b8] uppercase tracking-widest font-black opacity-40">No hay registros recientes</td></tr>
+                <tr><td colSpan={5} className="p-12 text-[#94a3b8] uppercase tracking-widest font-black opacity-40 border border-slate-300">No hay registros recientes</td></tr>
               ) : safeReports.map((report: any) => (
-                <tr key={report.id} className="hover:bg-blue-50/30 transition-colors border-b border-gray-50 last:border-0 group">
-                  <td className="p-4 font-black text-[#002a45]">{report.attentionCode}</td>
-                  <td className="p-4 text-left uppercase text-[#475569]">
+                <tr key={report.id} className="hover:bg-blue-50/30 transition-colors group">
+                  <td className="p-4 font-black text-[#002a45] border border-slate-300">{report.attentionCode}</td>
+                  <td className="p-4 text-left uppercase text-[#475569] border border-slate-300">
                     {report.patientLastName}, {report.patientFirstName}
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 border border-slate-300">
                     <span className="bg-blue-100/50 text-[#008de3] px-3 py-1 rounded-full text-[0.65rem] uppercase">
                       {report.serviceType}
                     </span>
                   </td>
-                  <td className="p-4 text-[#002a45]">S/ {report.cost || 0}</td>
-                  <td className="p-4">
+                  <td className="p-4 text-[#002a45] border border-slate-300">S/ {report.cost || 0}</td>
+                  <td className="p-4 border border-slate-300">
                     {report.isPendingPayment ? (
                       <span className="text-red-500 flex items-center justify-center gap-1">
                         <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>

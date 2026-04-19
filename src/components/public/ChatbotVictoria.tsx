@@ -102,13 +102,13 @@ const ChatbotVictoria = () => {
 
   const findLocalResponse = (query: string): string | null => {
     const qNorm = normalizeText(query);
-    if (qNorm.match(/(hola|buenos d|buenas)/)) return `¡Hola! Soy **${currentAvatar.name}**, ${currentAvatar.role} en JC PATH LAB. ¿En qué misión médica puedo ayudarle hoy? 👋`;
-    if (qNorm.match(/(precio|costo|cuanto|vale|valor|tarifario)/)) return "Contamos con los precios más competitivos. Biopsia Gástrica: **S/ 80**, Papanicolaou: **S/ 20**, Inmunohistoquímica: **S/ 100** por marcador. Resultados en 3-4 días. ¿Le envío el tarifario completo por WhatsApp? 💰";
-    if (qNorm.match(/(donde|ubicacion|direccion|lugar|queda)/)) return "📍 Nuestra sede: **Mz M2 lote 13 Jardines de Chillón, Puente Piedra, Lima**. También ofrecemos recojo de muestras a domicilio en todo Lima. ¿Desea agendar un recojo? 🛵";
-    if (qNorm.match(/(biopsia|cancer|tumor|maligno|estudio|citologia|papanicolaou|pap)/)) return "Somos expertos en diagnósticos oncológicos de alta precisión con **+15 años de experiencia**. Resultados en 3-4 días. ¿Tiene su orden médica a la mano? 🩺";
-    if (qNorm.match(/(horario|hora|atencion|abierto|cerrado)/)) return "⏰ Nuestro horario de atención: **Lunes a Sábado de 9:00 AM a 6:00 PM**. El recojo de muestras se coordina dentro de este horario.";
-    if (qNorm.match(/(resultado|informe|listo|demora|cuando)/)) return "Los resultados están listos en **3-4 días hábiles**. Para consultar el estado de su informe, puede usar nuestro portal de resultados o contactarnos por WhatsApp. 📋";
-    if (qNorm.match(/(whatsapp|wasap|contacto|telefono|llamar)/)) return "📱 Puede contactarnos directamente al **986 396 733** o hacer clic en el botón de WhatsApp. ¡Estamos para servirle!";
+    if (qNorm.match(/(hola|buenos d|buenas)/)) return `¡Hola! Muy buen día. Soy **${currentAvatar.name}**, especialista aquí en JC PATH LAB. ¿En qué le puedo ayudar hoy? 👋`;
+    if (qNorm.match(/(precio|costo|cuanto|vale|valor|tarifario)/)) return "Mire, le comento que tenemos opciones muy accesibles para que pueda realizarse su estudio pronto. La biopsia gástrica está en **S/ 80** y el Papanicolaou en **S/ 20**. ¿Le gustaría que le pase nuestro tarifario completo por WhatsApp? 💰";
+    if (qNorm.match(/(donde|ubicacion|direccion|lugar|queda)/)) return "Estamos ubicados en **Mz M2 lote 13 Jardines de Chillón, Puente Piedra**. No se preocupe por el traslado, nosotros también podemos ir a recoger su muestra a domicilio en todo Lima. ¿Desea coordinar un recojo? 🛵";
+    if (qNorm.match(/(biopsia|cancer|tumor|maligno|estudio|citologia|papanicolaou|pap)/)) return "Entiendo. Mire, nosotros somos especialistas en diagnósticos oncológicos con más de 15 años de experiencia. Lo más importante es la precisión y rapidez. ¿Tiene su orden médica para poder revisarla? 🩺";
+    if (qNorm.match(/(horario|hora|atencion|abierto|cerrado)/)) return "Claro que sí, atendemos de **Lunes a Sábado, de 9:00 AM a 6:00 PM**. Durante ese horario también coordinamos los recojos a domicilio.";
+    if (qNorm.match(/(resultado|informe|listo|demora|cuando)/)) return "Normalmente los resultados están listos en **3 a 4 días hábiles**. Con gusto puedo revisar el estado de su informe si me indica su número de DNI o si prefiere consultarlo por WhatsApp. 📋";
+    if (qNorm.match(/(whatsapp|wasap|contacto|telefono|llamar)/)) return "Por supuesto, puede escribirnos al **986 396 733** o simplemente hacer clic en el botón de WhatsApp. Mi equipo y yo estamos atentos para ayudarle.";
     return null;
   };
 
@@ -121,16 +121,17 @@ const ChatbotVictoria = () => {
     handleAvatarChange('pensando');
 
     try {
-      const systemPrompt = `Eres Victoria, la IA Bio-Estratega de JC Path Lab. 
-Tu misión es triple: 
-1. **Autoridad Científica**: Proporcionar información precisa sobre anatomía patológica, citología e inmunohistoquímica.
-2. **Psicología de Confianza**: Usa un lenguaje empático pero profesional. Tu tono debe ser el de una especialista de élite que entiende la urgencia de un diagnóstico oncológico.
-3. **Conversión Estratégica**: Tu objetivo final es facilitar que el paciente envíe la foto de su orden médica o su número de DNI por WhatsApp para que el Dr. Castillo pueda revisar el caso y el estado de sus resultados.
+      const systemPrompt = `Tu nombre es Victoria (o Elena, según se te asigne) y eres parte del equipo de JC Path Lab. 
+No eres una IA, eres una especialista en atención al paciente. Habla siempre en primera persona del singular ("Yo", "Mi equipo").
 
-REGLAS CRÍTICAS:
-- Si el usuario pregunta por un estudio, explica su importancia clínica.
-- Si pregunta por resultados, pídale su número de DNI y derive al WhatsApp 986396733.
-- Ante la duda, prioriza la derivación al WhatsApp oficial.`;
+REGLAS DE HUMANIDAD:
+1. **Español Neutro**: Usa un lenguaje claro, profesional y cálido, sin modismos locales muy marcados.
+2. **Empatía**: Si el paciente está preocupado, usa frases como "Entiendo perfectamente su preocupación" o "No se preocupe, estamos aquí para ayudarle".
+3. **Conectores Naturales**: Usa frases como "Mire, le explico...", "Permítame revisar...", "Claro que sí, con mucho gusto".
+4. **Respuesta Resolutiva**: Si preguntan por trámites o resultados, guíalos paso a paso.
+5. **Acción Directa**: Tu meta es conectarlos por WhatsApp (986396733) para enviarle al Dr. Castillo su orden médica o DNI.
+
+CONTEXTO: JC Path Lab es líder en patología en Lima Norte con más de 15 años de experiencia. El Dr. Castillo es el médico patólogo principal (CNP: 56435).`;
       
       const response = await callGemini(inputText.trim(), systemPrompt);
       setIsTyping(false);
@@ -193,8 +194,8 @@ REGLAS CRÍTICAS:
             <div className="status-dot" />
           </div>
           <div className="header-info">
-            <h3>{currentAvatar.name} <span className="ai-badge">IA Autónoma</span></h3>
-            <p>{currentAvatar.role}</p>
+            <h3>{currentAvatar.name} <span className="ai-badge">Especialista</span></h3>
+            <p>Atención al Paciente</p>
           </div>
           <button className="switch-avatar-btn" onClick={switchAvatar} title={`Cambiar a ${currentAvatar.name === 'Victoria' ? 'Elena' : 'Victoria'}`}>
             🔄

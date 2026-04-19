@@ -182,26 +182,26 @@ export default function HistorialPacientes() {
         {/* Table Results */}
         <div className="bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden animate-in fade-in duration-700">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-center border-collapse border border-slate-200 min-w-[85rem] table-fixed">
+            <table className="w-full text-center border-collapse border border-slate-300 min-w-[85rem] table-fixed">
               <thead>
                 <tr className="bg-[#f8fafc] text-[#002a45] text-[0.65rem] font-black uppercase tracking-[0.25em]">
-                  <th className="p-[1.25rem] w-[3.5rem] border border-slate-200">#</th>
-                  <th className="p-[1.25rem] w-[9rem] border border-slate-200">Código</th>
-                  <th className="p-[1.25rem] w-[8.5rem] border border-slate-200">DNI</th>
-                  <th className="p-[1.25rem] w-[14rem] border border-slate-200">Médico Solicitante</th>
-                  <th className="p-[1.25rem] w-[18.5rem] text-left border border-slate-200">Paciente</th>
-                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-200">Costo</th>
-                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-200">Adelanto</th>
-                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-200">Resta</th>
-                  <th className="p-[1.25rem] w-[9rem] border border-slate-200">Entrega</th>
-                  <th className="p-[1.25rem] w-[11rem] bg-gray-50/50 border border-slate-200">Gestión</th>
+                  <th className="p-[1.25rem] w-[3.5rem] border border-slate-300">#</th>
+                  <th className="p-[1.25rem] w-[9rem] border border-slate-300">Código</th>
+                  <th className="p-[1.25rem] w-[8.5rem] border border-slate-300">DNI</th>
+                  <th className="p-[1.25rem] w-[14rem] border border-slate-300">Médico Solicitante</th>
+                  <th className="p-[1.25rem] w-[18.5rem] text-left border border-slate-300">Paciente</th>
+                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-300">Costo</th>
+                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-300">Adelanto</th>
+                  <th className="p-[1.25rem] w-[7.5rem] border border-slate-300">Resta</th>
+                  <th className="p-[1.25rem] w-[9rem] border border-slate-300">Entrega</th>
+                  <th className="p-[1.25rem] w-[11rem] bg-gray-50/50 border border-slate-300">Gestión</th>
                 </tr>
               </thead>
               <tbody className="text-gray-700 text-[0.8rem] font-bold bg-[#fdfdfd]">
                 {loading && reports.length === 0 ? (
-                  <tr><td colSpan={10} className="p-[5rem] text-center uppercase tracking-widest text-[#94a3b8] opacity-40 font-black text-[0.75rem]">Accediendo a base de datos...</td></tr>
+                  <tr><td colSpan={10} className="p-[5rem] text-center uppercase tracking-widest text-[#94a3b8] opacity-40 font-black text-[0.75rem] border border-slate-300">Accediendo a base de datos...</td></tr>
                 ) : reports.length === 0 ? (
-                  <tr><td colSpan={10} className="p-[5rem] text-center text-[#94a3b8] uppercase tracking-widest font-black text-[0.75rem] opacity-40">No hay registros para este filtro</td></tr>
+                  <tr><td colSpan={10} className="p-[5rem] text-center text-[#94a3b8] uppercase tracking-widest font-black text-[0.75rem] opacity-40 border border-slate-300">No hay registros para este filtro</td></tr>
                 ) : reports.map((report, idx) => {
                   const resta = (report.cost || 0) - (report.prepayment || 0);
                   const isOverdue = report.expectedDeliveryDate && new Date(report.expectedDeliveryDate) < new Date() && !report.reportDate;
@@ -210,30 +210,30 @@ export default function HistorialPacientes() {
 
                   return (
                     <tr key={report.id} className={`hover:bg-[#f1f5f9]/50 transition-colors group`}>
-                      <td className="p-[1rem] text-center border border-slate-200 opacity-50 text-[0.7rem]">{idx + 1}</td>
-                      <td className="p-[1rem] text-center border border-slate-200 whitespace-nowrap font-black text-[#002a45]">
+                      <td className="p-[1rem] text-center border border-slate-300 opacity-50 text-[0.7rem]">{idx + 1}</td>
+                      <td className="p-[1rem] text-center border border-slate-300 whitespace-nowrap font-black text-[#002a45]">
                         <span className="bg-blue-50/50 px-3 py-1.5 rounded-lg border border-blue-100/50">{report.attentionCode}</span>
                       </td>
-                      <td className="p-[1rem] border border-slate-200 text-[#64748b]">{report.patientDni || '---'}</td>
-                      <td className="p-[1rem] border border-slate-200 uppercase truncate px-4 text-[#64748b] font-bold text-[0.75rem]">
+                      <td className="p-[1rem] border border-slate-300 text-[#64748b]">{report.patientDni || '---'}</td>
+                      <td className="p-[1rem] border border-slate-300 uppercase truncate px-4 text-[#64748b] font-bold text-[0.75rem]">
                         {report.solicitor === 'SELECCIONAR' ? '---' : report.solicitor}
                       </td>
-                      <td className="p-[1rem] border border-slate-200 uppercase text-left truncate px-4 text-[#002a45] tracking-tight">
+                      <td className="p-[1rem] border border-slate-300 uppercase text-left truncate px-4 text-[#002a45] tracking-tight">
                         {report.patientLastName}, {report.patientFirstName}
                       </td>
-                      <td className="p-[1rem] border border-slate-200 font-black">
+                      <td className="p-[1rem] border border-slate-300 font-black">
                         <span className="px-3 py-1 rounded-full bg-gray-100 text-[#64748b] text-[0.7rem]">S/ {report.cost?.toFixed(0)}</span>
                       </td>
-                      <td className="p-[1rem] border border-slate-200 font-black">
+                      <td className="p-[1rem] border border-slate-300 font-black">
                         <span className="px-3 py-1 rounded-full bg-green-50 text-[#28a745] text-[0.7rem]">S/ {report.prepayment?.toFixed(0)}</span>
                       </td>
-                      <td className="p-[1rem] border border-slate-200 font-black">
+                      <td className="p-[1rem] border border-slate-300 font-black">
                         <span className={`px-3 py-1 rounded-full text-[0.7rem] ${amountColor}`}>S/ {resta.toFixed(0)}</span>
                       </td>
-                      <td className={`p-[1rem] border border-slate-200 font-black text-[0.75rem] ${isOverdue ? 'text-red-500 animate-pulse' : 'text-[#334155]'}`}>
+                      <td className={`p-[1rem] border border-slate-300 font-black text-[0.75rem] ${isOverdue ? 'text-red-500 animate-pulse' : 'text-[#334155]'}`}>
                         {report.expectedDeliveryDate ? format(new Date(report.expectedDeliveryDate), 'dd MMM yy', { locale: es }) : '---'}
                       </td>
-                      <td className="p-[1rem] border border-slate-200 bg-gray-50/30 group-hover:bg-gray-100/50 transition-colors">
+                      <td className="p-[1rem] border border-slate-300 bg-gray-50/30 group-hover:bg-gray-100/50 transition-colors">
                         <div className="flex items-center justify-center gap-1.5 text-gray-400">
                           <MiniAction icon="edit" onClick={() => handleEdit(report)} />
                           <MiniAction icon="print" onClick={() => exportReportToPdf(report)} />
