@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './ChatbotVictoria.css';
 import { SITE_KNOWLEDGE } from '@/data/siteKnowledge';
 import { callOllama } from '@/utils/ollamaClient';
+import { callGemini } from '@/utils/geminiClient';
 
 interface Message {
   text: string;
