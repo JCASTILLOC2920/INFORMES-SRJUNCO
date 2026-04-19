@@ -1,33 +1,18 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
 
-// Carga Dinámica Agresiva: El chat completo (video, lógica, conocimiento)
-// no se descarga hasta que el usuario muestra intención de usarlo.
+// Carga Dinámica Directa: Victoria maneja su propio estado de apertura/cierre
+// y su botón de activación con vista previa de video.
 const VictoriaWindow = dynamic(() => import('./ChatbotVictoria'), {
   ssr: false,
-  loading: () => <div className="fixed bottom-4 right-4 animate-pulse bg-clinical-blue-deep rounded-full w-14 h-14" />
+  loading: () => null // Invisible hasta que el cliente hidrate
 });
 
 const VictoriaGateway = () => {
-  const [hasStarted, setHasStarted] = useState(false);
-
-  return (
-    <>
-      {!hasStarted ? (
-        <button 
-          className="chat-toggle-btn"
-          onClick={() => setHasStarted(true)}
-          aria-label="Abrir Asistente Victoria"
-        >
-          💬
-        </button>
-      ) : (
-        <VictoriaWindow initialOpen={true} />
-      )}
-    </>
-  );
+  return <VictoriaWindow />;
 };
 
 export default VictoriaGateway;
+

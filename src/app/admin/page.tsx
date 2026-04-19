@@ -151,19 +151,19 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1.25rem] items-end">
               <div className="space-y-1.5">
                   <label className="text-[0.7rem] font-black text-[#002a45] uppercase tracking-wider ml-1">Fec. Inicio</label>
-                  <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="w-full border-2 border-gray-100 bg-[#f8fafc] rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] focus:outline-none focus:border-[#008de3] focus:bg-white transition-all" />
+                  <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="w-full border-2 border-blue-100 bg-white rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] focus:outline-none focus:border-[#008de3] focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm" />
               </div>
               <div className="space-y-1.5">
                   <label className="text-[0.7rem] font-black text-[#002a45] uppercase tracking-wider ml-1">Fec. Final</label>
-                  <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="w-full border-2 border-gray-100 bg-[#f8fafc] rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] focus:outline-none focus:border-[#008de3] focus:bg-white transition-all" />
+                  <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="w-full border-2 border-blue-100 bg-white rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] focus:outline-none focus:border-[#008de3] focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm" />
               </div>
               <div className="space-y-1.5">
                   <label className="text-[0.7rem] font-black text-[#002a45] uppercase tracking-wider ml-1">Cod. Atención</label>
-                  <input type="text" name="attentionCode" value={filters.attentionCode} onChange={handleFilterChange} placeholder="Ej: JQ26-..." className="w-full border-2 border-gray-100 bg-[#f8fafc] rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] placeholder-gray-300 focus:outline-none focus:border-[#008de3] focus:bg-white transition-all" />
+                  <input type="text" name="attentionCode" value={filters.attentionCode} onChange={handleFilterChange} placeholder="Ej: JQ26-..." className="w-full border-2 border-blue-100 bg-white rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] placeholder-gray-400 focus:outline-none focus:border-[#008de3] focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm" />
               </div>
               <div className="space-y-1.5">
                   <label className="text-[0.7rem] font-black text-[#002a45] uppercase tracking-wider ml-1">Paciente</label>
-                  <input type="text" name="name" value={filters.name} onChange={handleFilterChange} placeholder="Nombres o DNI" className="w-full border-2 border-gray-100 bg-[#f8fafc] rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] placeholder-gray-300 focus:outline-none focus:border-[#008de3] focus:bg-white transition-all" />
+                  <input type="text" name="name" value={filters.name} onChange={handleFilterChange} placeholder="Nombres o DNI" className="w-full border-2 border-blue-100 bg-white rounded-xl px-[1rem] py-[0.75rem] text-[0.85rem] font-bold text-[#002a45] placeholder-gray-400 focus:outline-none focus:border-[#008de3] focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm" />
               </div>
 
               <div className="hidden lg:flex col-span-4 justify-between items-center mt-2 pt-4 border-t border-gray-50">
@@ -200,6 +200,7 @@ export default function AdminDashboard() {
                   <th className="border border-white/20 p-3 w-[9rem] text-center">Doc. Identidad</th>
                   <th className="border border-white/20 p-3 w-[14rem] text-center">Médico Referente</th>
                   <th className="border border-white/20 p-3 w-[18rem] text-left">Paciente</th>
+                  <th className="border border-white/20 p-3 w-[12rem] text-center">Muestra</th>
                   <th className="border border-white/20 p-3 w-[7.5rem] text-center">Costo</th>
                   <th className="border border-white/20 p-3 w-[7.5rem] text-center">Adelanto</th>
                   <th className="border border-white/20 p-3 w-[7.5rem] text-center">Resta</th>
@@ -227,6 +228,9 @@ export default function AdminDashboard() {
                       </td>
                       <td className="border border-gray-100 p-3 uppercase text-left truncate px-4 text-[#002a45]">
                           {report.patientLastName}, {report.patientFirstName}
+                      </td>
+                      <td className="border border-gray-100 p-3 uppercase text-center truncate px-4 text-[#64748b]">
+                          {report.sampleType || '---'}
                       </td>
                       <td className="border border-gray-100 p-3 font-bold text-center">
                           <span className={`px-3 py-1 rounded-full text-[0.7rem] bg-gray-100 text-[#002a45]`}>S/ {report.cost?.toFixed(0)}</span>

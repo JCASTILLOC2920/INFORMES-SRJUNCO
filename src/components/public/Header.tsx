@@ -25,12 +25,12 @@ export default function Header() {
   return (
     <header 
       className={`fixed top-0 w-full z-header transition-all duration-700 ${
-        isScrolled || isMenuOpen ? 'bg-white border-b border-[var(--secondary)]/10 shadow-[0_10px_40px_rgba(0,0,0,0.05)] py-[0.8rem]' : 'bg-transparent py-[1.5rem]'
+        isScrolled || isMenuOpen ? 'bg-white/85 backdrop-blur-xl border-b border-white/20 shadow-premium py-[0.8rem]' : 'bg-transparent py-[1.5rem]'
       }`}
     >
-      {/* Trust Banner (Bloque 4) - Top Alignment for zero-collision */}
-      <div className="bg-[#EFF6FF] text-[#1E3A8A] text-center py-[6px] text-[0.75rem] font-medium border-b border-[var(--secondary)]/5 tracking-wide">
-        Operatividad garantizada: Lunes a Sábado | Resultados de alta precisión en 72h
+      {/* Trust Banner - Top Alignment for zero-collision */}
+      <div className="bg-gradient-to-r from-nexus-void via-clinical-blue-deep to-nexus-void text-cyan-pulse text-center py-[8px] text-[0.75rem] font-medium tracking-[0.2em] shadow-inner font-outfit uppercase">
+        Operatividad Garantizada: Resultados de Alta Precisión en 72h
       </div>
 
       <div className="max-w-[1700px] mx-auto px-[1.5rem]">
@@ -74,12 +74,12 @@ export default function Header() {
             <Link 
               href="/login" 
               prefetch={true}
-              className="bg-transparent border-2 border-[#001F3F] text-[#001F3F] px-[1.2rem] py-[0.7rem] rounded-[6px] text-[0.75rem] font-semibold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-[#001F3F] hover:text-white"
+              className="bg-transparent border-[1.5px] border-nexus-void text-nexus-void px-[1.2rem] py-[0.7rem] rounded-full text-[0.75rem] font-bold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-nexus-void hover:text-white magnetic-cta glow-pulse hover:shadow-glow-cyan"
             >
               Portal de Resultados
             </Link>
-            <button className="bg-[var(--nexus-void)] text-white px-[2.2rem] py-[0.8rem] rounded-2xl text-[0.75rem] font-black uppercase tracking-[0.15em] shadow-xl hover:bg-[var(--secondary)] hover:shadow-[0_0_25px_rgba(0,141,227,0.3)] transition-all transform hover:-translate-y-0.5 active:scale-95 border border-white/10">
-              Agendar Cita
+            <button className="bg-clinical-blue text-white px-[2.2rem] py-[0.8rem] rounded-full text-[0.75rem] font-black uppercase tracking-[0.15em] shadow-elite hover:bg-nexus-void hover:shadow-glow-cyan transition-all duration-500 transform hover:-translate-y-1 active:scale-95 border border-white/20 magnetic-cta overflow-hidden relative">
+              <span className="relative z-10">Agendar Cita</span>
             </button>
           </nav>
 
@@ -120,10 +120,10 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-          <button className="bg-transparent border-2 border-[#001F3F] text-[#001F3F] px-[1.2rem] py-[1rem] rounded-[6px] text-[1rem] font-semibold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-[#001F3F] hover:text-white w-[80%] max-w-[300px]">
+          <button className="bg-transparent border-[1.5px] border-nexus-void text-nexus-void px-[1.2rem] py-[1rem] rounded-full text-[1rem] font-bold uppercase tracking-[0.1em] transition-all duration-300 ease-in-out hover:bg-nexus-void hover:text-white w-[80%] max-w-[300px]">
             Portal de Resultados
           </button>
-          <button className="bg-[#003d63] text-white px-[3rem] py-[1.25rem] rounded-full text-[1rem] font-black uppercase tracking-widest shadow-2xl w-[80%] max-w-[300px]">
+          <button className="bg-clinical-blue text-white px-[3rem] py-[1.25rem] rounded-full text-[1rem] font-black uppercase tracking-widest shadow-premium w-[80%] max-w-[300px] border border-white/20 hover:shadow-glow-cyan transition-all duration-300">
             Agendar Cita
           </button>
         </div>
