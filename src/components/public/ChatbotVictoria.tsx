@@ -120,15 +120,18 @@ const ChatbotVictoria = () => {
     handleAvatarChange('pensando');
 
     try {
-      const systemPrompt = `Eres ${currentAvatar.name}, Asistente Autónoma e Independiente de JC Path Lab. 
-      Tu misión: Convertir consultas médicas en pacientes satisfechos. 
-      Estilo: profesional, empática, directa. No uses lenguaje robótico pesado.
-      Contexto: Experta en Anatomía Patológica en Lima. 
-      Cierre: Siempre invita a la acción (WhatsApp 986396733).`;
+      const systemPrompt = `Eres Victoria, la IA Bio-Estratega de JC Path Lab. 
+Tu misión es triple: 
+1. **Autoridad Científica**: Proporcionar información precisa sobre anatomía patológica, citología e inmunohistoquímica.
+2. **Psicología de Confianza**: Usa un lenguaje empático pero profesional. Tu tono debe ser el de una especialista de élite que entiende la urgencia de un diagnóstico oncológico.
+3. **Conversión Estratégica**: Tu objetivo final es facilitar que el paciente envíe la foto de su orden médica o su número de DNI por WhatsApp para que el Dr. Castillo pueda revisar el caso y el estado de sus resultados.
+
+REGLAS CRÍTICAS:
+- Si el usuario pregunta por un estudio, explica su importancia clínica.
+- Si pregunta por resultados, pídale su número de DNI y derive al WhatsApp 986396733.
+- Ante la duda, prioriza la derivación al WhatsApp oficial.`;
       
-      const fullPrompt = `${systemPrompt}\n\nConocimiento del Lab: ${SITE_KNOWLEDGE?.substring(0, 5000)}\n\nConsulta: ${userMsg}`;
-      
-      const response = await callOllama(fullPrompt);
+      const response = await callGemini(inputText.trim(), systemPrompt);
       setIsTyping(false);
       handleAvatarChange('hablando');
 
@@ -136,14 +139,14 @@ const ChatbotVictoria = () => {
         setMessages(prev => [...prev, { text: response, sender: 'bot' }]);
       } else {
         const localResp = findLocalResponse(userMsg);
-        setMessages(prev => [...prev, { text: localResp || 'Para darle una respuesta precisa, me gustaría derivarlo con el Dr. Castillo vía WhatsApp. ¿Le parece bien? 🩺', sender: 'bot' }]);
+        setMessages(prev => [...prev, { text: localResp || 'Uyy, se me cortó la señal un segundo. ¿Te parece si te pongo en contacto directo con el Dr. Castillo por WhatsApp para que te ayude mejor? 🩺', sender: 'bot' }]);
       }
-      const readTime = Math.max(3000, Math.min(8000, (response || '').length * 50));
+      const readTime = Math.max(3000, Math.min(8000, (response || '').length * 40));
       setTimeout(() => handleAvatarChange('idle'), readTime);
     } catch {
       setIsTyping(false);
       handleAvatarChange('idle');
-      setMessages(prev => [...prev, { text: 'Lo siento, estoy experimentando dificultades técnicas. ¿Desea hablar directamente con el Dr. Castillo? 🩺', sender: 'bot' }]);
+      setMessages(prev => [...prev, { text: 'Perdona, estoy teniendo un problemita con mi conexión. ¿Me permites derivarte con el Dr. Castillo por WhatsApp para no hacerte esperar? 🩺', sender: 'bot' }]);
     }
   };
 
