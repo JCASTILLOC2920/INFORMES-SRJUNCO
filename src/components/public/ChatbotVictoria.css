@@ -12,9 +12,10 @@
 .chat-toggle-btn {
     position: fixed;
     bottom: 2rem;
-    right: 2rem;
-    width: 4.5rem;
-    height: 4.5rem;
+    right: 2rem !important;
+    left: auto !important;
+    width: 5rem;
+    height: 5rem;
     background: var(--clinical-header);
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
@@ -24,7 +25,7 @@
     justify-content: center;
     align-items: center;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    z-index: 10000;
+    z-index: 10005 !important;
     overflow: hidden;
     animation: pulseGlow 2s infinite;
     padding: 0;
@@ -71,8 +72,9 @@
 /* ===== TOOLTIP ===== */
 .chat-tooltip {
     position: fixed;
-    bottom: 7.5rem;
-    right: 2rem;
+    bottom: 8rem;
+    right: 2rem !important;
+    left: auto !important;
     background: white;
     color: var(--clinical-text);
     padding: 0.75rem 1.25rem;

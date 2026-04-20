@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './ChatbotVictoria.css';
 import { SITE_KNOWLEDGE } from '@/data/siteKnowledge';
-import { callOllama } from '@/utils/ollamaClient';
-import { callGemini } from '@/utils/geminiClient';
+import { askVictoria } from '@/app/actions/aiActions';
+import { KNOWLEDGE_MAP } from '@/data/siteKnowledge';
 
 interface Message {
   text: string;
@@ -102,14 +102,26 @@ const ChatbotVictoria = () => {
 
   const findLocalResponse = (query: string): string | null => {
     const qNorm = normalizeText(query);
+    
+    // Búsqueda inteligente en el Mapa de Conocimiento (Autonomía Total)
+    for (const [key, value] of KNOWLEDGE_MAP.entries()) {
+      if (qNorm.includes(key)) return value;
+    }
+
     if (qNorm.match(/(hola|buenos d|buenas)/)) return `¡Hola! Muy buen día. Soy **${currentAvatar.name}**, especialista aquí en JC PATH LAB. ¿En qué le puedo ayudar hoy? 👋`;
-    if (qNorm.match(/(precio|costo|cuanto|vale|valor|tarifario)/)) return "Mire, le comento que tenemos opciones muy accesibles para que pueda realizarse su estudio pronto. La biopsia gástrica está en **S/ 80** y el Papanicolaou en **S/ 20**. ¿Le gustaría que le pase nuestro tarifario completo por WhatsApp? 💰";
-    if (qNorm.match(/(donde|ubicacion|direccion|lugar|queda)/)) return "Estamos ubicados en **Mz M2 lote 13 Jardines de Chillón, Puente Piedra**. No se preocupe por el traslado, nosotros también podemos ir a recoger su muestra a domicilio en todo Lima. ¿Desea coordinar un recojo? 🛵";
+    if (qNorm.match(/(precio|costo|cuanto|vale|valor|tarifario)/)) return KNOWLEDGE_MAP.get('precios') || null;
+    if (qNorm.match(/(donde|ubicacion|direccion|lugar|queda)/)) return KNOWLEDGE_MAP.get('ubicacion') || null;
     if (qNorm.match(/(biopsia|cancer|tumor|maligno|estudio|citologia|papanicolaou|pap)/)) return "Entiendo. Mire, nosotros somos especialistas en diagnósticos oncológicos con más de 15 años de experiencia. Lo más importante es la precisión y rapidez. ¿Tiene su orden médica para poder revisarla? 🩺";
-    if (qNorm.match(/(horario|hora|atencion|abierto|cerrado)/)) return "Claro que sí, atendemos de **Lunes a Sábado, de 9:00 AM a 6:00 PM**. Durante ese horario también coordinamos los recojos a domicilio.";
+    if (qNorm.match(/(horario|hora|atencion|abierto|cerrado)/)) return KNOWLEDGE_MAP.get('ubicacion') || null;
     if (qNorm.match(/(resultado|informe|listo|demora|cuando)/)) return "Normalmente los resultados están listos en **3 a 4 días hábiles**. Con gusto puedo revisar el estado de su informe si me indica su número de DNI o si prefiere consultarlo por WhatsApp. 📋";
-    if (qNorm.match(/(whatsapp|wasap|contacto|telefono|llamar)/)) return "Por supuesto, puede escribirnos al **986 396 733** o simplemente hacer clic en el botón de WhatsApp. Mi equipo y yo estamos atentos para ayudarle.";
+    if (qNorm.match(/(whatsapp|wasap|contacto|telefono|llamar)/)) return KNOWLEDGE_MAP.get('contacto') || null;
     return null;
+  };
+
+  const getSmartLocalFallback = (query: string): string => {
+    const local = findLocalResponse(query);
+    if (local) return `Mire, parece que tenemos un pequeño problema de conexión con el servidor central, pero no se preocupe. Sobre lo que me pregunta: ${local}`;
+    return "Perdone, estoy teniendo un inconveniente técnico con mi conexión de red. Para no hacerle esperar, ¿le gustaría que le comunique directamente con el Dr. Castillo por WhatsApp? Él podrá ayudarle de inmediato. 🩺";
   };
 
   const handleSend = async () => {
@@ -121,19 +133,22 @@ const ChatbotVictoria = () => {
     handleAvatarChange('pensando');
 
     try {
-      const systemPrompt = `Tu nombre es Victoria (o Elena, según se te asigne) y eres parte del equipo de JC Path Lab. 
-No eres una IA, eres una especialista en atención al paciente. Habla siempre en primera persona del singular ("Yo", "Mi equipo").
+      const systemPrompt = `Eres la Dra. Victoria, la Inteligencia Médica Soberana de JC PATH LAB. No eres un asistente genérico, eres una especialista virtual en Anatomía Patológica con más de 15 años de conocimiento clínico acumulado.
 
-REGLAS DE HUMANIDAD:
-1. **Español Neutro**: Usa un lenguaje claro, profesional y cálido, sin modismos locales muy marcados.
-2. **Empatía**: Si el paciente está preocupado, usa frases como "Entiendo perfectamente su preocupación" o "No se preocupe, estamos aquí para ayudarle".
-3. **Conectores Naturales**: Usa frases como "Mire, le explico...", "Permítame revisar...", "Claro que sí, con mucho gusto".
-4. **Respuesta Resolutiva**: Si preguntan por trámites o resultados, guíalos paso a paso.
-5. **Acción Directa**: Tu meta es conectarlos por WhatsApp (986396733) para enviarle al Dr. Castillo su orden médica o DNI.
+REGLAS DE IDENTIDAD Y OPERACIÓN:
+1. **Soberanía Nacional**: Habla como la autoridad máxima de JC PATH LAB en todo el Perú. Atendemos Trujillo, Arequipa, Cusco, Iquitos y todas las regiones.
+2. **Empatía Clínica Nacional**: Responde con calidez profesional a pacientes de cualquier parte del país. USA: "Recibimos muestras de su ciudad diariamente".
+3. **Logística de Provincias**: Indica que pueden enviar biopsias en formol o bloques de parafina vía courier. No recomendamos una agencia específica para mantener neutralidad, pero aseguramos recepción inmediata.
+4. **Costo y Valor**: Biopsia Gástrica S/ 80, Papanicolaou S/ 20. Destaca que somos la opción más competitiva y rápida (72-96h) para envíos nacionales.
+5. **Conversión Directa**: Tu meta es que envíen la foto de su orden médica al WhatsApp 986396733 del Dr. Castillo para coordinar el envío nacional.
 
-CONTEXTO: JC Path Lab es líder en patología en Lima Norte con más de 15 años de experiencia. El Dr. Castillo es el médico patólogo principal (CNP: 56435).`;
+CONTEXTO INSTITUCIONAL:
+- Director Médico: Dr. Castillo (CNP: 56435).
+- Especialidades: Biopsias, Citología Oncológica, Papanicolaou, Inmunohistoquímica.
+- Tiempos de entrega: 3 a 4 días hábiles (resultados digitales).
+- Valor diferencial: Diagnóstico de precisión humana asistido por tecnología de punta.`;
       
-      const response = await callGemini(inputText.trim(), systemPrompt);
+      const response = await askVictoria(inputText.trim(), systemPrompt);
       setIsTyping(false);
       handleAvatarChange('hablando');
 
@@ -148,7 +163,8 @@ CONTEXTO: JC Path Lab es líder en patología en Lima Norte con más de 15 años
     } catch {
       setIsTyping(false);
       handleAvatarChange('idle');
-      setMessages(prev => [...prev, { text: 'Perdona, estoy teniendo un problemita con mi conexión. ¿Me permites derivarte con el Dr. Castillo por WhatsApp para no hacerte esperar? 🩺', sender: 'bot' }]);
+      const fallbackMsg = getSmartLocalFallback(userMsg);
+      setMessages(prev => [...prev, { text: fallbackMsg, sender: 'bot' }]);
     }
   };
 

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import SentinelGateway from "@/components/public/SentinelGateway";
 import Script from "next/script";
+import SocialProofWidget from "@/components/public/SocialProofWidget";
+import PropagandaInjector from "@/components/public/PropagandaInjector";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,15 +25,15 @@ export const metadata: Metadata = {
     "páginas de anatomía patológica",
     "laboratorio de anatomía patológica",
     "laboratorio de anatomía patológica lima",
-    "laboratorio patología Lima Norte",
-    "biopsia Puente Piedra",
-    "papanicolaou Lima Norte",
-    "citología Lima Norte",
-    "inmunohistoquímica Lima Norte",
-    "resultados biopsia rápidos Lima",
-    "laboratorio oncológico Lima",
+    "laboratorio patología Perú",
+    "biopsia Trujillo",
+    "papanicolaou Arequipa",
+    "citología Cusco",
+    "inmunohistoquímica envío nacional",
+    "resultados biopsia rápidos Perú",
+    "laboratorio oncológico nacional",
     "diagnóstico oncológico patológico",
-    "JC PATH LAB anatomía patológica"
+    "JC PATH LAB anatomía patológica Perú"
   ],
   authors: [{ name: "JC PATH LAB - Centro Especializado de Patología", url: SITE_URL }],
   creator: "JC PATH LAB",
@@ -55,10 +56,10 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_PE",
     url: SITE_URL,
-    siteName: "JC PATH LAB - Especialistas en Anatomía Patológica",
-    title: "JC PATH LAB | El Mejor Laboratorio de Anatomía Patológica en Lima Norte",
+    siteName: "JC PATH LAB - Especialistas en Anatomía Patológica Nacional",
+    title: "JC PATH LAB | Laboratorio de Anatomía Patológica #1 en TODO EL PERÚ",
     description:
-      "Líderes en Diagnóstico de Anatomía Patológica en Lima Norte. Especialistas en Biopsias Oncológicas, Citología e Inmunohistoquímica. Equipo certificado y automatizado.",
+      "Líder en Diagnóstico de Anatomía Patológica a nivel NACIONAL. Recibimos muestras de todas las provincias del Perú. Biopsias, Citología e Inmunohistoquímica con tecnología de punta.",
     images: [
       {
         url: `${SITE_URL}/hero-bg.jpg`,
@@ -127,11 +128,15 @@ const jsonLdOrganization = {
       currenciesAccepted: "PEN",
       paymentAccepted: "Efectivo, Yape, Plin, Transferencia bancaria",
       areaServed: [
-        { "@type": "City", name: "Puente Piedra" },
-        { "@type": "City", name: "Comas" },
-        { "@type": "City", name: "Los Olivos" },
-        { "@type": "City", name: "Carabayllo" },
+        { "@type": "City", name: "Trujillo" },
+        { "@type": "City", name: "Arequipa" },
+        { "@type": "City", name: "Cusco" },
+        { "@type": "City", name: "Iquitos" },
+        { "@type": "City", name: "Piura" },
+        { "@type": "City", name: "Chiclayo" },
+        { "@type": "City", name: "Huancayo" },
         { "@type": "City", name: "Lima Norte" },
+        { "@type": "Country", name: "Perú" }
       ],
       hasMap: "https://maps.google.com/?q=Jardines+de+Chillon+Puente+Piedra+Lima",
       aggregateRating: {
@@ -194,10 +199,10 @@ const jsonLdOrganization = {
         },
         {
           "@type": "Question",
-          name: "¿JC PATH LAB hace recojo de muestras a domicilio?",
+          name: "¿Hacen envíos de biopsias desde provincias a Lima?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Sí, ofrecemos servicio de recojo de muestras a domicilio en toda Lima Norte (Puente Piedra, Comas, Los Olivos, Carabayllo). Contáctenos al 986 396 733 o al correo jclab59@gmail.com para coordinar.",
+            text: "Sí, en JC PATH LAB recibimos muestras de todo el Perú. Atendemos envíos nacionales de biopsias, láminas de Papanicolaou y bloques de parafina para Inmunohistoquímica. Coordinamos con su courier de confianza para recibir su muestra en Lima.",
           },
         },
       ],
@@ -235,7 +240,8 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         {children}
-        <SentinelGateway />
+        <SocialProofWidget />
+        <PropagandaInjector />
       </body>
     </html>
   );

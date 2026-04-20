@@ -44,11 +44,13 @@ PERSONALIDAD: Profesional, Empática, Persuasiva y Altamente Capacitada.
 `;
 
 // O(1) Access Optimization for Frequent Queries
-export const KNOWLEDGE_MAP = new Map([
-  ['precios', 'Biopsia Gástrica/Colon: S/ 80, Próstata: S/ 250, PAP: S/ 20.'],
-  ['ubicacion', 'Mz M2 lote 13 Jardines de Chillón, Puente Piedra, Lima Norte.'],
-  ['contacto', 'WhatsApp: 986396733.'],
-  ['rapidez', 'Resultados en 3-4 días hábiles.'],
+  ['precios', 'Mire, tenemos opciones muy accesibles: Biopsia Gástrica/Colon a S/ 80, Próstata (6 frascos) a S/ 250 y Papanicolaou a S/ 20. ¿Desea que le pase el tarifario completo por WhatsApp? 💰'],
+  ['ubicacion', 'Estamos en Mz M2 lote 13 Jardines de Chillón, Puente Piedra, Lima. Atendemos de Lunes a Sábado de 9:00 AM a 6:00 PM. ¡Le esperamos! 📍'],
+  ['contacto', 'Nuestra línea directa de WhatsApp es el **986 396 733**. Mi equipo y el Dr. Castillo están atentos para ayudarle con su diagnóstico. 📱'],
+  ['rapidez', '¡Somos los más rápidos de Lima Norte! Entregamos resultados certificados en solo **3 a 4 días hábiles**, permitiendo iniciar tratamientos sin demora. ⚡'],
+  ['provincias', 'Sí, recibimos muestras de todo el Perú vía Olva o Shalom. Solo debe enviarnos la muestra bien rotulada y nosotros nos encargamos del resto. 📦'],
+  ['domicilio', 'Claro que sí, ofrecemos servicio de recojo a domicilio en TODO LIMA. Solo escríbanos al WhatsApp 986396733 y coordinamos la hora. 🛵'],
+  ['preparacion', 'Para biopsias, solo necesita traer su orden médica y el tejido en formol al 10%. Para Papanicolaou, se recomienda no estar en periodo menstrual ni haber tenido relaciones sexuales 24h antes. 🩺'],
 ]);
 
 export const SERVICE_PRICES = {

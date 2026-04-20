@@ -16,9 +16,9 @@ const WhyUs = dynamic(() => import("@/components/public/WhyUs"), {
   ssr: true,
   loading: () => <div className="min-h-[400px] animate-pulse bg-gray-50" />,
 });
-const Footer = dynamic(() => import("@/components/public/Footer"), {
+const NationalActivityMap = dynamic(() => import("@/components/public/NationalActivityMap"), {
   ssr: true,
-  loading: () => <div className="min-h-[200px] animate-pulse bg-gray-50" />,
+  loading: () => <div className="min-h-[400px] animate-pulse bg-nexus-void/5" />,
 });
 
 export default function Home() {
@@ -29,6 +29,7 @@ export default function Home() {
       <SpecializedServices />
       <Services />
       <WhyUs />
+      <NationalActivityMap />
       <Footer />
       <ChatbotVictoria />
     </main>

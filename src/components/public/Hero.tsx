@@ -65,22 +65,6 @@ export default function Hero() {
                 <HeroCarousel />
             </div>
 
-            <div className="absolute -bottom-[20px] -left-[20px] z-20 p-5 md:p-6 rounded-3xl animate-float scale-90 md:scale-100 origin-bottom-left shadow-elite"
-                 style={{ 
-                   background: 'rgba(255, 255, 255, 0.9)', 
-                   backdropFilter: 'blur(16px)', 
-                   border: '1px solid rgba(255, 255, 255, 0.5)' 
-                 }}>
-                <div className="flex items-center space-x-5">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-nexus-void to-clinical-blue flex items-center justify-center text-white shadow-glow-blue">
-                        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <div>
-                        <p className="text-[0.75rem] uppercase tracking-widest font-black text-clinical-blue">Precisión Certificada</p>
-                        <p className="text-[1.2rem] font-black text-nexus-void font-outfit">ISO 9001:2015</p>
-                    </div>
-                </div>
-            </div>
         </div>
       </div>
     </section>

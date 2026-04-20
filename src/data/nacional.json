@@ -1,0 +1,51 @@
+{
+  "cities": [
+    { "id": "trujillo", "name": "Trujillo", "region": "La Libertad", "services": ["biopsia", "papanicolaou", "citologia", "inmunohistoquimica"] },
+    { "id": "arequipa", "name": "Arequipa", "region": "Arequipa", "services": ["biopsia", "papanicolaou", "citologia", "inmunohistoquimica"] },
+    { "id": "cusco", "name": "Cusco", "region": "Cusco", "services": ["biopsia", "papanicolaou", "citologia", "inmunohistoquimica"] },
+    { "id": "huancayo", "name": "Huancayo", "region": "Junín", "services": ["biopsia", "papanicolaou", "citologia"] },
+    { "id": "piura", "name": "Piura", "region": "Piura", "services": ["biopsia", "citologia", "papanicolaou"] },
+    { "id": "chiclayo", "name": "Chiclayo", "region": "Lambayeque", "services": ["biopsia", "papanicolaou", "inmunohistoquimica"] },
+    { "id": "iquitos", "name": "Iquitos", "region": "Loreto", "services": ["biopsia", "inmunohistoquimica"] },
+    { "id": "chimbote", "name": "Chimbote", "region": "Ancash", "services": ["biopsia", "papanicolaou"] },
+    { "id": "tacna", "name": "Tacna", "region": "Tacna", "services": ["biopsia", "citologia"] },
+    { "id": "pucallpa", "name": "Pucallpa", "region": "Ucayali", "services": ["biopsia", "papanicolaou"] },
+    { "id": "ica", "name": "Ica", "region": "Ica", "services": ["biopsia", "citologia", "papanicolaou"] },
+    { "id": "cajamarca", "name": "Cajamarca", "region": "Cajamarca", "services": ["biopsia", "papanicolaou"] },
+    { "id": "puno", "name": "Puno", "region": "Puno", "services": ["biopsia", "papanicolaou", "citologia"] },
+    { "id": "ayacucho", "name": "Ayacucho", "region": "Ayacucho", "services": ["biopsia", "citologia"] },
+    { "id": "huanuco", "name": "Huánuco", "region": "Huánuco", "services": ["biopsia", "papanicolaou"] },
+    { "id": "tarapoto", "name": "Tarapoto", "region": "San Martín", "services": ["biopsia", "citologia"] },
+    { "id": "juliaca", "name": "Juliaca", "region": "Puno", "services": ["biopsia", "papanicolaou"] },
+    { "id": "chincha", "name": "Chincha", "region": "Ica", "services": ["biopsia", "papanicolaou"] },
+    { "id": "sullana", "name": "Sullana", "region": "Piura", "services": ["biopsia", "papanicolaou"] },
+    { "id": "huacho", "name": "Huacho", "region": "Lima", "services": ["biopsia", "citologia"] },
+    { "id": "paita", "name": "Paita", "region": "Piura", "services": ["biopsia"] },
+    { "id": "talara", "name": "Talara", "region": "Piura", "services": ["biopsia", "papanicolaou"] },
+    { "id": "moquegua", "name": "Moquegua", "region": "Moquegua", "services": ["biopsia", "inmunohistoquimica"] },
+    { "id": "pisco", "name": "Pisco", "region": "Ica", "services": ["biopsia", "citologia"] },
+    { "id": "jaen", "name": "Jaén", "region": "Cajamarca", "services": ["biopsia", "papanicolaou"] }
+  ],
+  "serviceDetails": {
+    "biopsia": {
+      "title": "Biopsias de Precisión Nacional",
+      "description": "Diagnóstico histopatológico de alta fidelidad. Recibimos muestras de todo el país con tiempos de entrega de 3-4 días hábiles.",
+      "cta": "Enviar Muestra desde Provincia"
+    },
+    "papanicolaou": {
+      "title": "Papanicolaou Oncológico Profesional",
+      "description": "Despistaje preventivo certificado. Análisis especializado por patólogos para clínicas y centros de salud en provincias.",
+      "cta": "Tarifas Especiales Provincias"
+    },
+    "citologia": {
+      "title": "Citología y Líquidos en Regiones",
+      "description": "Estudio citológico de líquidos pleurales, ascíticos y secreciones con interpretación experta inmediata.",
+      "cta": "Consultar Protocolo de Envío"
+    },
+    "inmunohistoquimica": {
+      "title": "Inmunohistoquímica de Alta Especialidad",
+      "description": "El GPS del diagnóstico oncológico disponible para todo el Perú. Tipificación definitiva de tumores a partir de bloques de parafina.",
+      "cta": "Coordinar Envío de Bloque"
+    }
+  }
+}

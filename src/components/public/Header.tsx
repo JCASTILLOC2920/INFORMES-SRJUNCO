@@ -17,8 +17,8 @@ export default function Header() {
 
   const navLinks = [
     { name: 'Inicio', href: '/' },
-    { name: 'Registro', href: '/login' },
-    { name: 'Servicios', href: '#servicios' },
+    { name: 'Seguimiento', href: '/seguimiento' },
+    { name: 'Servicios', href: '/servicios' },
     { name: 'Contacto', href: '#contacto' },
   ];
 
@@ -51,14 +51,6 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-[2.5rem]">
-            <Link 
-              href="/login" 
-              prefetch={true}
-              className="text-[14px] font-medium text-[#64748B] hover:text-[#0F172A] transition-colors duration-300 flex items-center gap-2"
-            >
-              <svg className="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-              Acceso a Boletas
-            </Link>
 
             {navLinks.map((link) => (
               <Link 
@@ -102,14 +94,6 @@ export default function Header() {
             isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
           }`}
         >
-          <Link 
-            href="/login" 
-            onClick={() => setIsMenuOpen(false)}
-            className="text-[0.9rem] font-medium text-[#64748B] hover:text-[#0F172A] tracking-widest flex items-center gap-2"
-          >
-            <svg className="w-5 h-5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            Portal Interno
-          </Link>
           {navLinks.map((link) => (
             <Link 
               key={link.name}
