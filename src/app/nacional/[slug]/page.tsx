@@ -5,6 +5,7 @@ import Link from "next/link";
 import provincialData from "@/data/nacional.json";
 
 const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"), { ssr: false });
+const ViralSocialHub = dynamic(() => import("@/components/public/ViralSocialHub"), { ssr: false });
 
 type Props = {
   params: { slug: string };
@@ -17,9 +18,30 @@ export async function generateMetadata({ params }: Props) {
 
   if (!city || !service) return { title: "JC PATH LAB" };
 
+  const title = `⚠️ ALERTA MÉDICA: ${service.title} en ${city.name} | Servicio Nacional`;
+  const description = `AVISO OFICIAL: Recojo prioritario de muestras en ${city.name} (${city.region}). Resultados certificados por el Dr. Castillo en 72h. Inicie su diagnóstico hoy mismo vía WhatsApp.`;
+
   return {
-    title: `${service.title} en ${city.name} | JC PATH LAB Nacional`,
-    description: `Servicio de ${serviceId} de alta precisión en ${city.name}, ${city.region}. Resultados en 3-4 días envíos nacionales a todo el Perú.`,
+    title,
+    description,
+    openGraph: {
+      title: `🔴 COMUNICADO: Diagnóstico de Precisión en ${city.name}`,
+      description,
+      type: "article",
+      url: `https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app/nacional/${params.slug}`,
+      images: [{ 
+        url: "https://informes-srjunco.vercel.app/logo-circular.png",
+        width: 1200,
+        height: 630,
+        alt: `Alerta Diagnóstica JC PATH LAB ${city.name}`
+      }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `⚡ URGENTE: ${serviceId} en ${city.name}`,
+      description,
+      images: ["https://informes-srjunco.vercel.app/logo-circular.png"],
+    }
   };
 }
 
@@ -92,13 +114,11 @@ export default function NationalDynamicPage({ params }: Props) {
                 </div>
               </div>
 
-              <Link 
-                href="https://wa.me/51986396733"
-                className="block text-center bg-nexus-void text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-clinical-blue transition-all shadow-glow-blue"
-              >
-                {service.cta}
               </Link>
             </div>
+
+            {/* Infiltrador Viral */}
+            <ViralSocialHub city={city.name} service={service.title} />
 
             <div className="prose prose-slate max-w-none text-slate-600">
               <h3 className="text-2xl font-bold text-nexus-void mb-4">¿Cómo enviarnos su muestra?</h3>

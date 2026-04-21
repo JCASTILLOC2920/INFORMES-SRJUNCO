@@ -10,31 +10,24 @@
  * Sovereignty over vision and text extraction.
  */
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+const TITAN_LOCAL_URL = "http://localhost:8000/api/ask";
 
 export async function askVictoria(prompt: string, systemPrompt: string): Promise<string | null> {
-  if (!GEMINI_API_KEY) return null;
-
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(TITAN_LOCAL_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: `${systemPrompt}\n\nConsulta: ${prompt}` }],
-          },
-        ],
+        prompt: prompt,
+        knowledge: systemPrompt // En el portal se usa systemPrompt como base
       }),
     });
 
     const data = await response.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    return data.response || null;
   } catch (error) {
-    console.error("[AI_ACTION] Error:", error);
-    return null;
+    console.error("[TITAN_SOVEREIGN] Error:", error);
+    return "Lo siento, mi conexión con el núcleo local de Titán ha sido interrumpida. ¿Desea contactar al equipo médico por WhatsApp? 🩺";
   }
 }
 

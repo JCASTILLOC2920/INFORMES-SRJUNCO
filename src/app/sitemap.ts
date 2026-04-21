@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import provincialData from '@/data/nacional.json';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const SITE_URL = 'https://informes-srjunco.vercel.app';
+  const SITE_URL = 'https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app';
   
   // Rutas estáticas base
   const staticRoutes = [
@@ -17,14 +17,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 1,
   }));
 
-  // Generación dinámica de rutas nacionales (Saturación)
-  const nationalRoutes = provincialData.cities.flatMap((city) => 
-    city.services.map((serviceId) => ({
-      url: `${SITE_URL}/nacional/${city.id}-${serviceId}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    }))
+  // Generación dinámica de rutas nacionales (Saturación Tri-Entidad)
+  const types = ['nacional', 'b2b', 'urgencia'];
+  const nationalRoutes = types.flatMap((type) => 
+    provincialData.cities.flatMap((city) => 
+      city.services.map((serviceId) => ({
+        url: `${SITE_URL}/${type}/${city.id}-${serviceId}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: type === 'nacional' ? 0.9 : 0.7,
+      }))
+    )
   );
 
   return [...staticRoutes, ...nationalRoutes];

@@ -40,22 +40,36 @@ export default function PropagandaInjector() {
         </div>
         
         <h2 className="text-3xl font-black text-nexus-void mb-4 leading-tight">
-          ¡Asegure su Diagnóstico con <span className="text-clinical-blue">Autoridad Médica Nacional</span>!
+          Soberanía Diagnóstica <span className="text-clinical-blue">Para Profesionales y Clínicas</span>
         </h2>
         
         <p className="text-slate-600 mb-8 text-lg font-medium leading-relaxed">
-          Ya sea en <span className="font-bold text-clinical-blue underline decoration-clinical-blue/30">Trujillo, Arequipa, Cusco o Lima</span>, el Dr. Castillo garantiza la máxima precisión clínica para su bienestar. 
-          <span className="block mt-2 text-nexus-void font-black uppercase text-sm tracking-widest">Atendemos envíos de TODO EL PERÚ.</span>
+          Ya sea Médico Independiente o Director de Clínica, JC PATH LAB es su aliado estratégico. <br/>
+          <span className="block mt-2 text-nexus-void font-black uppercase text-sm tracking-widest">Envíos desde TODO EL PERÚ | Descuentos Corporativos.</span>
         </p>
         
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <Link 
-            href="https://wa.me/51986396733"
-            className="group relative block w-full bg-nexus-void text-white py-5 rounded-2xl font-black uppercase tracking-widest overflow-hidden shadow-glow-blue transition-all"
+            href="https://wa.me/51986396733?text=Solicito+Tarifario+Institucional"
+            className="flex items-center justify-center bg-clinical-blue text-white py-4 rounded-xl font-bold uppercase text-[0.7rem] tracking-widest hover:bg-nexus-void transition-all"
           >
-            <span className="relative z-10">Hablar con el Dr. Castillo Directo</span>
-            <div className="absolute inset-0 bg-clinical-blue translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300"></div>
+            Tarifario Institucional
           </Link>
+          <Link 
+            href="/b2b"
+            className="flex items-center justify-center bg-slate-100 text-nexus-void py-4 rounded-xl font-bold uppercase text-[0.7rem] tracking-widest hover:bg-slate-200 transition-all"
+          >
+            Portal de Convenios
+          </Link>
+        </div>
+
+        <Link 
+          href="https://wa.me/51986396733"
+          className="group relative block w-full bg-nexus-void text-white py-5 rounded-2xl font-black uppercase tracking-widest overflow-hidden shadow-glow-blue transition-all"
+        >
+          <span className="relative z-10">Urgencias: Hablar con el Dr. Castillo</span>
+          <div className="absolute inset-0 bg-clinical-blue translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300"></div>
+        </Link>
           
           <button 
             onClick={() => setShowExitIntent(false)}

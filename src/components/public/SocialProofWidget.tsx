@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 
 const ACTIVITIES = [
-  { location: "Trujillo", service: "Biopsia Gástrica", status: "Entregada", icon: "🔬" },
-  { location: "Arequipa", service: "Papanicolaou", status: "Procesado", icon: "🧬" },
-  { location: "Cusco", service: "Inmunohistoquímica", status: "Certificada", icon: "🎯" },
-  { location: "Lima Norte", service: "Citología", status: "Completada", icon: "✨" },
-  { location: "Iquitos", service: "Biopsia de Piel", status: "Recibida", icon: "📦" },
-  { location: "Huancayo", service: "Informe Médico", status: "Certificado", icon: "📋" },
-  { location: "Chiclayo", service: "Citología Directa", status: "Procesada", icon: "🧪" },
-  { location: "Tacna", service: "Biopsia Prostática", status: "Completada", icon: "⚡" },
-  { location: "Piura", service: "Papanicolaou", status: "Entregado", icon: "🗂️" },
+  { location: "Trujillo", service: "12 Biopsias - Clínica San Pablo", status: "Entregadas", icon: "🏢" },
+  { location: "Arequipa", service: "Patología Quirúrgica", status: "Certificada", icon: "🧬" },
+  { location: "Cusco", service: "Inmunohistoquímica Masiva", status: "Procesada", icon: "🎯" },
+  { location: "Chiclayo", service: "Lote de Papanicolaou - Essalud", status: "Recibido", icon: "🏢" },
+  { location: "Iquitos", service: "Biopsia de Piel - Clínica Ana Stahl", status: "Entregada", icon: "🏥" },
+  { location: "Huancayo", service: "Citología Oncologica", status: "Completada", icon: "📋" },
+  { location: "Tacna", service: "Bloques de Parafina", status: "Recibidos", icon: "📦" },
+  { location: "Piura", service: "Citología - Policlínico Popular", status: "Procesada", icon: "🏥" },
+  { location: "Huaraz", service: "Inmunohistoquímica", status: "Certificada", icon: "⚡" },
 ];
  Broadway
 

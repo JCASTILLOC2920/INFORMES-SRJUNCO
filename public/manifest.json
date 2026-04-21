@@ -1,0 +1,23 @@
+{
+  "name": "JC PATH LAB - Anatomía Patológica",
+  "short_name": "JC PATH LAB",
+  "description": "Laboratorio de Anatomía Patológica de Alta Precisión con Alcance Nacional.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#001B2E",
+  "theme_color": "#001B2E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo-circular.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-circular.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

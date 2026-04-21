@@ -4,6 +4,8 @@ import "./globals.css";
 import Script from "next/script";
 import SocialProofWidget from "@/components/public/SocialProofWidget";
 import PropagandaInjector from "@/components/public/PropagandaInjector";
+import PWAInstallBanner from "@/components/public/PWAInstallBanner";
+import FloatingWhatsAppHub from "@/components/public/FloatingWhatsAppHub";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -228,9 +230,13 @@ export default function RootLayout({
     <html lang="es" className="scroll-smooth">
       <head>
         <meta name="geo.region" content="PE-LIM" />
-        <meta name="geo.placename" content="Puente Piedra, Lima, Perú" />
+         <meta name="geo.placename" content="Puente Piedra, Lima, Perú" />
         <meta name="geo.position" content="-11.859;-77.079" />
         <meta name="ICBM" content="-11.859, -77.079" />
+        <meta name="theme-color" content="#001B2E" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="manifest" href="/manifest.json" />
         <Script
           id="json-ld-schema"
           type="application/ld+json"
@@ -242,6 +248,8 @@ export default function RootLayout({
         {children}
         <SocialProofWidget />
         <PropagandaInjector />
+        <PWAInstallBanner />
+        <FloatingWhatsAppHub />
       </body>
     </html>
   );

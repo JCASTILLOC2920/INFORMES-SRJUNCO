@@ -1,7 +1,7 @@
-'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,15 +22,23 @@ export default function Header() {
     { name: 'Contacto', href: '#contacto' },
   ];
 
+  const pathname = usePathname();
+  const isB2B = pathname?.includes('/b2b');
+  const isUrgencia = pathname?.includes('/urgencia');
+
   return (
     <header 
       className={`fixed top-0 w-full z-header transition-all duration-700 ${
         isScrolled || isMenuOpen ? 'bg-white/85 backdrop-blur-xl border-b border-white/20 shadow-premium py-[0.8rem]' : 'bg-transparent py-[1.5rem]'
       }`}
     >
-      {/* Trust Banner - Top Alignment for zero-collision */}
-      <div className="bg-gradient-to-r from-nexus-void via-clinical-blue-deep to-nexus-void text-cyan-pulse text-center py-[8px] text-[0.75rem] font-medium tracking-[0.2em] shadow-inner font-outfit uppercase">
-        Operatividad Garantizada: Resultados de Alta Precisión en 72h
+      {/* Trust Banner - Context Aware */}
+      <div className={`text-center py-[8px] text-[0.75rem] font-medium tracking-[0.2em] shadow-inner font-outfit uppercase ${
+        isUrgencia ? 'bg-red-700 text-white' : isB2B ? 'bg-green-700 text-white' : 'bg-gradient-to-r from-nexus-void via-clinical-blue-deep to-nexus-void text-cyan-pulse'
+      }`}>
+        {isUrgencia ? '⚠️ Prioridad Nacional: Atención de Casos Críticos 24/7' : 
+         isB2B ? '🤝 Red Corporativa: Soluciones para Clínicas y Hospitales' :
+         'Operatividad Garantizada: Resultados de Alta Precisión en 72h'}
       </div>
 
       <div className="max-w-[1700px] mx-auto px-[1.5rem]">
@@ -70,8 +78,8 @@ export default function Header() {
             >
               Portal de Resultados
             </Link>
-            <button className="bg-clinical-blue text-white px-[2.2rem] py-[0.8rem] rounded-full text-[0.75rem] font-black uppercase tracking-[0.15em] shadow-elite hover:bg-nexus-void hover:shadow-glow-cyan transition-all duration-500 transform hover:-translate-y-1 active:scale-95 border border-white/20 magnetic-cta overflow-hidden relative">
-              <span className="relative z-10">Agendar Cita</span>
+            <button className={`${isUrgencia ? 'bg-red-600' : isB2B ? 'bg-green-600' : 'bg-clinical-blue'} text-white px-[2.2rem] py-[0.8rem] rounded-full text-[0.75rem] font-black uppercase tracking-[0.15em] shadow-elite hover:bg-nexus-void hover:shadow-glow-cyan transition-all duration-500 transform hover:-translate-y-1 active:scale-95 border border-white/20 magnetic-cta overflow-hidden relative`}>
+              <span className="relative z-10">{isUrgencia ? 'Solicitar Urgencia' : isB2B ? 'Contacto B2B' : 'Agendar Cita'}</span>
             </button>
           </nav>
 
