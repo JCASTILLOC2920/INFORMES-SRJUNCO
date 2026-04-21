@@ -7,14 +7,19 @@
   --color-nexus-void: #001b2e;
   --color-cyan-pulse: #00e5ff;
   --color-premium-silver: #f8fafc;
+  
+  /* TITAN SOVEREIGN TOKENS */
+  --color-titan-bg: oklch(12.72% 0.0332 266.42);
+  --color-titan-primary: oklch(58.82% 0.1774 246.73);
+  --color-titan-accent: oklch(86.13% 0.1065 194.24);
 }
 
 :root {
   --primary: #0a192f;
   --secondary: #0284c7;
   --accent: #f0f9ff;
-  --background: #f8fafc;
-  --text: #0f172a;
+  --background: oklch(12.72% 0.0332 266.42);
+  --text: oklch(98.3% 0.004 286.11);
   --nexus-void: #001b2e;
   --cyan-pulse: #00e5ff;
   --header-height: 5.5rem;

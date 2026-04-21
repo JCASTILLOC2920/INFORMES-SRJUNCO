@@ -35,50 +35,52 @@ export default function PropagandaInjector() {
           ✕
         </button>
         
-        <div className="w-20 h-20 bg-clinical-blue/10 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6">
-          🩺
+        <div className="w-20 h-20 bg-clinical-blue/10 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-pulse-aura">
+          💠
         </div>
         
-        <h2 className="text-3xl font-black text-nexus-void mb-4 leading-tight">
-          Soberanía Diagnóstica <span className="text-clinical-blue">Para Profesionales y Clínicas</span>
+        <h2 className="text-3xl font-black text-nexus-void mb-4 leading-tight uppercase tracking-tighter">
+          Dominio Diagnóstico <span className="text-clinical-blue">A NIVEL NACIONAL</span>
         </h2>
         
         <p className="text-slate-600 mb-8 text-lg font-medium leading-relaxed">
-          Ya sea Médico Independiente o Director de Clínica, JC PATH LAB es su aliado estratégico. <br/>
-          <span className="block mt-2 text-nexus-void font-black uppercase text-sm tracking-widest">Envíos desde TODO EL PERÚ | Descuentos Corporativos.</span>
+          JC PATH LAB expande su soberanía. <br/>
+          <span className="block mt-2 text-nexus-void font-black uppercase text-sm tracking-widest text-[#00e5ff]">
+            CONEXIÓN TOTAL EN TODAS LAS PROVINCIAS DEL PERÚ
+          </span>
+          Diagnósticos de alta complejidad en tiempo récord para clínicas y pacientes.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <Link 
-            href="https://wa.me/51986396733?text=Solicito+Tarifario+Institucional"
-            className="flex items-center justify-center bg-clinical-blue text-white py-4 rounded-xl font-bold uppercase text-[0.7rem] tracking-widest hover:bg-nexus-void transition-all"
+            href="https://wa.me/51986396733?text=Solicito+Convenio+Nacional"
+            className="flex items-center justify-center bg-clinical-blue text-white py-4 rounded-xl font-bold uppercase text-[0.7rem] tracking-widest hover:bg-nexus-void transition-all shadow-glow-blue"
           >
-            Tarifario Institucional
+            Convenio Nacional (PROVINCIAS)
           </Link>
           <Link 
             href="/b2b"
-            className="flex items-center justify-center bg-slate-100 text-nexus-void py-4 rounded-xl font-bold uppercase text-[0.7rem] tracking-widest hover:bg-slate-200 transition-all"
+            className="flex items-center justify-center bg-slate-900 text-white py-4 rounded-xl font-bold uppercase text-[0.7rem] tracking-widest hover:bg-slate-800 transition-all"
           >
-            Portal de Convenios
+            Terminal de Gestión B2B
           </Link>
         </div>
 
         <Link 
           href="https://wa.me/51986396733"
-          className="group relative block w-full bg-nexus-void text-white py-5 rounded-2xl font-black uppercase tracking-widest overflow-hidden shadow-glow-blue transition-all"
+          className="group relative block w-full bg-nexus-void text-white py-5 rounded-2xl font-black uppercase tracking-widest overflow-hidden shadow-glow-blue transition-all border border-[#00e5ff]/30"
         >
-          <span className="relative z-10">Urgencias: Hablar con el Dr. Castillo</span>
+          <span className="relative z-10 text-[#00e5ff]">Urgencia Nacional: Dr. Joseph Castillo</span>
           <div className="absolute inset-0 bg-clinical-blue translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300"></div>
         </Link>
           
           <button 
             onClick={() => setShowExitIntent(false)}
-            className="text-sm font-bold text-slate-400 hover:text-nexus-void uppercase tracking-widest"
+            className="mt-6 text-xs font-bold text-slate-400 hover:text-nexus-void uppercase tracking-widest opacity-50 hover:opacity-100"
           >
-            Ver más servicios
+            Cerrar Terminal de Infiltración
           </button>
         </div>
-      </div>
 
       <style jsx>{`
         .animate-fade-in {
