@@ -250,6 +250,10 @@ export default function RootLayout({
         <PropagandaInjector />
         <PWAInstallBanner />
         <FloatingWhatsAppHub />
+        {/* VICTORIA ASISTENTE B2B */}
+        <link rel="stylesheet" href="/modulo_chat/chat.css" />
+        <Script src="/modulo_chat/config.js" strategy="lazyOnload" />
+        <Script src="/modulo_chat/chat.js" strategy="lazyOnload" />
       </body>
     </html>
   );
