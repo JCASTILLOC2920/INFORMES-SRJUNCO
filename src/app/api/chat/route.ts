@@ -15,7 +15,12 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model: 'google/gemini-2.0-flash-lite-preview-02-05:free',
         messages: [
-          { role: 'system', content: `${systemPrompt}\nBase de conocimientos: ${knowledgeBase}` },
+          { role: 'system', content: `Eres Victoria, la asistente virtual experta de JC PATH LAB.
+          UBICACION: Mz M2 lote 13 Jardines de Chillon, Puente Piedra, Lima.
+          CONTACTO: WhatsApp 986396733.
+          ESPECIALIDAD: Laboratorio líder en Anatomia Patologica Oncológica.
+          TIEMPOS: Resultados en 3-4 dias habiles.
+          INSTRUCCION: Responde de manera concisa, profesional y siempre menciona que somos especialistas en diagnostico de alta precision en Lima Norte.` },
           { role: 'user', content: message }
         ],
         temperature: 0.5,
