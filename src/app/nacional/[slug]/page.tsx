@@ -4,15 +4,20 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import provincialData from "@/data/nacional.json";
 
-const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"), { ssr: false });
-const ViralSocialHub = dynamic(() => import("@/components/public/ViralSocialHub"), { ssr: false });
+const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"));
+const ViralSocialHub = dynamic(() => import("@/components/public/ViralSocialHub"));
+const DynamicFAQ = dynamic(() => import("@/components/public/DynamicFAQ"));
+const SEOStructuredData = dynamic(() => import("@/components/public/SEOStructuredData"));
 
 type Props = {
   params: { slug: string };
 };
 
 export async function generateMetadata({ params }: Props) {
-  const [cityId, serviceId] = params.slug.split('-');
+  const lastDashIndex = params.slug.lastIndexOf('-');
+  const cityId = params.slug.substring(0, lastDashIndex);
+  const serviceId = params.slug.substring(lastDashIndex + 1);
+  
   const city = provincialData.cities.find(c => c.id === cityId);
   const service = (provincialData.serviceDetails as any)[serviceId];
 
@@ -28,7 +33,7 @@ export async function generateMetadata({ params }: Props) {
       title: `🔴 COMUNICADO: Diagnóstico de Precisión en ${city.name}`,
       description,
       type: "article",
-      url: `https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app/nacional/${params.slug}`,
+      url: `https://informes-srjunco.vercel.app/nacional/${params.slug}`,
       images: [{ 
         url: "https://informes-srjunco.vercel.app/logo-circular.png",
         width: 1200,
@@ -48,8 +53,9 @@ export async function generateMetadata({ params }: Props) {
 export default function NationalDynamicPage({ params }: Props) {
   const { slug } = params;
   
-  // Lógica simple de parsing: ciudad-servicio (ej: trujillo-biopsia)
-  const [cityId, serviceId] = slug.split('-');
+  const lastDashIndex = slug.lastIndexOf('-');
+  const cityId = slug.substring(0, lastDashIndex);
+  const serviceId = slug.substring(lastDashIndex + 1);
   
   const city = provincialData.cities.find(c => c.id === cityId);
   const service = (provincialData.serviceDetails as any)[serviceId];
@@ -114,13 +120,22 @@ export default function NationalDynamicPage({ params }: Props) {
                 </div>
               </div>
 
+              <Link 
+                href={`https://wa.me/51986396733?text=Hola,%20quisiera%20más%20información%20sobre%20${service.title}%20en%20${city.name}`}
+                target="_blank"
+                className="inline-flex items-center justify-center w-full py-4 bg-[#25D366] text-white rounded-2xl font-black text-lg shadow-xl hover:shadow-green-200 transition-all gap-3"
+              >
+                <span>🚀 {service.cta}</span>
               </Link>
             </div>
 
             {/* Infiltrador Viral */}
             <ViralSocialHub city={city.name} service={service.title} />
 
-            <div className="prose prose-slate max-w-none text-slate-600">
+            {/* Automatización Suprema SEO: FAQ Dinámico */}
+            <DynamicFAQ city={city.name} service={service.title} region={city.region} />
+
+            <div className="prose prose-slate max-w-none text-slate-600 mt-16">
               <h3 className="text-2xl font-bold text-nexus-void mb-4">¿Cómo enviarnos su muestra?</h3>
               <p className="mb-4">
                 Si usted es un médico o paciente en {city.name}, puede enviarnos su biopsia o lámina de PAP vía courier. Una vez recibido, la Dra. Victoria lo notificará y el Dr. Castillo procederá con la lectura diagnóstica inmediata.
@@ -138,6 +153,16 @@ export default function NationalDynamicPage({ params }: Props) {
 
       <Footer />
       <ChatbotVictoria />
+      
+      {/* Datos Estructurados Mythos para Dominio de Google */}
+      <SEOStructuredData 
+        city={city.name} 
+        service={service.title} 
+        region={city.region} 
+        url={`https://informes-srjunco.vercel.app/nacional/${slug}`}
+        description={`Servicio oficial de ${service.title} en ${city.name}. Resultados en 72h-96h.`}
+      />
     </main>
+
   );
 }

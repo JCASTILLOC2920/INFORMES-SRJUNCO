@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import provincialData from '@/data/nacional.json';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const SITE_URL = 'https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app';
+  const SITE_URL = 'https://informes-srjunco.vercel.app';
   
   // Rutas estáticas base
   const staticRoutes = [

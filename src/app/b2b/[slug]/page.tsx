@@ -4,7 +4,9 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import provincialData from "@/data/nacional.json";
 
-const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"), { ssr: false });
+const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"));
+const DynamicFAQ = dynamic(() => import("@/components/public/DynamicFAQ"));
+const SEOStructuredData = dynamic(() => import("@/components/public/SEOStructuredData"));
 
 type Props = {
   params: { slug: string };
@@ -27,7 +29,7 @@ export async function generateMetadata({ params }: Props) {
       title: `🌐 RED B2B: Soluciones de Patología en ${city.name}`,
       description,
       type: "article",
-      url: `https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app/b2b/${params.slug}`,
+      url: `https://informes-srjunco.vercel.app/b2b/${params.slug}`,
       images: [{ url: "https://informes-srjunco.vercel.app/b2b-bg.jpg" }],
     },
   };
@@ -55,10 +57,12 @@ export default function B2BDynamicPage({ params }: Props) {
           </h1>
           
           <div className="grid lg:grid-cols-2 gap-12 mt-12">
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Optimización Logística</h2>
-                <p className="text-slate-600 mb-6">
-                    Nuestra red B2B en <strong>{city.name}</strong> está diseñada para directores médicos que exigen puntualidad. Integramos su sistema de salud con nuestro procesamiento centralizado.
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-premium hover-lift">
+                <h2 className="text-2xl font-black text-nexus-void mb-4">Arquitectura Diagnóstica B2B</h2>
+                <p className="text-slate-600 mb-6 leading-relaxed">
+                    En <strong>{city.name}</strong>, el margen de error no es una opción. Nuestra infraestructura <strong>Titan-Assisted</strong> elimina las fricciones logísticas, permitiendo que su centro médico entregue diagnósticos de nivel metropolitano sin salir de la región. 
+                    <br/><br/>
+                    <em>"La precisión en {city.name} ya no depende de la distancia, sino de la tecnología."</em>
                 </p>
                 <Link 
                     href="https://wa.me/51986396733?text=Deseo+información+sobre+tarifario+B2B+para+clinica+en+provincia"
@@ -88,8 +92,20 @@ export default function B2BDynamicPage({ params }: Props) {
         </div>
       </section>
 
+      <section className="pb-20">
+        <DynamicFAQ city={city.name} service={service.title} region={city.region} />
+      </section>
+
       <Footer />
       <ChatbotVictoria />
+
+      <SEOStructuredData 
+        city={city.name} 
+        service={service.title} 
+        region={city.region} 
+        url={`https://informes-srjunco.vercel.app/b2b/${params.slug}`}
+        description={`Servicio institucional B2B de ${service.title} en ${city.name}. Logística integrada.`}
+      />
     </main>
   );
 }

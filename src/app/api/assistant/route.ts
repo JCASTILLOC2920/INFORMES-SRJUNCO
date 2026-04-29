@@ -47,12 +47,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'HIVE_BYPASS_ACTIVE: Reintentando conexión local...' }, { status: 500 });
   }
 }
-
-  } catch (error: any) {
-    if (error.name === 'AbortError') {
-      return NextResponse.json({ error: 'Gateway Timeout' }, { status: 504 });
-    }
-    console.error('[SECURE_GATEWAY] Critical Failure:', error.message);
-    return NextResponse.json({ error: 'HIVE_BYPASS_ACTIVE: Reintentando conexión...' }, { status: 500 });
-  }
-}

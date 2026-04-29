@@ -3,7 +3,7 @@ import Footer from "@/components/public/Footer";
 import OrderExtractionDashboard from "@/components/admin/OrderExtractionDashboard";
 import dynamic from "next/dynamic";
 
-const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"), { ssr: false });
+const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"));
 
 export const metadata = {
   title: "Centro de Control Inteligente | JC PATH LAB Admin",
@@ -80,3 +80,4 @@ export default function ControlCenterPage() {
     </main>
   );
 }
+

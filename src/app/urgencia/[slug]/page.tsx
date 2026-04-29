@@ -5,7 +5,9 @@ import Link from "next/link";
 import provincialData from "@/data/nacional.json";
 import ViralSocialHub from "@/components/public/ViralSocialHub";
 
-const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"), { ssr: false });
+const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"));
+const DynamicFAQ = dynamic(() => import("@/components/public/DynamicFAQ"));
+const SEOStructuredData = dynamic(() => import("@/components/public/SEOStructuredData"));
 
 type Props = {
   params: { slug: string };
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: Props) {
       title: `🚨 ALERTA: Diagnóstico Crítico en ${city.name}`,
       description,
       type: "article",
-      url: `https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app/urgencia/${params.slug}`,
+      url: `https://informes-srjunco.vercel.app/urgencia/${params.slug}`,
       images: [{ url: "https://informes-srjunco.vercel.app/alert-bg.jpg" }],
     },
   };
@@ -56,8 +58,8 @@ export default function UrgenciaDynamicPage({ params }: Props) {
             ¿Necesita una {service.title} <br/> Urgente en <span className="text-slate-900 underline">{city.name}</span>?
           </h1>
           
-          <p className="text-xl text-slate-600 mb-12 italic border-l-8 border-red-600 pl-6 bg-red-50 py-6 rounded-r-3xl">
-            "Priorizamos diagnósticos de pacientes en {city.name} que requieren cirugía o tratamiento inmediato. Envío digital certificado en tiempo récord."
+          <p className="text-xl text-slate-600 mb-12 italic border-l-8 border-red-600 pl-6 bg-red-50 py-6 rounded-r-3xl leading-relaxed">
+            "El tiempo es el factor crítico en el diagnóstico oncológico. En <strong>{city.name}</strong>, eliminamos la espera. Procesamos su caso con prioridad máxima en nuestro Nodo Central, garantizando certeza cuando más la necesita."
           </p>
 
           <div className="bg-red-700 p-10 rounded-[3rem] shadow-glow-red text-white mb-16">
@@ -78,8 +80,20 @@ export default function UrgenciaDynamicPage({ params }: Props) {
         </div>
       </section>
 
+      <section className="pb-20">
+        <DynamicFAQ city={city.name} service={service.title} region={city.region} />
+      </section>
+
       <Footer />
       <ChatbotVictoria />
+
+      <SEOStructuredData 
+        city={city.name} 
+        service={service.title} 
+        region={city.region} 
+        url={`https://informes-srjunco.vercel.app/urgencia/${params.slug}`}
+        description={`Servicio de URGENCIA de ${service.title} en ${city.name}. Prioridad diagnóstica.`}
+      />
     </main>
   );
 }

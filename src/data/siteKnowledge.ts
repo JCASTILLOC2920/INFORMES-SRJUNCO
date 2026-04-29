@@ -44,6 +44,7 @@ PERSONALIDAD: Profesional, Empática, Persuasiva y Altamente Capacitada.
 `;
 
 // O(1) Access Optimization for Frequent Queries
+export const QUICK_RESPONSES = new Map([
   ['precios', 'Mire, tenemos opciones muy accesibles: Biopsia Gástrica/Colon a S/ 80, Próstata (6 frascos) a S/ 250 y Papanicolaou a S/ 20. ¿Desea que le pase el tarifario completo por WhatsApp? 💰'],
   ['ubicacion', 'Estamos en Mz M2 lote 13 Jardines de Chillón, Puente Piedra, Lima. Atendemos de Lunes a Sábado de 9:00 AM a 6:00 PM. ¡Le esperamos! 📍'],
   ['contacto', 'Nuestra línea directa de WhatsApp es el **986 396 733**. Mi equipo y el Dr. Castillo están atentos para ayudarle con su diagnóstico. 📱'],
@@ -59,3 +60,5 @@ export const SERVICE_PRICES = {
   PAPANICOLAOU: 20,
   CONO_CERVICAL: 120,
 };
+
+export const KNOWLEDGE_MAP = QUICK_RESPONSES;

@@ -221,6 +221,8 @@ const jsonLdOrganization = {
   ],
 };
 
+import ClientOnly from "@/components/public/ClientOnly";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -246,10 +248,12 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         {children}
-        <SocialProofWidget />
-        <PropagandaInjector />
-        <PWAInstallBanner />
-        <FloatingWhatsAppHub />
+        <ClientOnly>
+          <SocialProofWidget />
+          <PropagandaInjector />
+          <PWAInstallBanner />
+          <FloatingWhatsAppHub />
+        </ClientOnly>
         {/* VICTORIA ASISTENTE B2B */}
         <link rel="stylesheet" href="/modulo_chat/chat.css" />
         <Script src="/modulo_chat/config.js" strategy="lazyOnload" />

@@ -5,7 +5,7 @@ import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import dynamic from "next/dynamic";
 
-const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"), { ssr: false });
+const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"));
 
 export default function B2BPage() {
   return (

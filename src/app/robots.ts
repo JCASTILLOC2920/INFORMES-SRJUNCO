@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/api/'],
     },
-    sitemap: 'https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app/sitemap.xml',
+    sitemap: 'https://informes-srjunco.vercel.app/sitemap.xml',
   };
 }

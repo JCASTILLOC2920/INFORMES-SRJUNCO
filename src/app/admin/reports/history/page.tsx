@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import dynamic from 'next/dynamic';
-const EditReportModal = dynamic(() => import('@/components/admin/EditReportModal'), { ssr: false });
-const DeleteConfirmModal = dynamic(() => import('@/components/admin/DeleteConfirmModal'), { ssr: false });
+const EditReportModal = dynamic(() => import('@/components/admin/EditReportModal'));
+const DeleteConfirmModal = dynamic(() => import('@/components/admin/DeleteConfirmModal'));
 import { exportReportToPdf, exportReportToWord } from '@/utils/reportExporter';
 
 /**

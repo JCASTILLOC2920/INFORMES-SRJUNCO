@@ -3,7 +3,7 @@ import Footer from "@/components/public/Footer";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
-const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"), { ssr: false });
+const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"));
 
 export const metadata = {
   title: "Biopsias de Alta Precisión en Lima Norte | JC PATH LAB",

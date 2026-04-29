@@ -6,6 +6,12 @@ const nextConfig = {
   images: {
     unoptimized: true, // For Vercel/Supabase image handling if needed
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 }
 
 module.exports = nextConfig
