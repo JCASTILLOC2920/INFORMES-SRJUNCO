@@ -5,13 +5,15 @@ import React from 'react';
 interface ViralSocialHubProps {
   city: string;
   service: string;
+  viralPost?: string;
 }
 
-export default function ViralSocialHub({ city, service }: ViralSocialHubProps) {
-  const shareText = `🔴 IMPORTANTE: Servicio de ${service} de alta precisión en ${city}. JC PATH LAB certifica resultados en 72h. Comparte esta alerta con tus familiares y médicos de la región. https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app/`;
+export default function ViralSocialHub({ city, service, viralPost }: ViralSocialHubProps) {
+  const shareText = viralPost || `🔴 IMPORTANTE: Servicio de ${service} de alta precisión en ${city}. JC PATH LAB certifica resultados en 72h. Comparte esta alerta con tus familiares y médicos de la región.`;
   
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://informes-srjunco-git-main-jcastilloc2920s-projects.vercel.app/')}`;
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://informes-srjunco.vercel.app/';
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + currentUrl)}`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
 
   return (
     <div className="my-12 p-8 bg-gradient-to-br from-red-600 to-red-800 rounded-[2.5rem] shadow-premium text-white relative overflow-hidden group">
@@ -24,7 +26,7 @@ export default function ViralSocialHub({ city, service }: ViralSocialHubProps) {
         <div className="flex-1 text-center md:text-left">
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2">Difundir Alerta Médica en {city}</h3>
           <p className="text-red-100 font-medium leading-tight">
-            Ayuda a tu comunidad en {city} a obtener diagnósticos de precisión. Comparte esta información vital con tus contactos.
+            Ayuda a tu comunidad en {city} a obtener diagnósticos de precisión. Comparte esta información vital con tus contactos de la región.
           </p>
         </div>
 
@@ -50,7 +52,7 @@ export default function ViralSocialHub({ city, service }: ViralSocialHubProps) {
 
       <div className="mt-6 pt-6 border-t border-white/20 text-center">
         <p className="text-[0.7rem] uppercase tracking-[0.3em] font-bold opacity-60">
-          Infiltrador Social JC PATH LAB - Operando en 150 Nodos
+          Infiltrador Social JC PATH LAB - Operando en 1,979 Nodos Nacionales
         </p>
       </div>
     </div>

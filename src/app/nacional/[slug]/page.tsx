@@ -3,6 +3,7 @@ import Footer from "@/components/public/Footer";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import provincialData from "@/data/nacional.json";
+import titanHub from "@/data/titan_knowledge_hub.json";
 
 const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictoria"));
 const ViralSocialHub = dynamic(() => import("@/components/public/ViralSocialHub"));
@@ -59,6 +60,11 @@ export default function NationalDynamicPage({ params }: Props) {
   
   const city = provincialData.cities.find(c => c.id === cityId);
   const service = (provincialData.serviceDetails as any)[serviceId];
+  
+  // Extraer datos del Titan Knowledge Hub
+  const hubCity = (titanHub.enriched_cities as any[]).find(c => c.id === cityId);
+  const neuroHook = hubCity?.neuro_hook || `Expertos en ${serviceId} sirviendo a ${city?.name}.`;
+  const viralPost = hubCity?.viral_post || `Servicio médico en ${city?.name}.`;
 
   if (!city || !service) {
     return (
@@ -92,7 +98,7 @@ export default function NationalDynamicPage({ params }: Props) {
             </h1>
             
             <p className="text-xl text-slate-600 mb-12 border-l-4 border-cyan-pulse pl-6 italic">
-              "JC PATH LAB sirve a la comunidad médica de {city.name} y la región {city.region} con diagnósticos de anatomía patológica de máxima precisión humana y tecnológica."
+              "{neuroHook}"
             </p>
             
             <div className="bg-white p-10 rounded-[2.5rem] shadow-premium border border-slate-100 mb-16">
@@ -129,8 +135,8 @@ export default function NationalDynamicPage({ params }: Props) {
               </Link>
             </div>
 
-            {/* Infiltrador Viral */}
-            <ViralSocialHub city={city.name} service={service.title} />
+            {/* Infiltrador Viral con Inteligencia Titan */}
+            <ViralSocialHub city={city.name} service={service.title} viralPost={viralPost} />
 
             {/* Automatización Suprema SEO: FAQ Dinámico */}
             <DynamicFAQ city={city.name} service={service.title} region={city.region} />
@@ -163,6 +169,5 @@ export default function NationalDynamicPage({ params }: Props) {
         description={`Servicio oficial de ${service.title} en ${city.name}. Resultados en 72h-96h.`}
       />
     </main>
-
   );
 }
