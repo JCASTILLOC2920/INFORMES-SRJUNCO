@@ -79,7 +79,11 @@ export default function Footer() {
         
         <div className="border-t border-white/10 pt-12 flex flex-col md:flex-row justify-between items-center text-[0.65rem] uppercase font-black tracking-[0.3em] overflow-hidden">
           <p className="opacity-50 tracking-widest">© {new Date().getFullYear()} JC PATH LAB • Engineered for Precision.</p>
-          <div className="flex space-x-10 mt-6 md:mt-0">
+          <div className="flex flex-wrap justify-center md:justify-end gap-10 mt-6 md:mt-0">
+            <Link href="/directorio-nacional" className="text-slate-500 hover:text-clinical-blue transition-all flex items-center group">
+              <span className="mr-3 opacity-50 group-hover:opacity-100 transition-opacity group-hover:scale-110">🌐</span> 
+              <span className="opacity-60 group-hover:opacity-100 transition-opacity">Directorio Nacional 1,979 Nodos</span>
+            </Link>
             <Link href="/admin" className="text-slate-500 hover:text-cyan-pulse transition-all flex items-center group">
               <span className="mr-3 opacity-50 group-hover:opacity-100 transition-opacity group-hover:scale-110">🔐</span> 
               <span className="opacity-60 group-hover:opacity-100 transition-opacity">Admin Control Center</span>
