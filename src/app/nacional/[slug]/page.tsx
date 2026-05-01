@@ -9,6 +9,7 @@ const ChatbotVictoria = dynamic(() => import("@/components/public/ChatbotVictori
 const ViralSocialHub = dynamic(() => import("@/components/public/ViralSocialHub"));
 const DynamicFAQ = dynamic(() => import("@/components/public/DynamicFAQ"));
 const SEOStructuredData = dynamic(() => import("@/components/public/SEOStructuredData"));
+const B2BMedicalPortal = dynamic(() => import("@/components/public/B2BMedicalPortal"));
 
 type Props = {
   params: { slug: string };
@@ -137,6 +138,9 @@ export default function NationalDynamicPage({ params }: Props) {
 
             {/* Infiltrador Viral con Inteligencia Titan */}
             <ViralSocialHub city={city.name} service={service.title} viralPost={viralPost} />
+
+            {/* FASE 6: Portal de Conversión B2B para Médicos y Clínicas */}
+            <B2BMedicalPortal city={city.name} region={city.region} />
 
             {/* Automatización Suprema SEO: FAQ Dinámico */}
             <DynamicFAQ city={city.name} service={service.title} region={city.region} />
